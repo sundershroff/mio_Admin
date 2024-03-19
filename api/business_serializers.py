@@ -91,6 +91,7 @@ class shopping_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
+    hub = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -119,6 +120,7 @@ class shopping_serializer(serializers.Serializer):
             door_number =data['door_number'],
             street_name = data['street_name'],
             area = data['area'],
+            hub = data['hub'],
             pin_number = data['pin_number'],
             aadhar_number = data['aadhar_number'],
             pin_your_location = data['pin_your_location'],
@@ -147,6 +149,7 @@ class shopping_list_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
+    hub = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -174,6 +177,7 @@ class shopping_edit_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
+    hub = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -199,6 +203,7 @@ class shopping_edit_serializer(serializers.Serializer):
         instance.door_number = data['door_number']
         instance.street_name = data['street_name']
         instance.area = data['area']
+        instance.hub = data['hub']
         instance.pin_number = data['pin_number']
         instance.aadhar_number = data['aadhar_number']
         instance.pin_your_location = data['pin_your_location']
@@ -424,6 +429,7 @@ class jewellery_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
+    hub = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -453,6 +459,7 @@ class jewellery_serializer(serializers.Serializer):
             door_number =data['door_number'],
             street_name = data['street_name'],
             area = data['area'],
+            hub = data['hub'],
             pin_number = data['pin_number'],
             aadhar_number = data['aadhar_number'],
             pin_your_location = data['pin_your_location'],
@@ -481,6 +488,7 @@ class jewellery_list_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
+    hub = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -507,6 +515,7 @@ class jewellery_edit_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
+    hub = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -532,6 +541,7 @@ class jewellery_edit_serializer(serializers.Serializer):
         instance.door_number = data['door_number']
         instance.street_name = data['street_name']
         instance.area = data['area']
+        instance.hub = data['hub']
         instance.pin_number = data['pin_number']
         instance.aadhar_number = data['aadhar_number']
         instance.pin_your_location = data['pin_your_location']
@@ -913,7 +923,7 @@ class food_bakerylistserializer(serializers.Serializer):
     status=serializers.BooleanField()
 
 
-class food_ordermodel(serializers.Serializer):
+class food_orderserializers(serializers.Serializer):
     order_id =serializers.CharField()
     track_id = serializers.CharField()
     quantity = serializers.CharField()
@@ -1222,7 +1232,7 @@ class fresh_choppedveglistserializer(serializers.Serializer):
     fresh_id = serializers.CharField()
     status=serializers.BooleanField()
 
-class fresh_ordermodel(serializers.Serializer):
+class fresh_orderserializers(serializers.Serializer):
     order_id =serializers.CharField()
     track_id = serializers.CharField()
     quantity = serializers.CharField()
@@ -1477,7 +1487,7 @@ class dmio_dairylistserializer(serializers.Serializer):
     dmio_id = serializers.CharField()
     status=serializers.BooleanField()
 
-class dorigin_ordermodel(serializers.Serializer):
+class dorigin_orderserializers(serializers.Serializer):
     order_id =serializers.CharField()
     track_id = serializers.CharField()
     quantity = serializers.CharField()
@@ -1697,7 +1707,7 @@ class pharmacy_herbaldrinkslistserializer(serializers.Serializer):
     status=serializers.BooleanField()
 
 
-class pharmacy_ordermodel(serializers.Serializer):
+class pharmacy_orderserializers(serializers.Serializer):
     order_id =serializers.CharField()
     track_id = serializers.CharField()
     quantity = serializers.CharField()
@@ -1721,7 +1731,7 @@ class d_original_serializer(serializers.Serializer):
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    hub = serializers.CharField()
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
@@ -1751,7 +1761,7 @@ class d_original_serializer(serializers.Serializer):
             pin_number = data['pin_number'],
             aadhar_number = data['aadhar_number'],
             fssa = data['fssa'],
-            region = data['region'],
+            hub = data['hub'],
             door_number =data['door_number'],
             street_name = data['street_name'],
             area = data['area'],
@@ -1784,7 +1794,7 @@ class d_original_list_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    hub = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -1811,7 +1821,7 @@ class d_original_edit_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    hub = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -1837,7 +1847,7 @@ class d_original_edit_serializer(serializers.Serializer):
         instance.street_name = data['street_name']
         instance.area = data['area']
         instance.fssa = data['fssa']
-        instance.region = data['region']
+        instance.hub = data['hub']
         instance.pin_your_location = data['pin_your_location']
         instance.name = data['name']
         instance.account_number = data['account_number']
@@ -1868,7 +1878,7 @@ class d_originalproductsserializer(serializers.Serializer):
     d_id = serializers.CharField()
     status=serializers.BooleanField()
 
-class daily_ordermodel(serializers.Serializer):
+class daily_orderserializers(serializers.Serializer):
     order_id =serializers.CharField()
     track_id = serializers.CharField()
     quantity = serializers.CharField()

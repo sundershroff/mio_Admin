@@ -15,6 +15,8 @@ from bson.json_util import dumps,loads
 from django.db.models import Sum
 from django.utils import timezone
 import datetime
+from django.db.models import Q
+
 
 client = MongoClient('localhost', 27017)
 
@@ -43,7 +45,7 @@ def business_signup(request):
                 print(dataserializer)
                 print(datas['uid'])
                 if dataserializer.is_valid():
-                    
+                    print("valid")
                     dataserializer.save()
                     print("Valid Data")
                     business_extension.send_mail(datas['email'], datas['otp'])
@@ -551,7 +553,8 @@ def shop_get_electronics(request,id):
     db = client['business']
     collection = db['shopelectronics']
     
-    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"True"})
+    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"False"})
+    print(shop_product,"shop_product")
     shop_products_list = list(shop_product)
     print(shop_products_list)
 
@@ -566,7 +569,7 @@ def shop_get_my_electronics(request,id,product_id):
     db = client['business']
     collection = db['shopelectronics']
 
-    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"True","product_id":product_id})
+    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"False","product_id":product_id})
     shop_products_list = list(shop_product)
     print(shop_products_list)
     shop_products_json = dumps(shop_products_list)
@@ -618,6 +621,39 @@ def shop_update_electronics(request,id,product_id):
         pass
     collection.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
     return Response(id,status=status.HTTP_200_OK)
+
+# shop_electorder model
+@api_view(["POST","GET"])
+def electorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopelectronics']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            elect_pro = dumps(alldata)
+            print(type(elect_pro))
+            return Response(elect_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 # ....mobile
 @api_view(['POST'])
@@ -770,6 +806,36 @@ def shop_update_mobile(request,id,product_id):
 
     db.shopmobile.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
     return Response(id,status=status.HTTP_200_OK)
+# shop_mobileorder model
+@api_view(["POST","GET"])
+def mobileorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopmobile']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            mob_pro = dumps(alldata)
+            print(type(mob_pro))
+            return Response(mob_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # ......furniture
 
 @api_view(['POST'])
@@ -915,7 +981,36 @@ def shop_update_furniture(request,id,product_id):
     db.shopfurniture.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+# shop_furnitureorder model
+@api_view(["POST","GET"])
+def furnitureorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopfurniture']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            fur_pro = dumps(alldata)
+            print(type(fur_pro))
+            return Response(fur_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
 
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # .......autoaccessories
 @api_view(['POST'])
 def shop_autoaccessories(request,id):
@@ -1063,6 +1158,38 @@ def shop_update_autoaccessories(request,id,product_id):
     db.shopautoaccessories.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# shop_accessoriesorder model
+@api_view(["POST","GET"])
+def accessoriesorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopautoaccessories']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            acc_pro = dumps(alldata)
+            print(type(acc_pro))
+            return Response(acc_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
 # ........kitchen
 @api_view(['POST'])
 def shop_kitchen(request,id):
@@ -1209,6 +1336,38 @@ def shop_update_kitchen(request,id,product_id):
     db.shopkitchen.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# shop_kitchenorder model
+@api_view(["POST","GET"])
+def kitchenorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopkitchen']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            kit_pro = dumps(alldata)
+            print(type(kit_pro))
+            return Response(kit_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
 # ........fashion
 @api_view(['POST'])
 def shop_fashion(request,id):
@@ -1352,6 +1511,38 @@ def shop_update_fashion(request,id,product_id):
     db.shopfashion.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# shop_fashionorder model
+@api_view(["POST","GET"])
+def fashionorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopfashion']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            fas_pro = dumps(alldata)
+            print(type(fas_pro))
+            return Response(fas_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
 # ........appliances
 @api_view(['POST'])
 def shop_appliances(request,id):
@@ -1497,6 +1688,37 @@ def shop_update_appliances(request,id,product_id):
     db.shopappliances.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# shop_appliancesorder model
+@api_view(["POST","GET"])
+def appliancesorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopappliances']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            app_pro = dumps(alldata)
+            print(type(app_pro))
+            return Response(app_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # ........groceries
 @api_view(['POST'])
 def shop_groceries(request,id):
@@ -1639,6 +1861,38 @@ def shop_update_groceries(request,id,product_id):
     shop_products = dict(request.POST)
     db.shopgroceries.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
     return Response(id,status=status.HTTP_200_OK)
+
+
+# shop_groceriesorder model
+@api_view(["POST","GET"])
+def groceriesorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopgroceries']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            gro_pro = dumps(alldata)
+            print(type(gro_pro))
+            return Response(gro_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # ........petsupplies
 @api_view(['POST'])
 def shop_petsupplies(request,id):
@@ -1781,6 +2035,38 @@ def shop_update_petsupplies(request,id,product_id):
     shop_products = dict(request.POST)
     db.shoppetsupplies.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
     return Response(id,status=status.HTTP_200_OK)
+
+
+# shop_petsuppliesorder model
+@api_view(["POST","GET"])
+def petsuppliesorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shoppetsupplies']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            pet_pro = dumps(alldata)
+            print(type(pet_pro))
+            return Response(pet_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # .......toys
 @api_view(['POST'])
 def shop_toys(request,id):
@@ -1920,6 +2206,37 @@ def shop_update_toys(request,id,product_id):
     db.shoptoys.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# shop_toysorder model
+@api_view(["POST","GET"])
+def toysorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shoptoys']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            shop_pro = dumps(alldata)
+            print(type(shop_pro))
+            return Response(shop_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # ........sports
 @api_view(['POST'])
 def shop_sports(request,id):
@@ -2065,6 +2382,37 @@ def shop_update_sports(request,id,product_id):
     db.shopsports.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# shop_sportsorder model
+@api_view(["POST","GET"])
+def sportsorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopsports']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            sport_pro = dumps(alldata)
+            return Response(sport_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # ........healthcare
 @api_view(['POST'])
 def shop_healthcare(request,id):
@@ -2207,6 +2555,38 @@ def shop_update_healthcare(request,id,product_id):
     db.shophealthcare.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# shop_healthcareorder model
+@api_view(["POST","GET"])
+def healthcareorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shophealthcare']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            health_pro = dumps(alldata)
+          
+            return Response(health_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # ........books
 @api_view(['POST'])
 def shop_books(request,id):
@@ -2352,6 +2732,36 @@ def shop_update_books(request,id,product_id):
     db.shopbooks.update_one({'shop_id':id,'product_id':product_id} ,{'$set':shop_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# shop_booksorder model
+@api_view(["POST","GET"])
+def booksorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shopbooks']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            book_pro = dumps(alldata)
+            return Response(book_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # ........personalcare
 @api_view(['POST'])
 def shop_personalcare(request,id):
@@ -2502,7 +2912,36 @@ def shop_update_personalcare(request,id,product_id):
 
     return Response(id,status=status.HTTP_200_OK)
 
+# shop_personalcareorder model
+@api_view(["POST","GET"])
+def personalcareorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.shop_ordermodel.objects.filter(Q(shop_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['shoppersonalcare']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            per_pro = dumps(alldata)
+            
+            return Response(per_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
 
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 
 # jewels_dashboard
     
@@ -2915,6 +3354,38 @@ def jewel_update_gold(request,id,product_id):
 
     return Response(id,status=status.HTTP_200_OK)
 
+
+# jewelgoldorder model
+@api_view(["POST","GET"])
+def goldorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.jewel_ordermodel.objects.filter(Q(jewel_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['jewelgold']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            gold_pro = dumps(alldata)
+            
+            return Response(gold_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
 #...........silver 
 @api_view(['POST'])
 def jewel_silver(request,id):
@@ -3059,7 +3530,36 @@ def jewel_update_silver(request,id,product_id):
 
     return Response(id,status=status.HTTP_200_OK)
 
+# jewel_silverorder model
+@api_view(["POST","GET"])
+def silverorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.jewel_ordermodel.objects.filter(Q(jewel_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['jewelsilver']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            sil_pro = dumps(alldata)
+            
+            return Response(sil_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
 
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 # food dashboard
     
 @api_view(['GET'])
@@ -3476,6 +3976,37 @@ def food_update_tiffen(request,id,product_id):
     db.foodtiffen.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# food_tiffenorder model
+@api_view(["POST","GET"])
+def tiffenorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodtiffen']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            tif_pro = dumps(alldata)
+            
+            return Response(tif_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # .....meals
 @api_view(['POST'])
 def food_meals(request,id):
@@ -3617,6 +4148,37 @@ def food_update_meals(request,id,product_id):
     db.foodmeals.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# food_mealsorder model
+@api_view(["POST","GET"])
+def mealsorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodmeals']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            meal_pro = dumps(alldata)
+            
+            return Response(meal_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # ......biriyani
 @api_view(['POST'])
 def food_biriyani(request,id):
@@ -3758,6 +4320,37 @@ def food_update_biriyani(request,id,product_id):
     db.foodbiriyani.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# food_biriyaniorder model
+@api_view(["POST","GET"])
+def biriyaniorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodbiriyani']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            bir_pro = dumps(alldata)
+            
+            return Response(bir_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # ......chickenbiriyani
 @api_view(['POST'])
 def food_chickenbiriyani(request,id):
@@ -3898,6 +4491,37 @@ def food_update_chickenbiriyani(request,id,product_id):
     db.foodchickenbiriyani.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# food_chickenbiriyaniorder model
+@api_view(["POST","GET"])
+def chickenbiriyaniorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodchickenbiriyani']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            chik_pro = dumps(alldata)
+            
+            return Response(chik_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # ......beef
 @api_view(['POST'])
 def food_beef(request,id):
@@ -4039,6 +4663,38 @@ def food_update_beef(request,id,product_id):
     db.foodbeef.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+#food_beeforder model
+@api_view(["POST","GET"])
+def beeforder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodbeef']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            beef_pro = dumps(alldata)
+            
+            return Response(beef_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # ......chinese
 @api_view(['POST'])
 def food_chinese(request,id):
@@ -4180,6 +4836,37 @@ def food_update_chinese(request,id,product_id):
     db.foodchinese.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# food_chineseorder model
+@api_view(["POST","GET"])
+def chineseorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodchinese']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            chin_pro = dumps(alldata)
+            
+            return Response(chin_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # .......pizza
 @api_view(['POST'])
 def food_pizza(request,id):
@@ -4321,6 +5008,37 @@ def food_update_pizza(request,id,product_id):
     db.foodpizza.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# food_pizzaorder model
+@api_view(["POST","GET"])
+def pizzaorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodpizza']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            piz_pro = dumps(alldata)
+            
+            return Response(piz_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # .......teacoffe
 @api_view(['POST'])
 def food_teacoffe(request,id):
@@ -4465,6 +5183,37 @@ def food_update_teacoffe(request,id,product_id):
     db.foodteacoffe.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# food_teacoffeorder model
+@api_view(["POST","GET"])
+def teacoffeorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodteacoffe']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            tea_pro = dumps(alldata)
+            
+            return Response(tea_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # .......icecream
 @api_view(['POST'])
 def food_icecream(request,id):
@@ -4608,6 +5357,38 @@ def food_update_icecream(request,id,product_id):
     db.foodpicecream.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+#food_icecreamorder model
+@api_view(["POST","GET"])
+def icecreamorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodicecream']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            ice_pro = dumps(alldata)
+            
+            return Response(ice_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # .......firedchicken
 @api_view(['POST'])
 def food_firedchicken(request,id):
@@ -4750,6 +5531,37 @@ def food_update_firedchicken(request,id,product_id):
     db.foodfiredchicken.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+#food_firedchickenorder model
+@api_view(["POST","GET"])
+def firedchickenorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodfiredchicken']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            fry_pro = dumps(alldata)
+            
+            return Response(fry_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 # .......burger
 @api_view(['POST'])
 def food_burger(request,id):
@@ -4891,6 +5703,38 @@ def food_update_burger(request,id,product_id):
     db.foodburger.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# food_burgerorder model
+@api_view(["POST","GET"])
+def burgerorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodburger']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            bur_pro = dumps(alldata)
+            
+            return Response(bur_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 #........cake
 @api_view(['POST'])
 def food_cake(request,id):
@@ -5032,6 +5876,37 @@ def food_update_cake(request,id,product_id):
     db.foodcake.update_one({'food_id':id,'product_id':product_id} ,{'$set':food_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# food_cakeorder model
+@api_view(["POST","GET"])
+def cakeorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodcake']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            cake_pro = dumps(alldata)
+            
+            return Response(cake_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
 #..... bakery
 @api_view(['POST'])
 def food_bakery(request,id):
@@ -5173,10 +6048,42 @@ def food_update_bakery(request,id,product_id):
 
     return Response(id,status=status.HTTP_200_OK)
 
+#food_bakeryorder model
+@api_view(["POST","GET"])
+def bakeryorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.food_ordermodel.objects.filter(Q(food_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['foodbakery']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            bak_pro = dumps(alldata)
+            
+            return Response(bak_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)  
+
 # freshcuts dashboard
 
 @api_view(['GET'])
 def fresh_total_revenue(request, id):
+
     if request.method == 'GET':
         total_revenue = models.fresh_ordermodel.objects.filter(fresh_id=id).aggregate(total_revenue=Sum('total_amount'))['total_revenue'] or 0
         print(total_revenue)
@@ -5489,7 +6396,7 @@ def fresh_chicken(request,id):
 
     selling_price = commision + ((gst/100) * commision)
     fresh_products = dict(request.POST)
-    fresh_products['food_id'] = id
+    fresh_products['fresh_id'] = id
     fresh_products['product_id'] = product_id
     fresh_products['primary_image'] = primary_image_paths
     fresh_products['other_images'] = other_imagelist
@@ -5517,7 +6424,7 @@ def fresh_get_chicken(request,id):
     db = client['business']
     collection = db['freshchicken']
 
-    fresh_product = collection.find({"fresh_id": {"$regex":f"^{id}"},"status":"True"})
+    fresh_product = collection.find({"fresh_id": {"$regex":f"^{id}"},"status":"False"})
     fresh_product_list = list(fresh_product)
     print(fresh_product_list)
 
@@ -5592,7 +6499,39 @@ def fresh_update_chicken(request,id,product_id):
     db.freshchicken.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
-    
+
+
+
+# fresh_chickenorder model
+@api_view(["POST","GET"])
+def chickenorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshchicken']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            chik_pro = dumps(alldata)
+            
+            return Response(chik_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........mutton
 @api_view(['POST'])
 def fresh_mutton(request,id):
@@ -5734,6 +6673,38 @@ def fresh_update_mutton(request,id,product_id):
     db.freshmutton.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# fresh_muttonorder model
+@api_view(["POST","GET"])
+def muttonorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshmutton']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            mut_pro = dumps(alldata)
+            
+            return Response(mut_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 
 # .......beef
 @api_view(['POST'])
@@ -5878,6 +6849,37 @@ def fresh_update_beef(request,id,product_id):
     db.freshbeef.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# fresh_beeforder model
+@api_view(["POST","GET"])
+def beeforder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshbeef']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            beef_pro = dumps(alldata)
+            
+            return Response(beef_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........fishseafood
 @api_view(['POST'])
 def fresh_fishseafood(request,id):
@@ -6018,6 +7020,38 @@ def fresh_update_fishseafood(request,id,product_id):
     db.freshfishseafood.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# fresh_fishseafoodorder model
+@api_view(["POST","GET"])
+def fishseafoodorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshfishseafood']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            fish_pro = dumps(alldata)
+            
+            return Response(fish_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........dryfish
 @api_view(['POST'])
 def fresh_dryfish(request,id):
@@ -6160,6 +7194,37 @@ def fresh_update_dryfish(request,id,product_id):
     db.freshdryfish.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# fresh_dryfishorder model
+@api_view(["POST","GET"])
+def dryfishorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshdryfish']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            dry_pro = dumps(alldata)
+            
+            return Response(dry_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........prawns
 @api_view(['POST'])
 def fresh_prawns(request,id):
@@ -6298,6 +7363,37 @@ def fresh_update_prawns(request,id,product_id):
     db.freshprawns.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# fresh_prawnsorder model
+@api_view(["POST","GET"])
+def prawnsorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshprawns']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            praw_pro = dumps(alldata)
+            
+            return Response(praw_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........egg
 @api_view(['POST'])
 def fresh_egg(request,id):
@@ -6441,6 +7537,37 @@ def fresh_update_egg(request,id,product_id):
     db.freshegg.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# fresh_eggorder model
+@api_view(["POST","GET"])
+def eggorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshegg']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            egg_pro = dumps(alldata)
+            
+            return Response(egg_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........pond
 @api_view(['POST'])
 def fresh_pond(request,id):
@@ -6582,6 +7709,38 @@ def fresh_update_pond(request,id,product_id):
     db.freshpond.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# fresh_pondorder model
+@api_view(["POST","GET"])
+def pondorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshpond']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            pond_pro = dumps(alldata)
+            
+            return Response(pond_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........meatmasala
 @api_view(['POST'])
 def fresh_meatmasala(request,id):
@@ -6723,6 +7882,38 @@ def fresh_update_meatmasala(request,id,product_id):
     db.freshmeatmasala.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# fresh_meatmasalaorder model
+@api_view(["POST","GET"])
+def meatmasalaorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshmeatmasala']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            meat_pro = dumps(alldata)
+            
+            return Response(meat_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........combo
 @api_view(['POST'])
 def fresh_combo(request,id):
@@ -6863,6 +8054,37 @@ def fresh_update_combo(request,id,product_id):
     db.freshcombo.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# fresh_comboorder model
+@api_view(["POST","GET"])
+def comboorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshcombo']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            com_pro = dumps(alldata)
+            
+            return Response(com_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........choppedveg
 @api_view(['POST'])
 def fresh_choppedveg(request,id):
@@ -7001,7 +8223,36 @@ def fresh_update_choppedveg(request,id,product_id):
     db.freshchoppedveg.update_one({'fresh_id':id,'product_id':product_id} ,{'$set':fresh_products})
 
     return Response(id,status=status.HTTP_200_OK)
+# fresh_choppedvegorder model
+@api_view(["POST","GET"])
+def choppedvegorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.fresh_ordermodel.objects.filter(Q(fresh_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['freshchoppedveg']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            chop_pro = dumps(alldata)
+            
+            return Response(chop_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
 
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 
 # dailymio_dashboard
     
@@ -7419,6 +8670,38 @@ def dmio_update_grocery(request,id,product_id):
     db.dmiogrocery.update_one({'dmio_id':id,'product_id':product_id} ,{'$set':dmio_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# dmio_groceryorder model
+@api_view(["POST","GET"])
+def groceryorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.daily_ordermodel.objects.filter(Q(dmio_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['dmiogrocery']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            gro_pro = dumps(alldata)
+            
+            return Response(gro_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # .......meat
 @api_view(['POST'])
 def dmio_meat(request,id):
@@ -7561,7 +8844,39 @@ def dmio_update_meat(request,id,product_id):
     db.dmiomeat.update_one({'dmio_id':id,'product_id':product_id} ,{'$set':dmio_products})
 
     return Response(id,status=status.HTTP_200_OK)
-    
+
+
+
+# dmio_meatorder model
+@api_view(["POST","GET"])
+def meatorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.daily_ordermodel.objects.filter(Q(dmio_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['dmiomeat']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            met_pro = dumps(alldata)
+            
+            return Response(met_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # .......fish
 @api_view(['POST'])
 def dmio_fish(request,id):
@@ -7704,6 +9019,37 @@ def dmio_update_fish(request,id,product_id):
     db.dmiofish.update_one({'dmio_id':id,'product_id':product_id} ,{'$set':dmio_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# dmio_fishorder model
+@api_view(["POST","GET"])
+def fishorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.daily_ordermodel.objects.filter(Q(dmio_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['dmiofish']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            fis_pro = dumps(alldata)
+            
+            return Response(fis_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ........eggs
 @api_view(['POST'])
 def dmio_eggs(request,id):
@@ -7844,6 +9190,37 @@ def dmio_update_eggs(request,id,product_id):
     db.dmioeggs.update_one({'dmio_id':id,'product_id':product_id} ,{'$set':dmio_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# dmio_eggsorder model
+@api_view(["POST","GET"])
+def eggsorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.daily_ordermodel.objects.filter(Q(dmio_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['dmioeggs']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            egg_pro = dumps(alldata)
+            
+            return Response(egg_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ....fruits
 @api_view(['POST'])
 def dmio_fruits(request,id):
@@ -7985,6 +9362,38 @@ def dmio_update_fruits(request,id,product_id):
     db.dmiofruits.update_one({'dmio_id':id,'product_id':product_id} ,{'$set':dmio_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# dmio_fruitsorder model
+@api_view(["POST","GET"])
+def fruitsorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.daily_ordermodel.objects.filter(Q(dmio_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['dmiofruits']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            fru_pro = dumps(alldata)
+            
+            return Response(fru_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ......vegitables
 @api_view(['POST'])
 def dmio_vegitables(request,id):
@@ -8125,6 +9534,38 @@ def dmio_update_vegitables(request,id,product_id):
     db.dmiovegitables.update_one({'dmio_id':id,'product_id':product_id} ,{'$set':dmio_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# dmio_vegitablesorder model
+@api_view(["POST","GET"])
+def vegitablesorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.daily_ordermodel.objects.filter(Q(dmio_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['dmiovegitables']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            veg_pro = dumps(alldata)
+            
+            return Response(veg_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
+
 # ........dairy
 @api_view(['POST'])
 def dmio_dairy(request,id):
@@ -8268,6 +9709,39 @@ def dmio_update_dairy(request,id,product_id):
     db.dmiodairy.update_one({'dmio_id':id,'product_id':product_id} ,{'$set':dmio_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+
+# dmio_dairyorder model
+@api_view(["POST","GET"])
+def dairyorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.daily_ordermodel.objects.filter(Q(dmio_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['dmiodairy']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            dar_pro = dumps(alldata)
+            
+            return Response(dar_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
+
 
 # pharmacy _dashboard
    
@@ -8682,6 +10156,37 @@ def pharmacy_update_allopathic(request,id,product_id):
 
     return Response(id,status=status.HTTP_200_OK)
 
+
+# pharmacy_allopathicorder model
+@api_view(["POST","GET"])
+def allopathicorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.pharmacy_ordermodel.objects.filter(Q(pharm_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['pharmacyallopathic']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            allo_pro = dumps(alldata)
+            
+            return Response(allo_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # .....ayurvedic
 @api_view(['POST'])
 def pharmacy_ayurvedic(request,id):
@@ -8822,6 +10327,37 @@ def pharmacy_update_ayurvedic(request,id,product_id):
     db.pharmacyayurvedic.update_one({'pharm_id':id,'product_id':product_id} ,{'$set':pharmacy_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# pharmacy_ayurvedicorder model
+@api_view(["POST","GET"])
+def ayurvedicorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.pharmacy_ordermodel.objects.filter(Q(pharm_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['pharmacyayurvedic']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            ayur_pro = dumps(alldata)
+            
+            return Response(ayur_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # .....siddha
 @api_view(['POST'])
 def pharmacy_siddha(request,id):
@@ -8961,6 +10497,37 @@ def pharmacy_update_siddha(request,id,product_id):
     db.pharmacysiddha.update_one({'pharm_id':id,'product_id':product_id} ,{'$set':pharmacy_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# pharmacy_siddhaorder model
+@api_view(["POST","GET"])
+def siddhaorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.pharmacy_ordermodel.objects.filter(Q(pharm_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['pharmacysiddha']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            sid_pro = dumps(alldata)
+            
+            return Response(sid_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # ......unani
 @api_view(['POST'])
 def pharmacy_unani(request,id):
@@ -9101,6 +10668,37 @@ def pharmacy_update_unani(request,id,product_id):
     db.pharmacyunani.update_one({'pharm_id':id,'product_id':product_id} ,{'$set':pharmacy_products})
 
     return Response(id,status=status.HTTP_200_OK)
+
+# pharmacy_unaniorder model
+@api_view(["POST","GET"])
+def unaniorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.pharmacy_ordermodel.objects.filter(Q(pharm_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['pharmacyunani']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            una_pro = dumps(alldata)
+            
+            return Response(una_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 # .......herbaldrinks
 @api_view(['POST'])
 def pharmacy_herbaldrinks(request,id):
@@ -9242,7 +10840,36 @@ def pharmacy_update_herbaldrinks(request,id,product_id):
 
     return Response(id,status=status.HTTP_200_OK)
 
+# pharmacy_herbaldrinksorder model
+@api_view(["POST","GET"])
+def herbaldrinksorder_date(request,id):
+    if request.method == 'POST':
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+        data=models.pharmacy_ordermodel.objects.filter(Q(pharm_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['pharmacyherbaldrinks']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            herb_pro = dumps(alldata)
+            
+            return Response(herb_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
 
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
 
 
 #  d_original_dashboard
@@ -9654,23 +11281,728 @@ def d_original_update_product(request,id,product_id):
     return Response(id,status=status.HTTP_200_OK)
 
 
-@api_view(["POST"])
-def order_date(request,id):
+#d_originalproductorder model
+@api_view(["POST","GET"])
+def productorder_date(request,id):
     if request.method == 'POST':
         from_date = request.POST['from_date']
         to_date = request.POST['to_date']
-        user = models.shop_ordermodel.objects.get(order_id=id)
-        print(user)
-        ordered_product = user.product_id
-        print(ordered_product)
+        data=models.dorigin_ordermodel.objects.filter(Q(d_id=id) & Q(status="delivered")& Q(delivery_date__range=[from_date, to_date])).values()
+        print(data,"data")
+        pro_data=[]
+        for item in data:
+            pro_id = item.get("product_id")
+            pro_data.append(pro_id)
+            
+        if pro_data:
+            # Query MongoDB collection
+            db = client['business']
+            collection = db['d_originalproduct']
+            alldata = []
+            for product_info in pro_data:
+                proget = collection.find_one({"product_id": product_info})
+                alldata.append(proget)
+                print(proget)
+            print(type(alldata))
+            do_pro = dumps(alldata)
+            
+            return Response(do_pro, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"error": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST) 
+
+
+
+@api_view(["GET"])
+def shopproducts_orderhistory(request, id):
+    if request.method == "GET":
+        data = models.shop_ordermodel.objects.filter(shop_id=id, payment_status=True)  
+        print(data)
+      
+        pro_data = []
+        for order in data:
+            print(order)
+            pro_id = order.product_id
+            pro_data.append(pro_id)
+        print(pro_data)
+    # mongodb collections
         db = client['business']
-        collection = db['shopelectronics']
-        product_data = collection.find_one({"product_id": ordered_product})
+    # electrical Collection
+        collection_electro = db['shopelectronics']
+        alldata_elect = []
+        for product_info in pro_data:
+            proget = collection_electro.find_one({"product_id": product_info})
+            alldata_elect.append(proget)
+            print(proget)
+    # Mobile Collection
+        collection_mobile = db['shopmobile']
+        alldata_mobile = []
+        for product_info in pro_data:
+            proget_mobile = collection_mobile.find_one({"product_id": product_info})
+            if proget_mobile:
+                alldata_mobile.append(proget_mobile)
+                print(proget_mobile)
 
-        data = models.shop_ordermodel.objects.filter(product_id=product_data, 
-                                              delivery_date__range=[from_date, to_date], 
-                                              status='delivered').values()
-        return Response((data),status=status.HTTP_200_OK)
-                                        
+    # furniture Collection
+        collection_fur = db['shopfurniture']
+        alldata_fur = []
+        for product_info in pro_data:
+            proget_fur = collection_fur.find_one({"product_id": product_info})
+            if proget_fur:
+                alldata_fur.append(proget_fur)
+                print(proget_fur)
+
+    # shopsports collection
+        collection_sport = db['shopsports']
+        alldata_sport = []
+        for product_info in pro_data:
+            proget_sport = collection_sport.find_one({"product_id": product_info})
+            if proget_sport:
+                alldata_sport.append(proget_sport)
+                print(proget_sport)  
+        
+    # shoptoys collection
+        collection_toys = db['shoptoys']
+        alldata_toys = []
+        for product_info in pro_data:
+            proget_toys = collection_toys.find_one({"product_id": product_info})
+            if proget_toys:
+                alldata_toys.append(proget_toys)
+                print(proget_toys)
+
+    # shopfashion collection
+        collection_fashion = db['shopfashion']
+        alldata_fashion = []
+        for product_info in pro_data:
+            proget_fashion = collection_fashion.find_one({"product_id": product_info})
+            if proget_fashion:
+                alldata_fashion.append(proget_fashion)
+                print(proget_fashion) 
+    # shopkitchen collection
+        collection_kitchen = db['shopkitchen']
+        alldata_kitchen = []
+        for product_info in pro_data:
+            proget_kitchen = collection_kitchen.find_one({"product_id": product_info})
+            if proget_kitchen:
+                alldata_kitchen.append(proget_kitchen)
+                print(proget_kitchen)  
+        
+
+    # shopgroceries collection
+        collection_groceries = db['shopgroceries']
+        alldata_groceries = []
+        for product_info in pro_data:
+            proget_groceries = collection_groceries.find_one({"product_id": product_info})
+            if proget_groceries:
+                alldata_groceries.append(proget_groceries)
+                print(proget_groceries)  
+    # shoppersonalcare collection
+        collection_personalcare = db['shoppersonalcare']
+        alldata_personalcare = []
+        for product_info in pro_data:
+            proget_personalcare = collection_personalcare.find_one({"product_id": product_info})
+            if proget_personalcare:
+                alldata_personalcare.append(proget_personalcare)
+                print(proget_personalcare)  
+
+    # shopbooks collection
+        collection_books = db['shopbooks']
+        alldata_books = []
+        for product_info in pro_data:
+            proget_books = collection_books.find_one({"product_id": product_info})
+            if proget_books:
+                alldata_books.append(proget_books)
+                print(proget_books)  
+
+    # shophealthcare collection
+        collection_healthcare = db['shophealthcare']
+        alldata_healthcare = []
+        for product_info in pro_data:
+            proget_healthcare = collection_healthcare.find_one({"product_id": product_info})
+            if proget_healthcare:
+                alldata_healthcare.append(proget_healthcare)
+                print(proget_healthcare)  
 
 
+    # shopautoaccessories collection
+        collection_autoaccessories = db['shopautoaccessories']
+        alldata_autoaccessories = []
+        for product_info in pro_data:
+            proget_autoaccessories = collection_autoaccessories.find_one({"product_id": product_info})
+            if proget_autoaccessories:
+                alldata_autoaccessories.append(proget_autoaccessories)
+                print(proget_autoaccessories)  
+
+    # shopappliances collection  
+        collection_appliances = db['shopappliances']
+        alldata_appliances = []
+        for product_info in pro_data:
+            proget_appliances = collection_appliances.find_one({"product_id": product_info})
+            if proget_appliances:
+                alldata_appliances.append(proget_appliances)
+                print(proget_appliances)  
+    
+    # shoppetsupplies collection  
+        collection_petsupplies = db['shoppetsupplies']
+        alldata_petsupplies = []
+        for product_info in pro_data:
+            proget_petsupplies = collection_petsupplies.find_one({"product_id": product_info})
+            if proget_petsupplies:
+                alldata_petsupplies.append(proget_petsupplies)
+                print(proget_petsupplies)  
+
+
+        # print(type(alldata_elect))
+        # print(type(alldata_mobile))
+        # print(type(alldata_fur))
+        # print(type(alldata_sport))
+        # print(type(alldata_toys))
+        # print(type(alldata_kitchen))
+        # print(type(alldata_autoaccessories))
+        # print(type(alldata_healthcare))
+        # print(type(alldata_books))
+        # print(type(alldata_personalcare))
+        # print(type(alldata_groceries))
+        # print(type(alldata_appliances))
+        # print(type(alldata_petsupplies))
+        # print(type(alldata_fashion))
+
+        shop_elect = dumps(alldata_elect)
+        shop_mobile = dumps(alldata_mobile)
+        shop_fur = dumps(alldata_fur)
+        shop_sport = dumps(alldata_sport)
+        shop_toys = dumps(alldata_toys)
+        shop_healthcare = dumps(alldata_healthcare)
+        shop_books = dumps(alldata_books)
+        shop_personalcare = dumps(alldata_personalcare)
+        shop_kitchen = dumps(alldata_kitchen)
+        shop_groceries = dumps(alldata_groceries)
+        shop_autoaccessories = dumps(alldata_autoaccessories)
+        shop_appliances = dumps(alldata_appliances)
+        shop_petsupplies = dumps(alldata_petsupplies)
+        shop_fashion = dumps(alldata_fashion)
+       
+     
+        return JsonResponse({"mobile_products": shop_mobile, "electro_products":shop_elect, "furniture_products":shop_fur,"sport_products":shop_sport, "toys_products":shop_toys, "health_products":shop_healthcare,"book_products":shop_books,"personalcare":shop_personalcare,"kitchen":shop_kitchen,"groceries":shop_groceries, "autoaccessories":shop_autoaccessories,"appliances":shop_appliances,"petsupplies":shop_petsupplies,"fashion":shop_fashion}, status=status.HTTP_200_OK)  
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+# jwellery products history
+@api_view(["GET"])
+def jewelproducts_orderhistory(request, id):
+    if request.method == "GET":
+        data = models.jewel_ordermodel.objects.filter(jewel_id=id, payment_status=True)  
+        print(data)
+      
+        pro_data = []
+        for order in data:
+            print(order)
+            pro_id = order.product_id
+            pro_data.append(pro_id)
+        print(pro_data)
+    # mongodb collections
+        db = client['business']
+    # jewellerygold Collection
+        collection_gold = db['jewelgold']
+        alldata_gold = []
+        for product_info in pro_data:
+            proget = collection_gold.find_one({"product_id": product_info})
+            alldata_gold.append(proget)
+            print(proget)
+
+    # jewellerysilver Collection
+        collection_silver = db['jewelsilver']
+        alldata_silver = []
+        for product_info in pro_data:
+            proget = collection_silver.find_one({"product_id": product_info})
+            alldata_silver.append(proget)
+            print(proget)
+
+        
+    
+        print(type(alldata_gold))
+        print(type(alldata_silver))
+     
+        jewel_gold = dumps(alldata_gold)
+        jewel_silver = dumps(alldata_silver)
+
+       
+     
+        return JsonResponse({"gold_products":jewel_gold , "silver_products":jewel_silver}, status=status.HTTP_200_OK)  
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+# food products history
+@api_view(["GET"])
+def foodproducts_orderhistory(request, id):
+    if request.method == "GET":
+        data = models.food_ordermodel.objects.filter(food_id=id, payment_status=True)  
+        print(data)
+      
+        pro_data = []
+        for order in data:
+            print(order)
+            pro_id = order.product_id
+            pro_data.append(pro_id)
+        print(pro_data)
+    # mongodb collections
+        db = client['business']
+    # foodtiffen Collection
+        collection_tiffen = db['foodtiffen']
+        alldata_tiffen = []
+        for product_info in pro_data:
+            proget = collection_tiffen.find_one({"product_id": product_info})
+            alldata_tiffen.append(proget)
+            print(proget)
+        print(type(alldata_tiffen))
+        food_tiffen = dumps(alldata_tiffen)
+
+
+    # foodmeals Collection
+        collection_meals = db['foodmeals']
+        alldata_meals = []
+        for product_info in pro_data:
+            proget = collection_meals.find_one({"product_id": product_info})
+            alldata_meals.append(proget)
+            print(proget)
+       
+        food_meals = dumps(alldata_meals)
+    # foodbiriyani Collection
+        collection_biriyani = db['foodbiriyani']
+        alldata_biriyani = []
+        for product_info in pro_data:
+            proget = collection_biriyani.find_one({"product_id": product_info})
+            alldata_biriyani.append(proget)
+            print(proget)
+       
+        food_biriyani = dumps(alldata_biriyani)
+
+
+    # foodchickenbiriyani Collection
+        collection_chickenbiriyani = db['foodchickenbiriyani']
+        alldata_chickenbiriyani = []
+        for product_info in pro_data:
+            proget = collection_chickenbiriyani.find_one({"product_id": product_info})
+            alldata_chickenbiriyani.append(proget)
+            print(proget)
+       
+        food_chickenbiriyani = dumps(alldata_chickenbiriyani)
+    # foodbeef Collection
+        collection_beef = db['foodbeef']
+        alldata_beef = []
+        for product_info in pro_data:
+            proget = collection_beef.find_one({"product_id": product_info})
+            alldata_beef.append(proget)
+            print(proget)
+       
+        food_beef = dumps(alldata_beef)
+
+    # foodchinese Collection
+        collection_chinese = db['foodchinese']
+        alldata_chinese = []
+        for product_info in pro_data:
+            proget = collection_chinese.find_one({"product_id": product_info})
+            alldata_chinese.append(proget)
+            print(proget)
+       
+        food_chinese = dumps(alldata_chinese)
+
+    # foodpizza Collection
+        collection_pizza = db['foodpizza']
+        alldata_pizza = []
+        for product_info in pro_data:
+            proget = collection_pizza.find_one({"product_id": product_info})
+            alldata_pizza.append(proget)
+            print(proget)
+       
+        food_pizza = dumps(alldata_pizza)
+
+
+    # foodteacoffe Collection
+        collection_teacoffe = db['foodteacoffe']
+        alldata_teacoffe = []
+        for product_info in pro_data:
+            proget = collection_teacoffe.find_one({"product_id": product_info})
+            alldata_teacoffe.append(proget)
+            print(proget)
+       
+        food_teacoffe = dumps(alldata_teacoffe)
+
+    # foodicecream Collection
+        collection_icecream = db['foodicecream']
+        alldata_icecream = []
+        for product_info in pro_data:
+            proget = collection_icecream.find_one({"product_id": product_info})
+            alldata_icecream.append(proget)
+            print(proget)
+       
+        food_icecream = dumps(alldata_icecream)
+
+    # foodfiredchicken Collection
+        collection_firedchicken = db['foodfiredchicken']
+        alldata_firedchicken = []
+        for product_info in pro_data:
+            proget = collection_firedchicken.find_one({"product_id": product_info})
+            alldata_firedchicken.append(proget)
+            print(proget)
+       
+        food_firedchicken = dumps(alldata_firedchicken)
+
+    # foodburger Collection
+        collection_burger = db['foodburger']
+        alldata_burger = []
+        for product_info in pro_data:
+            proget = collection_burger.find_one({"product_id": product_info})
+            alldata_burger.append(proget)
+            print(proget)
+       
+        food_burger = dumps(alldata_burger)
+    # foodcake Collection
+        collection_cake = db['foodcake']
+        alldata_cake = []
+        for product_info in pro_data:
+            proget = collection_cake.find_one({"product_id": product_info})
+            alldata_cake.append(proget)
+            print(proget)
+       
+        food_cake = dumps(alldata_cake)
+    # foodbakery Collection
+        collection_bakery = db['foodbakery']
+        alldata_bakery = []
+        for product_info in pro_data:
+            proget = collection_bakery.find_one({"product_id": product_info})
+            alldata_bakery.append(proget)
+            print(proget)
+       
+        food_bakery = dumps(alldata_bakery)
+     
+        return JsonResponse({"tiffen_products":food_tiffen , "meals_products":food_meals,"biriyani":food_biriyani, "chickenbiriyani":food_chickenbiriyani,"beef":food_beef,"chinese":food_chinese,"chinese":food_chinese,"pizza":food_pizza,"teacoffe":food_teacoffe,"icecream":food_icecream,"firedchicken":food_firedchicken,"burger":food_burger,"cake":food_cake,"bakery":food_bakery}, status=status.HTTP_200_OK)  
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# freshcutsroducts history
+@api_view(["GET"])
+def freshproducts_orderhistory(request, id):
+    if request.method == "GET":
+        data = models.fresh_ordermodel.objects.filter(fresh_id=id, payment_status=True)  
+        print(data)
+      
+        pro_data = []
+        for order in data:
+            print(order)
+            pro_id = order.product_id
+            pro_data.append(pro_id)
+        print(pro_data)
+    # mongodb collections
+        db = client['business']
+    # freshchicken Collection
+        collection_chicken = db['freshchicken']
+        alldata_chicken = []
+        for product_info in pro_data:
+            proget = collection_chicken.find_one({"product_id": product_info})
+            alldata_chicken.append(proget)
+            print(proget)
+
+        fresh_chicken = dumps(alldata_chicken)
+
+    # freshmutton Collection
+        collection_mutton = db['freshmutton']
+        alldata_mutton = []
+        for product_info in pro_data:
+            proget = collection_mutton.find_one({"product_id": product_info})
+            alldata_mutton.append(proget)
+            print(proget)
+
+        fresh_mutton = dumps(alldata_mutton)
+    # freshbeef Collection
+        collection_beef = db['freshbeef']
+        alldata_beef = []
+        for product_info in pro_data:
+            proget = collection_beef.find_one({"product_id": product_info})
+            alldata_beef.append(proget)
+            print(proget)
+
+        fresh_beef = dumps(alldata_beef)
+    # freshfishseafood Collection
+        collection_fishseafood = db['freshfishseafood']
+        alldata_fishseafood = []
+        for product_info in pro_data:
+            proget = collection_fishseafood.find_one({"product_id": product_info})
+            alldata_fishseafood.append(proget)
+            print(proget)
+
+        fresh_fishseafood = dumps(alldata_fishseafood)
+    
+    # freshdryfish Collection
+        collection_dryfish = db['freshdryfish']
+        alldata_dryfish = []
+        for product_info in pro_data:
+            proget = collection_dryfish.find_one({"product_id": product_info})
+            alldata_dryfish.append(proget)
+            print(proget)
+
+        fresh_dryfish = dumps(alldata_dryfish)
+    # freshprawns Collection
+        collection_prawns = db['freshprawns']
+        alldata_prawns = []
+        for product_info in pro_data:
+            proget = collection_prawns.find_one({"product_id": product_info})
+            alldata_prawns.append(proget)
+            print(proget)
+
+        fresh_prawns = dumps(alldata_prawns)
+    # freshegg Collection
+        collection_egg = db['freshegg']
+        alldata_egg = []
+        for product_info in pro_data:
+            proget = collection_egg.find_one({"product_id": product_info})
+            alldata_egg.append(proget)
+            print(proget)
+
+        fresh_egg = dumps(alldata_egg)
+
+    # freshpond Collection
+        collection_pond = db['freshpond']
+        alldata_pond = []
+        for product_info in pro_data:
+            proget = collection_pond.find_one({"product_id": product_info})
+            alldata_pond.append(proget)
+            print(proget)
+
+        fresh_pond = dumps(alldata_pond)
+    # freshmeatmasala Collection
+        collection_meatmasala = db['freshmeatmasala']
+        alldata_meatmasala = []
+        for product_info in pro_data:
+            proget = collection_meatmasala.find_one({"product_id": product_info})
+            alldata_meatmasala.append(proget)
+            print(proget)
+
+        fresh_meatmasala = dumps(alldata_meatmasala)
+    # freshcombo Collection
+        collection_combo = db['freshcombo']
+        alldata_combo = []
+        for product_info in pro_data:
+            proget = collection_combo.find_one({"product_id": product_info})
+            alldata_combo.append(proget)
+            print(proget)
+
+        fresh_combo = dumps(alldata_combo)
+    # freshchoppedveg Collection
+        collection_choppedveg = db['freshchoppedveg']
+        alldata_choppedveg = []
+        for product_info in pro_data:
+            proget = collection_choppedveg.find_one({"product_id": product_info})
+            alldata_choppedveg.append(proget)
+            print(proget)
+
+        fresh_choppedveg = dumps(alldata_choppedveg)
+        return JsonResponse({"chicken_products":fresh_chicken , "choppedveg":fresh_choppedveg,"combo":fresh_combo,"meatmasala":fresh_meatmasala,"pond":fresh_pond,"mutton":fresh_mutton,"egg":fresh_egg,"prawns":fresh_prawns,"dryfish":fresh_dryfish,"fishseafood":fresh_fishseafood,"beef":fresh_beef}, status=status.HTTP_200_OK)  
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+#  dmioproducts history
+@api_view(["GET"])
+def dmioproducts_orderhistory(request, id):
+    if request.method == "GET":
+        data = models.daily_ordermodel.objects.filter(dmio_id=id, payment_status=True)  
+        print(data)
+      
+        pro_data = []
+        for order in data:
+            print(order)
+            pro_id = order.product_id
+            pro_data.append(pro_id)
+        print(pro_data)
+    # mongodb collections
+        db = client['business']
+    # dmiogrocery Collection
+        collection_grocery = db['dmiogrocery']
+        alldata_grocery = []
+        for product_info in pro_data:
+            proget = collection_grocery.find_one({"product_id": product_info})
+            alldata_grocery.append(proget)
+            print(proget)
+        dmio_grocery = dumps(alldata_grocery)
+    # dmiomeat Collection
+        collection_meat = db['dmiomeat']
+        alldata_meat = []
+        for product_info in pro_data:
+            proget = collection_meat.find_one({"product_id": product_info})
+            alldata_meat.append(proget)
+            print(proget)
+
+        print(type(alldata_meat))
+        dmio_meat = dumps(alldata_meat)
+      
+    # dmiofish Collection
+        collection_fish = db['dmiofish']
+        alldata_fish = []
+        for product_info in pro_data:
+            proget = collection_fish.find_one({"product_id": product_info})
+            alldata_fish.append(proget)
+            print(proget)
+
+        print(type(alldata_fish))
+        dmio_fish = dumps(alldata_fish)
+
+    # dmioeggs Collection
+        collection_eggs = db['dmioeggs']
+        alldata_eggs = []
+        for product_info in pro_data:
+            proget = collection_eggs.find_one({"product_id": product_info})
+            alldata_eggs.append(proget)
+            print(proget)
+
+        print(type(alldata_eggs))
+        dmio_eggs = dumps(alldata_eggs)
+    
+    # dmiofruits Collection
+        collection_fruits = db['dmiofruits']
+        alldata_fruits = []
+        for product_info in pro_data:
+            proget = collection_fruits.find_one({"product_id": product_info})
+            alldata_fruits.append(proget)
+            print(proget)
+
+        print(type(alldata_fruits))
+        dmio_fruits = dumps(alldata_fruits)
+     
+    # dmiovegitables Collection
+        collection_vegitables = db['dmiovegitables']
+        alldata_vegitables = []
+        for product_info in pro_data:
+            proget = collection_vegitables.find_one({"product_id": product_info})
+            alldata_vegitables.append(proget)
+            print(proget)
+
+        print(type(alldata_vegitables))
+        dmio_vegitables = dumps(alldata_vegitables)
+    # dmiodairy Collection
+        collection_dairy = db['dmiodairy']
+        alldata_dairy = []
+        for product_info in pro_data:
+            proget = collection_dairy.find_one({"product_id": product_info})
+            alldata_dairy.append(proget)
+            print(proget)
+
+        print(type(alldata_dairy))
+        dmio_dairy = dumps(alldata_dairy)
+       
+     
+        return JsonResponse({"grocery":dmio_grocery , "meat":dmio_meat,"fish":dmio_fish,"eggs":dmio_eggs,"fruits":dmio_fruits,"vegitables":dmio_vegitables,"dairy":dmio_dairy}, status=status.HTTP_200_OK)  
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+#  pharmacyproducts history
+@api_view(["GET"])
+def pharmacyproducts_orderhistory(request, id):
+    if request.method == "GET":
+        data = models.pharmacy_ordermodel.objects.filter(pharm_id=id, payment_status=True)  
+        print(data)
+      
+        pro_data = []
+        for order in data:
+            print(order)
+            pro_id = order.product_id
+            pro_data.append(pro_id)
+        print(pro_data)
+    # mongodb collections
+        db = client['business']
+    # pharmallopthy Collection
+        collection_allo = db['pharmacyallopathic']
+        alldata_allo = []
+        for product_info in pro_data:
+            proget = collection_allo.find_one({"product_id": product_info})
+            alldata_allo.append(proget)
+            print(proget)
+
+        pharm_allo = dumps(alldata_allo)
+    # pharmayurvedic Collection
+        collection_ayur = db['pharmacyayurvedic']
+        alldata_ayur = []
+        for product_info in pro_data:
+            proget = collection_ayur.find_one({"product_id": product_info})
+            alldata_ayur.append(proget)
+            print(proget)
+
+        pharm_ayur = dumps(alldata_ayur)    
+    # pharmaysiddha Collection
+        collection_siddha = db['pharmacysiddha']
+        alldata_siddha = []
+        for product_info in pro_data:
+            proget = collection_siddha.find_one({"product_id": product_info})
+            alldata_siddha.append(proget)
+            print(proget)
+
+        pharm_siddha = dumps(alldata_siddha)
+    # pharmayunani Collection
+        collection_unani = db['pharmacyunani']
+        alldata_unani = []
+        for product_info in pro_data:
+            proget = collection_unani.find_one({"product_id": product_info})
+            alldata_unani.append(proget)
+            print(proget)
+
+        pharm_unani = dumps(alldata_unani)
+
+    # pharmayherbal Collection
+        collection_herbal = db['pharmacyherbaldrinks']
+        alldata_herbal = []
+        for product_info in pro_data:
+            proget = collection_herbal.find_one({"product_id": product_info})
+            alldata_herbal.append(proget)
+            print(proget)
+
+        pharm_herbal = dumps(alldata_herbal)
+
+     
+        return JsonResponse({"allo_products":pharm_allo , "ayur_products":pharm_ayur,"siddha":pharm_siddha,"unani":pharm_unani,"herbal_products":pharm_herbal}, status=status.HTTP_200_OK)  
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+# d_original products history
+@api_view(["GET"])
+def d_originalproducts_orderhistory(request, id):
+    if request.method == "GET":
+        data = models.dorigin_ordermodel.objects.filter(d_id=id, payment_status=True)  
+        print(data)
+      
+        pro_data = []
+        for order in data:
+            print(order)
+            pro_id = order.product_id
+            pro_data.append(pro_id)
+        print(pro_data)
+    # mongodb collections
+        db = client['business']
+    # d_originpro Collection
+        collection_d_originpro = db['d_originalproduct']
+        alldata_d_originpro = []
+        for product_info in pro_data:
+            proget = collection_d_originpro.find_one({"product_id": product_info})
+            alldata_d_originpro.append(proget)
+            print(proget)
+       
+     
+        d_origin_pro = dumps(alldata_d_originpro)
+     
+        return JsonResponse({"d_origin_pro":d_origin_pro}, status=status.HTTP_200_OK)  
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)

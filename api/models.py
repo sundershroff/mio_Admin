@@ -7,12 +7,13 @@ class Businessmodel(models.Model):
     uid = models.TextField()
     # Signup
     email = models.EmailField()
-    phone_number = models.TextField(null=True)
+    phone_number = models.TextField(null=True) 
     password = models.TextField()
     otp = models.IntegerField()
     user_otp = models.IntegerField(null=True)
     full_name=models.TextField()
     created_date=models.TextField(null=True)
+    
     profile_picture = models.TextField(null=True)
 
 class shoppingmodel(models.Model):
@@ -27,6 +28,7 @@ class shoppingmodel(models.Model):
     door_number = models.TextField(null=True)
     street_name = models.TextField(null=True)
     area = models.TextField(null=True)
+    hub = models.TextField(null=True)
     aadhar_number = models.TextField(null=True)
     pin_number = models.TextField()
     pin_your_location = models.TextField()
@@ -56,6 +58,7 @@ class jewellerymodel(models.Model):
     door_number = models.TextField(null=True)
     street_name = models.TextField(null=True)
     area = models.TextField(null=True)
+    hub = models.TextField(null=True)
     aadhar_number=models.TextField(null=True)
     pin_number = models.TextField()
     pin_your_location = models.TextField()
@@ -207,10 +210,10 @@ class d_originalmodel(models.Model):
     door_number = models.TextField(null=True)
     street_name = models.TextField(null=True)
     area = models.TextField(null=True)
+    hub = models.TextField(null=True)
     aadhar_number=models.TextField(null=True)
     pin_number = models.TextField()
     fssa = models.TextField()
-    region = models.TextField(null=True)
     pin_your_location = models.TextField()
     name = models.TextField()
     account_number = models.TextField()
@@ -524,7 +527,8 @@ class shop_ordermodel(models.Model):
     e_user_id = models.TextField(null=True)
     status = models.TextField(null=True)    
     delivery_date = models.DateField(null=True)
-
+    payment_status = models.TextField(null=True)
+    
     def save(self, *args, **kwargs):
         if self.status == 'delivered' and not self.delivery_date:
             self.delivery_date = timezone.now().date()
@@ -541,7 +545,12 @@ class jewel_ordermodel(models.Model):
     product_id = models.TextField(null=True)
     e_user_id = models.TextField(null=True)
     status = models.TextField(null=True)
-
+    delivery_date = models.DateField(null=True)
+    payment_status = models.TextField(null=True)
+    def save(self, *args, **kwargs):
+        if self.status == 'delivered' and not self.delivery_date:
+            self.delivery_date = timezone.now().date()
+        super().save(*args, **kwargs)
 
 class food_ordermodel(models.Model):
     order_id = models.TextField(null=True)
@@ -554,7 +563,12 @@ class food_ordermodel(models.Model):
     product_id = models.TextField(null=True)
     e_user_id = models.TextField(null=True)
     status = models.TextField(null=True)
-
+    delivery_date = models.DateField(null=True)
+    payment_status = models.TextField(null=True)
+    def save(self, *args, **kwargs):
+        if self.status == 'delivered' and not self.delivery_date:
+            self.delivery_date = timezone.now().date()
+        super().save(*args, **kwargs)
 class fresh_ordermodel(models.Model):
     order_id = models.TextField(null=True)
     track_id = models.TextField(null=True)
@@ -566,6 +580,12 @@ class fresh_ordermodel(models.Model):
     product_id = models.TextField(null=True)
     e_user_id = models.TextField(null=True)
     status = models.TextField(null=True)
+    delivery_date = models.DateField(null=True)
+    payment_status = models.TextField(null=True)
+    def save(self, *args, **kwargs):
+        if self.status == 'delivered' and not self.delivery_date:
+            self.delivery_date = timezone.now().date()
+        super().save(*args, **kwargs)
 
 class dorigin_ordermodel(models.Model):
     order_id = models.TextField(null=True)
@@ -578,6 +598,12 @@ class dorigin_ordermodel(models.Model):
     product_id = models.TextField(null=True)
     e_user_id = models.TextField(null=True)
     status = models.TextField(null=True)
+    delivery_date = models.DateField(null=True)
+    payment_status = models.TextField(null=True)
+    def save(self, *args, **kwargs):
+        if self.status == 'delivered' and not self.delivery_date:
+            self.delivery_date = timezone.now().date()
+        super().save(*args, **kwargs)
 
 class daily_ordermodel(models.Model):
     order_id = models.TextField(null=True)
@@ -590,7 +616,12 @@ class daily_ordermodel(models.Model):
     product_id = models.TextField(null=True)
     e_user_id = models.TextField(null=True)
     status = models.TextField(null=True)
-
+    delivery_date = models.DateField(null=True)
+    payment_status = models.TextField(null=True)
+    def save(self, *args, **kwargs):
+        if self.status == 'delivered' and not self.delivery_date:
+            self.delivery_date = timezone.now().date()
+        super().save(*args, **kwargs)
 class pharmacy_ordermodel(models.Model):
     order_id = models.TextField(null=True)
     track_id = models.TextField(null=True)
@@ -602,7 +633,12 @@ class pharmacy_ordermodel(models.Model):
     product_id = models.TextField(null=True)
     e_user_id = models.TextField(null=True)
     status = models.TextField(null=True)
-
+    delivery_date = models.DateField(null=True)
+    payment_status = models.TextField(null=True)
+    def save(self, *args, **kwargs):
+        if self.status == 'delivered' and not self.delivery_date:
+            self.delivery_date = timezone.now().date()
+        super().save(*args, **kwargs)
 
 # End_User Signin
 class End_Usermodel(models.Model):
@@ -614,3 +650,6 @@ class End_Usermodel(models.Model):
     password = models.TextField()
     full_name=models.TextField()
     created_date=models.TextField(null=True)
+    otp = models.IntegerField(null=True)
+    user_otp = models.IntegerField(null=True)
+    profile_picture = models.TextField(null=True)

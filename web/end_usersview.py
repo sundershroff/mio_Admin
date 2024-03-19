@@ -6,11 +6,13 @@ from rest_framework.response import Response
 from django.contrib import messages
 from collections import Counter
 
+
+
+
 def dashboard(request):
     return render(request,"")
 
 def shop(request):
-    
     return render(request,"index.html")
 
 def food(request):
