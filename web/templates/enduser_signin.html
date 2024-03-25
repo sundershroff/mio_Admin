@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<!-- Mirrored from colorlib.com/etc/lf/Login_v16/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 09 Mar 2024 08:29:06 GMT -->
+<head>
+<title>Login V16</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="icon" type="image/png" href="images/icons/favicon.ico" />
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'fonts/Linearicons-Free-v1.0.0/icon-font.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/animsition/css/animsition.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/loginutil.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/loginmain.css' %}">
+
+<meta name="robots" content="noindex, follow">
+<script nonce="7c56aa21-71b1-4f88-910b-1c21879772d4">try{(function(w,d){!function(du,dv,dw,dx){du[dw]=du[dw]||{};du[dw].executed=[];du.zaraz={deferred:[],listeners:[]};du.zaraz.q=[];du.zaraz._f=function(dy){return async function(){var dz=Array.prototype.slice.call(arguments);du.zaraz.q.push({m:dy,a:dz})}};for(const dA of["track","set","debug"])du.zaraz[dA]=du.zaraz._f(dA);du.zaraz.init=()=>{var dB=dv.getElementsByTagName(dx)[0],dC=dv.createElement(dx),dD=dv.getElementsByTagName("title")[0];dD&&(du[dw].t=dv.getElementsByTagName("title")[0].text);du[dw].x=Math.random();du[dw].w=du.screen.width;du[dw].h=du.screen.height;du[dw].j=du.innerHeight;du[dw].e=du.innerWidth;du[dw].l=du.location.href;du[dw].r=dv.referrer;du[dw].k=du.screen.colorDepth;du[dw].n=dv.characterSet;du[dw].o=(new Date).getTimezoneOffset();if(du.dataLayer)for(const dH of Object.entries(Object.entries(dataLayer).reduce(((dI,dJ)=>({...dI[1],...dJ[1]})),{})))zaraz.set(dH[0],dH[1],{scope:"page"});du[dw].q=[];for(;du.zaraz.q.length;){const dK=du.zaraz.q.shift();du[dw].q.push(dK)}dC.defer=!0;for(const dL of[localStorage,sessionStorage])Object.keys(dL||{}).filter((dN=>dN.startsWith("_zaraz_"))).forEach((dM=>{try{du[dw]["z_"+dM.slice(7)]=JSON.parse(dL.getItem(dM))}catch{du[dw]["z_"+dM.slice(7)]=dL.getItem(dM)}}));dC.referrerPolicy="origin";dC.src="../../../cdn-cgi/zaraz/sd0d9.js?z="+btoa(encodeURIComponent(JSON.stringify(du[dw])));dB.parentNode.insertBefore(dC,dB)};["complete","interactive"].includes(dv.readyState)?zaraz.init():du.addEventListener("DOMContentLoaded",zaraz.init)}(w,d,"zarazData","script");})(window,document)}catch(e){throw fetch("/cdn-cgi/zaraz/t"),e;};</script></head>
+<body>
+<div class="limiter">
+<div class="container-login100" style="background-color: #880381;">
+<div class="wrap-login100 p-t-30 p-b-50">
+<span class="login100-form-title p-b-41">
+<img src="{% static 'images/mioM.png' %}" alt="" style="height:35px;">login
+</span>
+<form class="login100-form validate-form p-b-33 p-t-5">
+<div class="wrap-input100 validate-input" data-validate="Enter username">
+<input class="input100" type="text" name="full_name" placeholder="User name">
+<span class="focus-input100" data-placeholder="&#xe82a;"></span>
+</div>
+<div class="wrap-input100 validate-input" data-validate="Enter password">
+<input class="input100" type="password" name="password" placeholder="Password">
+<span class="focus-input100" data-placeholder="&#xe80f;"></span>
+</div>
+<div class="container-login100-form-btn m-t-32">
+<button class="login100-form-btn" type="submit">
+Login
+</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<div id="dropDownSelect1"></div>
+
+
+<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+
+<script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
+
+<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+
+<script src="{% static 'vendor/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
+
+<script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
+
+<script src="{% static 'js/loginmain1.js' %}"></script>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-23581568-13');
+	</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v84a3a4012de94ce1a686ba8c167c359c1696973893317" integrity="sha512-euoFGowhlaLqXsPWQ48qSkBSCFs3DPRyiwVu3FjR96cMPx+Fr+gpWRhIafcHwqwCqWS42RZhIudOvEI+Ckf6MA==" data-cf-beacon='{"rayId":"8619b201fa357f7a","b":1,"version":"2024.2.4","token":"cd0b4b3a733644fc843ef0b185f98241"}' crossorigin="anonymous"></script>
+</body>
+
+<!-- Mirrored from colorlib.com/etc/lf/Login_v16/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 09 Mar 2024 08:29:17 GMT -->
+</html>

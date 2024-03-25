@@ -343,6 +343,7 @@ def shopping(request,id):
         'door_number' : request.POST['door_number'],
         'street_name' : request.POST['street_name'],
         'area' : request.POST['area'],
+        'hub' : request.POST['hub'],
         'pin_number': request.POST['pin_number'],
         'aadhar_number' : request.POST['aadhar_number'],
         'pin_your_location': request.POST['pin_your_location'],           
@@ -444,6 +445,7 @@ def shopping_update(request,id,shop_id):
         'door_number' : request.data['door_number'],
         'street_name' : request.data['street_name'],
         'area' : request.data['area'],
+        'hub' : request.data['hub'],
         'pin_number': request.data['pin_number'],
         'aadhar_number' : request.data['aadhar_number'],
         'pin_your_location': request.data['pin_your_location'],           
@@ -553,7 +555,7 @@ def shop_get_electronics(request,id):
     db = client['business']
     collection = db['shopelectronics']
     
-    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"False"})
+    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"True"})
     print(shop_product,"shop_product")
     shop_products_list = list(shop_product)
     print(shop_products_list)
@@ -569,7 +571,7 @@ def shop_get_my_electronics(request,id,product_id):
     db = client['business']
     collection = db['shopelectronics']
 
-    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"False","product_id":product_id})
+    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"True","product_id":product_id})
     shop_products_list = list(shop_product)
     print(shop_products_list)
     shop_products_json = dumps(shop_products_list)
@@ -732,9 +734,6 @@ def shop_get_mobile(request,id):
     # print(type(shop))
     # print(shop_product)
     return JsonResponse(shop_products_json, safe=False)
-
-
-
 
 
 @api_view(['GET'])
@@ -3082,6 +3081,7 @@ def jewellery(request,id):
         'door_number' : request.POST['door_number'],
         'street_name' : request.POST['street_name'],
         'area' : request.POST['area'],
+        'hub' : request.POST['hub'],
         'pin_your_location': request.POST['pin_your_location'],           
         'name': request.POST['name'],           
         'account_number':request.POST['account_number'],
@@ -3185,6 +3185,7 @@ def jewellery_update(request,id,jewel_id):
         'door_number': request.data['door_number'],
         'street_name': request.data['street_name'],
         'area': request.data['area'],
+        'hub' : request.data['hub'],
         'pin_number': request.data['pin_number'],
         'aadhar_number' : request.data['aadhar_number'],
         'pin_your_location': request.data['pin_your_location'],           
@@ -6285,7 +6286,7 @@ def business_freshcuts_data(request,id):
 def freshcuts_update(request,id,fresh_id):
     fs=FileSystemStorage
 
-    freshcuts_data = freshcutsmodel.objects.get(Business_id=id,fresh_id=fresh_id)
+    freshcuts_data = freshcutsmodel.objects.get(Business_id=id,fresh_id=fresh_id) 
     print(freshcuts_data)
     freshcuts_datas = freshcutsmodel.objects.filter(Business_id=id,fresh_id=fresh_id).values()[0]
 
@@ -6424,7 +6425,7 @@ def fresh_get_chicken(request,id):
     db = client['business']
     collection = db['freshchicken']
 
-    fresh_product = collection.find({"fresh_id": {"$regex":f"^{id}"},"status":"False"})
+    fresh_product = collection.find({"fresh_id": {"$regex":f"^{id}"},"status":"True"})
     fresh_product_list = list(fresh_product)
     print(fresh_product_list)
 
@@ -11008,7 +11009,7 @@ def d_original(request,id):
         'street_name' : request.POST['street_name'],
         'area' : request.POST['area'],        
         'fssa':request.POST['fssa'],
-        'region':request.POST['region'],
+        'hub':request.POST['hub'],
         'pin_your_location': request.POST['pin_your_location'],           
         'name': request.POST['name'],           
         'account_number':request.POST['account_number'],
@@ -11111,7 +11112,7 @@ def d_original_update(request,id,d_id):
         'street_name' : request.data['street_name'],
         'area' : request.data['area'],
         'fssa':request.data['fssa'],
-        'region':request.data['region'],
+        'hub':request.data['hub'],
         'pin_your_location': request.data['pin_your_location'],           
         'name': request.data['name'],           
         'account_number':request.data['account_number'],

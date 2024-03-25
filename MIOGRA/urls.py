@@ -19,7 +19,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from api import business_views
-from api import end_user_views
+from api import end_user_views,delivery_views
 from web import end_usersview
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -655,16 +655,34 @@ urlpatterns = [
     path('endresend_otp/<id>',end_user_views.endresend_otp),
     path('endforget_password/',end_user_views.endforget_password),
     path('end_profile_picture/<id>',end_user_views.end_profile_picture),
-# ..............web................
-    
-    path("shopproducts/shop",end_usersview.shop),
+    path('usershop_get_electronics/<id>',end_user_views.usershop_get_electronics),
+
+# ..............enduser_web................
+
+    path('enduser/usersignup',end_usersview.usersignup),
+    path('enduser/usersignin',end_usersview.usersignin),
+    path('enduser/end_user_otp/<id>',end_usersview.otp),
+    path('enduser/profile_picture/<id>',end_usersview.profile_picture),
+    path('enduser/dashboard/<id>',end_usersview.dashboard),
+    path("shopproducts/shop/<id>",end_usersview.shop),
+
     path("foodproducts/food",end_usersview.food),
     path("freshproducts/fresh_cuts",end_usersview.fresh_cuts),
     path("doriginalproducts/doriginal",end_usersview.doriginal),
     path("dailymioproducts/daily_mio",end_usersview.daily_mio),
-    path("jewelleryproducts/jewellery",end_usersview.jewellery),
+    path("jewelleryproducts/jewellery/<id>",end_usersview.jewellery),
     path("pharmacyproducts/pharmacy",end_usersview.pharmacy),
 
 
+# .........................delivery...........................
+
+    path('delivery_person_signup/',delivery_views.delivery_person_signup),
+    path('delivery_person_signin/',delivery_views.delivery_person_signin),
+    path('all_delivery_person_data/',delivery_views.all_delivery_person_data),
+    path('delivery_person_otp/<id>',delivery_views.delivery_person_otp),
+    path('deliveryresend_otp/<id>',delivery_views.deliveryresend_otp),
+    path('delivery_forget_password/',delivery_views.delivery_forget_password),
+    path('delivery_profile_picture/<id>',delivery_views.delivery_profile_picture),
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

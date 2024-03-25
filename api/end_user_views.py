@@ -9,7 +9,10 @@ from rest_framework.decorators import api_view
 from api import models
 import json
 import datetime
+from bson.json_util import dumps,loads
+from pymongo import MongoClient
 
+client = MongoClient('localhost', 27017)
 all_image_url = "http://127.0.0.1:3000/"
 x = datetime.datetime.now()
 
@@ -26,7 +29,7 @@ def end_user_signup(request):
                     'otp': end_user_extension.otp_generate(),
                     'full_name':request.data["full_name"],
                     'email': request.data["email"],
-                    'phone_number': request.data["phone_number"],
+                    'phone_number': request.data['phone_number'],
                     'password': request.data["password"],
                     'created_date':str(x.strftime("%d"))+" "+str(x.strftime("%B"))+","+str(x.year)
                 }
@@ -180,3 +183,22 @@ def end_profile_picture(request,id):
             return Response({"sserializer issue"}, status=status.HTTP_403_FORBIDDEN)
     except:
         return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(['GET'])
+def usershop_get_electronics(request,id):
+    db = client['business']
+    collection = db['shopelectronics']
+    
+    shop_product = collection.find({"shop_id": {"$regex":f"^{id}"},"status":"False"})
+    print(shop_product,"shop_product")
+    shop_products_list = list(shop_product)
+    print(shop_products_list)
+ 
+    shop_products_json = dumps(shop_products_list)
+    # shop=loads(shop_products_json)
+    # print(type(shop))
+    # print(shop_product)
+    return JsonResponse(shop_products_json, safe=False)

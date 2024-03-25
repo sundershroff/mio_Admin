@@ -453,7 +453,7 @@ textarea:focus {
 /*----------------------------------------*/
 /*Home One | Slider Background Image*/
 .bg-1, .bg-2, .bg-3 {
-	background-image: url(images/slider/1.jpg);
+	background-image: url('/staic/images/jwellery/jewellery_banner.png');
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: cover;
@@ -461,14 +461,14 @@ textarea:focus {
 	width: 100%;
 }
 .bg-2 {
-	background-image: url(images/slider/2.jpg);
+	background-image: url('static/images/food_slider/burger.png');
 }
 .bg-3 {
-	background-image: url(images/slider/3.jpg);
+	background-image: url('static/images/food_slider/meals.png');
 }
 /*Home Two | Slider Background Image*/
 .bg-4, .bg-5, .bg-6 {
-	background-image: url(images/slider/4.jpg);
+	background-image: url('static/images/slider/4.jpg');
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: cover;
@@ -476,14 +476,14 @@ textarea:focus {
 	width: 100%;fed700
 }
 .bg-5 {
-	background-image: url(images/slider/5.jpg);
+	background-image: url('static/images/slider/5.jpg');
 }
 .bg-6 {
-	background-image: url(images/slider/6.jpg);
+	background-image: url('static/images/slider/6.jpg');
 }
 /*Home Three | Slider Background Image*/
 .bg-7, .bg-8, .bg-9 {
-	background-image: url(images/slider/7.jpg);
+	background-image: url('static/images/slider/7.jpg');
 	background-repeat: no-repeat;fed700
 	background-position: center center;
 	background-size: cover;
@@ -2355,7 +2355,7 @@ textarea:focus {
 	display: block;
 	font-size: 25px;
 	font-weight: 500;
-	/* line-height: 18px; */
+	line-height: 18px;
 	text-transform: capitalize;
 }
 .product_desc .product_desc_info .product_name:hover {
@@ -2680,8 +2680,9 @@ textarea:focus {
 	transform: translate3d(0,0,0);
 }
 .li-banner > a > img, .single-banner > a > img {
-	width: 100%;
-}
+    width: 15%;
+    height: 15%;
+    border-radius: 50%;}
 /*----------------------------------------*/
 /*  2.6 Li's Laptop Features
 /*----------------------------------------*/

@@ -31,6 +31,7 @@ def validate_otp(id, otp):
         valid = True
     return valid
 
+
 def verify_user(email, password):
     Data = models.End_Usermodel.objects.get(email = email)
     data = end_user_serializers.EnduserSerializer(Data)
