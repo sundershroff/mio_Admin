@@ -203,6 +203,36 @@ def delivery_person_update(request,id):
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
 
 
+@api_view(['POST'])
+def delivery_yourissue(request,id):
+    try:
+       
+        userdata = models.Delivery_model.objects.get(uid=id)
+
+        print(request.POST)
+        fs = FileSystemStorage()
+        upload_issues = str(request.FILES['upload_issues']).replace(" ", "_")
+    
+        path = fs.save(f"api/delivery/{id}/upload_issues/"+upload_issues, request.FILES['upload_issues'])
+        uploadfull_path = all_image_url+fs.url(path)
+        print(uploadfull_path)
+        data={
+            'submit_issues' : request.data["submit_issues"],
+            'upload_issues' : uploadfull_path,
+            }
+        
+       
+        addressSerializer = delivery_serializers.delivery_yourissue_serializer(instance=userdata, data=data, partial=True)
+        if addressSerializer.is_valid():
+            addressSerializer.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        else:
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+    except:
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
 
 
 
@@ -219,11 +249,10 @@ def delivery_get_normalproduct_order(request, id,region,delivery_person_latitude
         orders = None
         for delivery_person in quick_delivery_persons:
             # distance_to_delivery_person = geodesic((delivery_person_latitude, delivery_person_longitude), (delivery_person.latitude, delivery_person.longitude)).kilometers
-            distance_to_delivery_person = geodesic(("8.293231018581114", "77.25760012886072"), ("8.27934420482011", "77.26528197561439")).kilometers
-            print(distance_to_delivery_person)
+            distance_to_delivery_person = geodesic(("8.293231018581114", "77.45760012886072"), ("8.30934420482011", "77.67528197561439")).kilometers
+            print(int(distance_to_delivery_person))
             orders = models.Product_Ordermodel.objects.filter(
                 delivery_type='Quick',
-               
                 status='accepted'
             )
             if orders:
@@ -262,6 +291,7 @@ def delivery_product_order_status_accept(request,id,product_id,order_id):
         if product_orders.exists():
             for product_order in product_orders:
                 # Update the status field with the new value
+
                 product_order.status = "order-confirmed"
                 product_order.save()
             return Response("Status updated successfully", status=status.HTTP_200_OK)
@@ -271,7 +301,24 @@ def delivery_product_order_status_accept(request,id,product_id,order_id):
         return Response("Product order not found", status=status.HTTP_404_NOT_FOUND)
 
 
-
+@api_view(["POST"])
+def delivery_product_order_status_reject(request,id,product_id,order_id):
+    try:
+        delivery = models.Delivery_model.objects.get(uid=id)
+        
+        product_orders = models.Product_Ordermodel.objects.filter(product_id=product_id, order_id=order_id)
+        print(product_orders)
+        if product_orders.exists():
+            for product_order in product_orders:
+                # Update the status field with the new value
+                product_order.status = "order-rejected"
+                product_order.save()
+            
+            return Response("Status updated successfully", status=status.HTTP_200_OK)
+        else:
+            return Response("Product order not found", status=status.HTTP_404_NOT_FOUND)
+    except:
+        return Response("Product order not found", status=status.HTTP_404_NOT_FOUND)
 
 
 # from geopy.distance import geodesic

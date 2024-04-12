@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'web',
     'mio_admin',
     
+    
 
 ]
 

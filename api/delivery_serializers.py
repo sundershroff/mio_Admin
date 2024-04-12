@@ -24,6 +24,8 @@ class DeliverypersonSerializer(serializers.Serializer):
     approve_status = serializers.CharField()
     today_earnings = serializers.CharField()
     region =serializers.CharField()
+    submit_issues = serializers.CharField()
+    upload_issues = serializers.CharField()
        
 
 
@@ -119,7 +121,16 @@ class deliveryperson_edit_serializer(serializers.Serializer):
         instance.save()
         return instance
 
-    
+class delivery_yourissue_serializer(serializers.Serializer):
+    submit_issues = serializers.CharField()
+    upload_issues = serializers.CharField()
+    def update(self,instance,data):
+        instance.submit_issues = data["submit_issues"]
+        instance.upload_issues = data['upload_issues']
+        instance.save()
+        return instance
+
+        
 
 
 

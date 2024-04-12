@@ -272,7 +272,7 @@ urlpatterns = [
     path('delivery_person_update/<id>',delivery_views.delivery_person_update),
     path('delivery_product_order_status_accept/<id>/<product_id>/<order_id>/',delivery_views.delivery_product_order_status_accept),
     path('delivery_get_normalproduct_order/<id>/<str:region>/<str:delivery_person_latitude>/<str:delivery_person_longitude>/',delivery_views.delivery_get_normalproduct_order),
-
+    path('delivery_yourissue/<id>/',delivery_views.delivery_yourissue),
     # path('today_earnings/<id>',delivery_views.today_earnings),
 
 

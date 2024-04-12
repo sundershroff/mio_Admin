@@ -101,7 +101,7 @@ class shopping_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -130,7 +130,7 @@ class shopping_serializer(serializers.Serializer):
             door_number =data['door_number'],
             street_name = data['street_name'],
             area = data['area'],
-            region = data['region'],
+            # region = data['region'],
             pin_number = data['pin_number'],
             aadhar_number = data['aadhar_number'],
             pin_your_location = data['pin_your_location'],
@@ -189,7 +189,7 @@ class shopping_edit_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -215,7 +215,7 @@ class shopping_edit_serializer(serializers.Serializer):
         instance.door_number = data['door_number']
         instance.street_name = data['street_name']
         instance.area = data['area']
-        instance.region = data['region']
+        # instance.region = data['region']
         instance.pin_number = data['pin_number']
         instance.aadhar_number = data['aadhar_number']
         instance.pin_your_location = data['pin_your_location']
@@ -274,7 +274,7 @@ class jewellery_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -305,7 +305,7 @@ class jewellery_serializer(serializers.Serializer):
             door_number =data['door_number'],
             street_name = data['street_name'],
             area = data['area'],
-            region = data['region'],
+            # region = data['region'],
             pin_number = data['pin_number'],
             aadhar_number = data['aadhar_number'],
             pin_your_location = data['pin_your_location'],
@@ -362,7 +362,7 @@ class jewellery_edit_serializer(serializers.Serializer):
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     pin_your_location = serializers.CharField()      
@@ -388,7 +388,7 @@ class jewellery_edit_serializer(serializers.Serializer):
         instance.door_number = data['door_number']
         instance.street_name = data['street_name']
         instance.area = data['area']
-        instance.region = data['region']
+        # instance.region = data['region']
         instance.pin_number = data['pin_number']
         instance.aadhar_number = data['aadhar_number']
         instance.pin_your_location = data['pin_your_location']
@@ -451,7 +451,7 @@ class food_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -481,7 +481,7 @@ class food_serializer(serializers.Serializer):
             street_name = data['street_name'],
             area = data['area'],
             fssa = data['fssa'],
-            region = data['region'],
+            # region = data['region'],
             pin_your_location = data['pin_your_location'],
             name = data['name'],
             account_number = data['account_number'],
@@ -540,7 +540,7 @@ class food_edit_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -567,7 +567,7 @@ class food_edit_serializer(serializers.Serializer):
         instance.street_name = data['street_name']
         instance.area = data['area']
         instance.fssa = data['fssa']
-        instance.region = data['region']
+        # instance.region = data['region']
         instance.pin_your_location = data['pin_your_location']
         instance.name = data['name']
         instance.account_number = data['account_number']
@@ -614,7 +614,7 @@ class freshcuts_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -644,7 +644,7 @@ class freshcuts_serializer(serializers.Serializer):
             street_name = data['street_name'],
             area = data['area'],
             fssa = data['fssa'],
-            region = data['region'],
+            # region = data['region'],
             pin_your_location = data['pin_your_location'],
             name = data['name'],
             account_number = data['account_number'],
@@ -703,7 +703,7 @@ class freshcuts_edit_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -730,7 +730,7 @@ class freshcuts_edit_serializer(serializers.Serializer):
         instance.street_name = data['street_name']
         instance.area = data['area']
         instance.fssa = data['fssa']
-        instance.region = data['region']
+        # instance.region = data['region']
         instance.pin_your_location = data['pin_your_location']
         instance.name = data['name']
         instance.account_number = data['account_number']
@@ -774,7 +774,7 @@ class dailymio_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -804,7 +804,7 @@ class dailymio_serializer(serializers.Serializer):
             street_name = data['street_name'],
             area = data['area'],
             fssa = data['fssa'],
-            region = data['region'],
+            # region = data['region'],
             pin_your_location = data['pin_your_location'],
             name = data['name'],
             account_number = data['account_number'],
@@ -863,7 +863,7 @@ class dailymio_edit_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -890,7 +890,7 @@ class dailymio_edit_serializer(serializers.Serializer):
         instance.street_name = data['street_name']
         instance.area = data['area']
         instance.fssa = data['fssa']
-        instance.region = data['region']
+        # instance.region = data['region']
         instance.pin_your_location = data['pin_your_location']
         instance.name = data['name']
         instance.account_number = data['account_number']
@@ -931,7 +931,7 @@ class pharmacy_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -961,7 +961,7 @@ class pharmacy_serializer(serializers.Serializer):
             street_name = data['street_name'],
             area = data['area'],
             fssa = data['fssa'],
-            region = data['region'],
+            # region = data['region'],
             pin_your_location = data['pin_your_location'],
             name = data['name'],
             account_number = data['account_number'],
@@ -1019,7 +1019,7 @@ class pharmacy_edit_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -1046,7 +1046,7 @@ class pharmacy_edit_serializer(serializers.Serializer):
         instance.street_name = data['street_name']
         instance.area = data['area']
         instance.fssa = data['fssa']
-        instance.region = data['region']
+        # instance.region = data['region']
         instance.pin_your_location = data['pin_your_location']
         instance.name = data['name']
         instance.account_number = data['account_number']
@@ -1086,7 +1086,7 @@ class d_original_serializer(serializers.Serializer):
     pin_number = serializers.CharField()
     aadhar_number = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     door_number = serializers.CharField()
     street_name = serializers.CharField()
     area = serializers.CharField()
@@ -1116,7 +1116,7 @@ class d_original_serializer(serializers.Serializer):
             pin_number = data['pin_number'],
             aadhar_number = data['aadhar_number'],
             fssa = data['fssa'],
-            region = data['region'],
+            # region = data['region'],
             door_number =data['door_number'],
             street_name = data['street_name'],
             area = data['area'],
@@ -1177,7 +1177,7 @@ class d_original_edit_serializer(serializers.Serializer):
     street_name = serializers.CharField()
     area = serializers.CharField()
     fssa = serializers.CharField()
-    region = serializers.CharField()
+    # region = serializers.CharField()
     pin_your_location = serializers.CharField()      
     name = serializers.CharField()
     account_number = serializers.CharField()
@@ -1203,7 +1203,7 @@ class d_original_edit_serializer(serializers.Serializer):
         instance.street_name = data['street_name']
         instance.area = data['area']
         instance.fssa = data['fssa']
-        instance.region = data['region']
+        # instance.region = data['region']
         instance.pin_your_location = data['pin_your_location']
         instance.name = data['name']
         instance.account_number = data['account_number']

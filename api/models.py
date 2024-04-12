@@ -380,6 +380,12 @@ class Delivery_model(models.Model):
     approve_status = models.TextField(null=True)
     today_earnings = models.TextField(null=True)
     region = models.TextField(null=True)
+    submit_issues = models.TextField(null=True)
+    upload_issues = models.TextField(null=True)
+
+
+
+
 
 
 # order table
@@ -414,6 +420,7 @@ class Product_Ordermodel(models.Model):
     payment_status = models.TextField(null=True)
     delivery_type= models.TextField(null=True)
     category_data = models.TextField(null=True)
+    payment_type = models.TextField(null=True)
 
     def save(self, *args, **kwargs):
         if self.status == 'delivered' and not self.delivery_date:
