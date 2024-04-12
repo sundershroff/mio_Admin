@@ -1,0 +1,445 @@
+{% include "admin_header.html" %}
+<!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+          <div id="theme-settings" class="settings-panel">
+            <i class="settings-close mdi mdi-close"></i>
+            <p class="settings-heading">SIDEBAR SKINS</p>
+            <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+              <div class="img-ss rounded-circle bg-light border me-3"></div>Light
+            </div>
+            <div class="sidebar-bg-options" id="sidebar-dark-theme">
+              <div class="img-ss rounded-circle bg-dark border me-3"></div>Dark
+            </div>
+            <p class="settings-heading mt-2">HEADER SKINS</p>
+            <div class="color-tiles mx-0 px-4">
+              <div class="tiles success"></div>
+              <div class="tiles warning"></div>
+              <div class="tiles danger"></div>
+              <div class="tiles info"></div>
+              <div class="tiles dark"></div>
+              <div class="tiles default"></div>
+            </div>
+          </div>
+          <div id="layout-settings" class="settings-panel">
+            <i class="settings-close mdi mdi-close"></i>
+            <div class="d-flex align-items-center justify-content-between border-bottom">
+              <p class="settings-heading font-weight-bold border-top-0 mb-3 ps-3 pt-0 border-bottom-0 pb-0">Template Demos </p>
+            </div>
+            <div class="demo-screen-wrapper">
+              <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_1/index.html" target="_blank" class="demo-thumb-image" id="theme-light-switch">
+                <img src="../assets/images/screenshots/vertical-light.jpg" alt="demo image">
+              </a>
+              <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_2/index.html" target="_blank" class="demo-thumb-image">
+                <img src="../assets/images/screenshots/vertical-dark.jpg" alt="demo image">
+              </a>
+              <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_3/index.html" target="_blank" class="demo-thumb-image" id="theme-dark-switch">
+                <img src="../assets/images/screenshots/horizontal-light.jpg" alt="demo image">
+              </a>
+              <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_4/index.html" target="_blank" class="demo-thumb-image">
+                <img src="../assets/images/screenshots/horizontal-dark.jpg" alt="demo image">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div id="right-sidebar" class="settings-panel">
+          <i class="settings-close mdi mdi-close"></i>
+          <ul class="nav nav-tabs" id="setting-panel" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="todo-tab" data-bs-toggle="tab" href="#todo-section" role="tab" aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="chats-tab" data-bs-toggle="tab" href="#chats-section" role="tab" aria-controls="chats-section">CHATS</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="setting-content">
+            <div class="tab-pane fade show active scroll-wrapper" id="todo-section" role="tabpanel" aria-labelledby="todo-section">
+              <div class="add-items d-flex px-3 mb-0">
+                <form class="form w-100">
+                  <div class="form-group d-flex">
+                    <input type="text" class="form-control todo-list-input" placeholder="Add To-do">
+                    <button type="submit" class="add btn btn-primary todo-list-add-btn" id="add-task">Add</button>
+                  </div>
+                </form>
+              </div>
+              <div class="list-wrapper px-3">
+                <ul class="d-flex flex-column-reverse todo-list">
+                  <li>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox"> Team review meeting at 3.00 PM </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                  <li>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox"> Prepare for presentation </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                  <li>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox"> Resolve all the low priority tickets due today </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                  <li class="completed">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox" checked> Schedule meeting for next week </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                  <li class="completed">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox" checked> Project review </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                </ul>
+              </div>
+              <div class="events py-4 border-bottom px-3">
+                <div class="wrapper d-flex mb-2">
+                  <i class="mdi mdi-circle-outline text-primary me-2"></i>
+                  <span>Feb 11 2018</span>
+                </div>
+                <p class="mb-0 font-weight-thin text-gray">Creating component page</p>
+                <p class="text-gray mb-0">build a js based app</p>
+              </div>
+              <div class="events pt-4 px-3">
+                <div class="wrapper d-flex mb-2">
+                  <i class="mdi mdi-circle-outline text-primary me-2"></i>
+                  <span>Feb 7 2018</span>
+                </div>
+                <p class="mb-0 font-weight-thin text-gray">Meeting with Alisa</p>
+                <p class="text-gray mb-0 ">Call Sarah Graves</p>
+              </div>
+            </div>
+            <!-- To do section tab ends -->
+            <div class="tab-pane fade" id="chats-section" role="tabpanel" aria-labelledby="chats-section">
+              <div class="d-flex align-items-center justify-content-between border-bottom">
+                <p class="settings-heading border-top-0 mb-3 ps-3 pt-0 border-bottom-0 pb-0">Friends</p>
+                <small class="settings-heading border-top-0 mb-3 pt-0 border-bottom-0 pb-0 pe-3 font-weight-normal">See All</small>
+              </div>
+              <ul class="chat-list">
+                <li class="list active">
+                  <div class="profile"><img src="images/faces/face1.html" alt="image"><span class="online"></span></div>
+                  <div class="info">
+                    <p>Thomas Douglas</p>
+                    <p>Available</p>
+                  </div>
+                  <small class="text-muted my-auto">19 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face2.html" alt="image"><span class="offline"></span></div>
+                  <div class="info">
+                    <div class="wrapper d-flex">
+                      <p>Catherine</p>
+                    </div>
+                    <p>Away</p>
+                  </div>
+                  <div class="badge badge-success badge-pill my-auto mx-2">4</div>
+                  <small class="text-muted my-auto">23 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face3.html" alt="image"><span class="online"></span></div>
+                  <div class="info">
+                    <p>Daniel Russell</p>
+                    <p>Available</p>
+                  </div>
+                  <small class="text-muted my-auto">14 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face4.html" alt="image"><span class="offline"></span></div>
+                  <div class="info">
+                    <p>James Richardson</p>
+                    <p>Away</p>
+                  </div>
+                  <small class="text-muted my-auto">2 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face5.html" alt="image"><span class="online"></span></div>
+                  <div class="info">
+                    <p>Madeline Kennedy</p>
+                    <p>Available</p>
+                  </div>
+                  <small class="text-muted my-auto">5 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face6.html" alt="image"><span class="online"></span></div>
+                  <div class="info">
+                    <p>Sarah Graves</p>
+                    <p>Available</p>
+                  </div>
+                  <small class="text-muted my-auto">47 min</small>
+                </li>
+              </ul>
+            </div>
+            <!-- chat tab ends -->
+          </div>
+        </div>
+        <!-- partial -->
+        {% include "admin_sidbar.html" %}
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                  <i class="mdi mdi-home"></i>
+                </span> Home
+              </h3>
+              <!-- <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">
+                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                  </li>
+                </ul>
+              </nav> -->
+            </div>
+<div class="row">
+<!-- Delivery live trackibg -->
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title text-white">Todo</h4>
+				<div class="row">
+					<div class="col-md-4 py-2">
+						<div class="deliviry man widget px-2 py-2">
+							<h2>Total Delivery Man</h2>
+							<p style="
+							font-size: 30px;
+							font-weight: 700;
+						">100</p>
+						</div>
+					</div>
+					<div class="col-md-4 py-2">
+						<div class="deliviry man widget2 px-2 py-2">
+							<h2>Total Delivery Man</h2>
+							<p style="
+							font-size: 30px;
+							font-weight: 700;
+						">50</p>
+						</div>
+					</div>
+					<div class="col-md-4 py-2">
+						<div class="deliviry man widget3 px-2 py-2">
+							<h2>Total Delivery Man</h2>
+							<p style="
+							font-size: 30px;
+							font-weight: 700;
+						">50</p>
+						</div>
+					</div>
+
+				</div>
+                <div class="add-items">
+                  <h2>Delivery Status</h2>
+                  <input type="text" class="form-control todo-list-input" placeholder="District"><br>
+                  <input type="text" class="form-control todo-list-input" placeholder="Local Area"><br>
+                  <button class="add btn btn-gradient-primary font-weight-bold todo-list-add-btn" style="margin-left: 0px;" id="add-task">Search</button>
+                </div>
+                <div class="list-wrapper">
+                  <ul class="d-flex flex-column todo-list todo-list-custom" style="row-gap: 5px;">
+                    <span style="color:red"><span style="height: 12px;width: 12px;background-color: red;border-radius: 50%;display: inline-block;"></span >&nbsp;&nbsp;On-Delivery</span>
+                    <li class="delivery_boy_list px-2 py-2">
+                        <div class="row" style="
+                        align-items: ;
+                        width: -webkit-fill-available;
+                        text-align: center;
+                    ">
+                            <div class="col-lg-6 col-md-12">
+                              <div class="row" style="align-items: center;justify-content: center;">
+                                <div class="col-lg-2">1</div>
+                                <div class="col-lg-10">
+                                  <a href="/delivery_user_detail.html" style="text-decoration: none;">
+                                  <div class="row">
+                                <p style="display: flex;justify-content: center;"><span class="key">Name:</span><span class="value">A.Sunderavel</span></p>
+                              </div>
+                              <div class="row">
+                                <p style="display: flex;justify-content: center;"><span class="key">Id:</span><span class="value">12WES23</span></p>
+                              </div>
+                            </a>
+                              </div>                          
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12"> 
+                                  <div class="row" style="row-gap: 15px;align-items: center;justify-content: center;height: 100%;">
+                                    <div class="col-lg-5 col-md-12"><img src="./assets/images/siren.png" style="width: 35px;opacity: 50%;" alt=""></div>
+                                        <div class="col-lg-5 col-md-12" style="text-align: center;">
+                                          <div class="row" style="justify-content: center;">
+                                          ₹2000
+                                        </div>
+                                        </div>
+                                        <div class="col-lg-2 col-md-12">
+                                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" 
+                                          style="border: 0px solid white;background-color: transparent;color: black;/* margin-left: -20px; */display: contents;"> <i class="fa fa-ellipsis-v" style="font-size: 20px;"></i></button>                   
+                                          </div>
+                          
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                     
+                    </li>
+                    <span style="color:green"><span style="height: 12px;width: 12px;background-color: green;border-radius: 50%;display: inline-block;"></span >&nbsp;&nbsp;Free</span>
+                    <li class="delivery_boy_list px-2 py-2">
+                      <div class="row" style="
+                      align-items: ;
+                      width: -webkit-fill-available;
+                      text-align: center;
+                  ">
+                          <div class="col-lg-6 col-md-12">
+                            <div class="row" style="align-items: center;justify-content: center;">
+                              <div class="col-lg-2">2</div>
+                              <div class="col-lg-10">
+                                <div class="row">
+                              <p style="display: flex;justify-content: center;"><span class="key">Name:</span><span class="value">A.Sunderavel</span></p>
+                            </div>
+                            <div class="row">
+                              <p style="display: flex;justify-content: center;"><span class="key">Id:</span><span class="value">12WES23</span></p>
+                            </div>
+                            </div>                          
+                              </div>
+                          </div>
+                          <div class="col-lg-6 col-md-12"> 
+                                <div class="row" style="row-gap: 15px;align-items: center;justify-content: center;height: 100%;">
+                                  <div class="col-lg-5 col-md-12"><img src="./assets/images/siren1.png" style="width: 35px;" alt=""></div>
+                                      <div class="col-lg-5 col-md-12" style="text-align: center;">
+                                        <div class="row" style="justify-content: center;">
+                                        ₹44000
+                                      </div>
+                                      </div>
+                                      <div class="col-lg-2 col-md-12">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" 
+                                        style="border: 0px solid white;background-color: transparent;color: black;/* margin-left: -20px; */display: contents;"> <i class="fa fa-ellipsis-v" style="font-size: 20px;"></i></button>                   
+                                    </div>
+                        
+                              </div>
+                              
+                              
+                          </div>
+                      </div>
+                   
+                  </li>
+                  <span style="color:gray"><span style="height: 12px;width: 12px;background-color: gray;border-radius: 50%;display: inline-block;"></span >&nbsp;&nbsp;Offline</span>
+                  <li class="delivery_boy_list px-2 py-2" style="color: gray;">
+                    <div class="row" style="
+                    align-items: ;
+                    width: -webkit-fill-available;
+                    text-align: center;
+                ">
+                        <div class="col-lg-6 col-md-12">
+                          <div class="row" style="align-items: center;justify-content: center;">
+                            <div class="col-lg-2">3</div>
+                            <div class="col-lg-10">
+                              <div class="row">
+                            <p style="display: flex;justify-content: center;"><span class="key">Name:</span><span class="value">A.Sunderavel</span></p>
+                          </div>
+                          <div class="row">
+                            <p style="display: flex;justify-content: center;"><span class="key">Id:</span><span class="value">12WES23</span></p>
+                          </div>
+                          </div>                          
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12"> 
+                              <div class="row" style="row-gap: 15px;align-items: center;justify-content: center;height: 100%;">
+                                <div class="col-lg-5 col-md-12"><img src="./assets/images/siren.png" style="width: 35px;opacity: 50%;" alt=""></div>
+                                    <div class="col-lg-5 col-md-12" style="text-align: center;">
+                                      <div class="row" style="justify-content: center;">
+                                      ₹4000
+                                    </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-12">
+                                      <i class="fa fa-ellipsis-v" style="font-size: 20px;"></i>
+                                    </div>
+                      
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                 
+                </li>
+
+                  </ul>
+                  <!-- The Modal -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <!-- <div class="modal-header">
+        <h4 class="modal-title">Modal Heading</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div> -->
+
+      <!-- Modal body -->
+      <div class="modal-body" style="background-color: whitesmoke;">
+        <ul class="d-flex flex-column todo-list todo-list-custom">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal1"  style="border: 1px solid transparent;background-color: transparent;color: black;"><li class="delivery_boy_list px-2 py-2" style="text-align: center;border-radius: 10px 0 10px 0">Assign Another Partner</li></button>
+        </ul>
+      </div>
+
+    
+
+    </div>
+  </div>
+</div>
+<!-- END NODEL -->
+
+                      <!-- The Modal -->
+<div class="modal" id="myModal1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title"><button type="button" data-bs-toggle="modal" data-bs-target="#myModal" style="border: 1px solid transparent;">< Back</button></h4>
+        <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <ul class="d-flex flex-column todo-list todo-list-custom" style="list-style: none;">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal1"  style="border: 1px solid transparent;background-color: transparent;color: black;"><li class="delivery_boy_list px-2 py-2" style="text-align: center;">A.Sunder</li></button>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal1"  style="border: 1px solid transparent;background-color: transparent;color: black;"><li class="delivery_boy_list px-2 py-2" style="text-align: center;">S.Abijith</li></button>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal1"  style="border: 1px solid transparent;background-color: transparent;color: black;"><li class="delivery_boy_list px-2 py-2" style="text-align: center;">R.Remya</li></button>
+
+        </ul>
+      </div>
+
+    
+   
+
+    </div>
+  </div>
+</div>
+<!-- END MODEL  -->
+
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial -->
+        </div>
+       
+       
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+</div>
+          </div>
+{% include "admin_footer.html" %}
+        </div>
+      </div>
+    </div>
+    {% include "script.html" %}
+  </body>
+
+<!-- Mirrored from demo.bootstrapdash.com/purple/jquery/template/demo_1/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 05 Feb 2024 12:21:10 GMT -->
+</html>

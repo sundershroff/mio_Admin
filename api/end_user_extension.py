@@ -68,3 +68,13 @@ def get_user_id(email):
     data = end_user_serializers.EnduserSerializer(Data)
     print(data.data["uid"])
     return data.data['uid']
+
+
+
+def order_id_generate():
+    id = str("".join(random.choices(string.ascii_uppercase+string.digits,k=11)))
+    return id
+
+def track_id_generate():
+    id = str("".join(random.choices(string.ascii_uppercase+string.digits,k=11)))
+    return id

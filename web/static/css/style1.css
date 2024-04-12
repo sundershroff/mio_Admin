@@ -2318,6 +2318,8 @@ textarea:focus {
     font-size: 21px;
     font-family: 'FontAwesome';
     letter-spacing: 1px;
+    text-decoration: none;
+    padding: 8px;
 }
 
 .signup:hover{
@@ -2448,8 +2450,23 @@ textarea:focus {
 	border: 1px solid #e1e1e1;
 	transition: all 0.3s ease-in-out;
 	width: 120px;
+	list-style: none;
 }
 .add-actions-link li:hover {
+	background: #810081;
+	border-color: #810081;
+	color: white;
+}
+.add-cart-button{
+	float: left;
+	margin: 0;
+	background: #eef0f1;
+	border: 1px solid #e1e1e1;
+	transition: all 0.3s ease-in-out;
+	width: 120px;
+	color: black;
+}
+.add-cart-button:hover {
 	background: #810081;
 	border-color: #810081;
 	color: white;

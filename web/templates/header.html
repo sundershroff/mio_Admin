@@ -1,56 +1,6 @@
-<!-- index28:48-->
 {% load static %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Miogra</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/icon.jpeg' %}">
-    <!-- Material Design Iconic Font-V2.2.0 -->
-    <link rel="stylesheet" href="{% static 'css/material-design-iconic-font.min.css' %}">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css'%}">
-    <!-- Font Awesome Stars-->
-    <link rel="stylesheet" href="{% static 'css/fontawesome-stars.css' %}">
-    <!-- Meanmenu CSS -->
-    <link rel="stylesheet" href="{% static 'css/meanmenu.css' %}">
-    <!-- owl carousel CSS -->
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-    <!-- Slick Carousel CSS -->
-    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
-    <!-- Animate CSS -->
-    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
-    <!-- Jquery-ui CSS -->
-    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
-    <!-- Venobox CSS -->
-    <link rel="stylesheet" href="{% static 'css/venobox.css' %}">
-    <!-- Nice Select CSS -->
-    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
-    <!-- Magnific Popup CSS -->
-    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
-    <!-- Bootstrap V4.1.3 Fremwork CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <!-- Helper CSS -->
-    <link rel="stylesheet" href="{% static 'css/helper.css' %}">
-    <!-- Main Style CSS -->
-   <link rel="stylesheet" href="{% static 'jwellery_style.css' %}">
-    <!-- Responsive CSS -->
-    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-    <!-- Modernizr js -->''
-    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
-</head>
-<body>
-<!--[if lt IE 8]>
-    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-<![endif]-->
-    <!-- Begin Body Wrapper -->
-    <div class="body-wrapper" style="padding: 0px 15px;">
-        <!-- Begin Header Area -->
+
         <header>
             <!-- Begin Header Top Area -->
             <div class="header-top">
@@ -97,7 +47,7 @@
                         <!-- Begin Header Logo Area -->
                         <div class="col-lg-3">
                             <div class="logo pb-sm-30 pb-xs-30 " style="display: flex;justify-content: center;">
-                                <a href="index.html">
+                                <a href="/shopproducts/shop">
                                     <img src="{% static 'images/menu/logo/Miogra_logo.png' %}" style="margin-left:30px;" alt="">
                                 </a>
                             </div>
@@ -137,7 +87,7 @@
                                         <div class="hm-minicart-trigger" style="margin-right:30px;">
                                             <span class="item-icon"></span>
                                             <span class="item-text">
-                                                <span class="cart-item-count">2</span>
+                                                <span class="cart-item-count">0</span>
                                             </span>
                                         </div>
                                         <span></span>
@@ -170,10 +120,10 @@
                                             </ul>
                                             <p class="minicart-total">SUBTOTAL: <span>₹ 80.00</span></p>
                                             <div class="minicart-button">
-                                                <a href="shopping-cart.html" class="li-button li-button-fullwidth li-button-dark">
+                                                <a href="/shopproducts/shopping_cart" class="li-button li-button-fullwidth li-button-dark">
                                                     <span>View Full Cart</span>
                                                 </a>
-                                                <a href="checkout.html" class="li-button li-button-fullwidth">
+                                                <a href="/shopproducts/shopping_checkout" class="li-button li-button-fullwidth">
                                                     <span>Checkout</span>
                                                 </a>
                                             </div>
@@ -186,7 +136,7 @@
                                 justify-content: center;
                                 display: flex;
                             ">
-                                    <button class="signup" fdprocessedid="vzukqa">LOGIN</button>
+                                    <a href="/enduser/usersignin" class="signup" fdprocessedid="vzukqa">LOGIN</a>
                                 </div>
                             </div>
                             </div>
@@ -207,38 +157,38 @@
                                 <nav style="text-align:center;">
                                     <ul>
                                         <!-- #shopping -->
-                                        <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/index.html">Shopping</a>
+                                        <li class="dropdown-holder mx-3"><a href="/shopproducts/shop">Shopping</a>
                                             
 
                                         </li>
 <!-- #food -->
-                                        <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/food_index.html">Food</a>
+                                        <li class="dropdown-holder mx-3"><a href="/foodproducts/food">Food</a>
                                           
                                         
                                         </li>
 
 <!-- #fresh Cuts    -->
-                                     <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/fresh_cuts_index.html">Fresh Cuts</a>
+                                     <li class="dropdown-holder mx-3"><a href="/freshproducts/fresh_cuts">Fresh Cuts</a>
                                             
                                         </li>
 
 <!-- #Daily mio    -->
-                                     <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/daily_mio_index.html">Daily Mio</a>
+                                     <li class="dropdown-holder mx-3"><a href="/dailymioproducts/daily_mio">Daily Mio</a>
                                        
                                     </li>
 
 <!-- #Pharmacy    -->
-                                     <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/pharmacy_index.html">pharmacy</a>
+                                     <li class="dropdown-holder mx-3"><a href="/pharmacyproducts/pharmacy/">pharmacy</a>
                                      
                                     </li>
                                    
-                                    <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/jwellery_index.html">Jewellery</a>
+                                    <li class="dropdown-holder mx-3"><a href="/jewelleryproducts/jewellery/">Jewellery</a>
           
                                     </li>
-                                    <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/used_product_index.html">Used Products</a>
+                                    <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/used_product">Used Products</a>
                                      
                                     </li>
-                                    <li class="dropdown-holder mx-3"><a href="/limupa-digital-products-store-ecommerce/doriginal_index.html">Doriginal</a>
+                                    <li class="dropdown-holder mx-3"><a href="/doriginalproducts/doriginal">Doriginal</a>
                                        
                                     </li>
                                    

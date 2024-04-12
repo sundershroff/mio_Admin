@@ -1,0 +1,1256 @@
+{% include "admin_header.html" %}
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+          <div id="theme-settings" class="settings-panel">
+            <i class="settings-close mdi mdi-close"></i>
+            <p class="settings-heading">SIDEBAR SKINS</p>
+            <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+              <div class="img-ss rounded-circle bg-light border me-3"></div>Light
+            </div>
+            <div class="sidebar-bg-options" id="sidebar-dark-theme">
+              <div class="img-ss rounded-circle bg-dark border me-3"></div>Dark
+            </div>
+            <p class="settings-heading mt-2">HEADER SKINS</p>
+            <div class="color-tiles mx-0 px-4">
+              <div class="tiles success"></div>
+              <div class="tiles warning"></div>
+              <div class="tiles danger"></div>
+              <div class="tiles info"></div>
+              <div class="tiles dark"></div>
+              <div class="tiles default"></div>
+            </div>
+          </div>
+          <div id="layout-settings" class="settings-panel">
+            <i class="settings-close mdi mdi-close"></i>
+            <div class="d-flex align-items-center justify-content-between border-bottom">
+              <p class="settings-heading font-weight-bold border-top-0 mb-3 ps-3 pt-0 border-bottom-0 pb-0">Template Demos </p>
+            </div>
+            <div class="demo-screen-wrapper">
+              <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_1/index.html" target="_blank" class="demo-thumb-image" id="theme-light-switch">
+                <img src="../assets/images/screenshots/vertical-light.jpg" alt="demo image">
+              </a>
+              <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_2/index.html" target="_blank" class="demo-thumb-image">
+                <img src="../assets/images/screenshots/vertical-dark.jpg" alt="demo image">
+              </a>
+              <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_3/index.html" target="_blank" class="demo-thumb-image" id="theme-dark-switch">
+                <img src="../assets/images/screenshots/horizontal-light.jpg" alt="demo image">
+              </a>
+              <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_4/index.html" target="_blank" class="demo-thumb-image">
+                <img src="../assets/images/screenshots/horizontal-dark.jpg" alt="demo image">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div id="right-sidebar" class="settings-panel">
+          <i class="settings-close mdi mdi-close"></i>
+          <ul class="nav nav-tabs" id="setting-panel" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="todo-tab" data-bs-toggle="tab" href="#todo-section" role="tab" aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="chats-tab" data-bs-toggle="tab" href="#chats-section" role="tab" aria-controls="chats-section">CHATS</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="setting-content">
+            <div class="tab-pane fade show active scroll-wrapper" id="todo-section" role="tabpanel" aria-labelledby="todo-section">
+              <div class="add-items d-flex px-3 mb-0">
+                <form class="form w-100">
+                  <div class="form-group d-flex">
+                    <input type="text" class="form-control todo-list-input" placeholder="Add To-do">
+                    <button type="submit" class="add btn btn-primary todo-list-add-btn" id="add-task">Add</button>
+                  </div>
+                </form>
+              </div>
+              <div class="list-wrapper px-3">
+                <ul class="d-flex flex-column-reverse todo-list">
+                  <li>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox"> Team review meeting at 3.00 PM </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                  <li>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox"> Prepare for presentation </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                  <li>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox"> Resolve all the low priority tickets due today </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                  <li class="completed">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox" checked> Schedule meeting for next week </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                  <li class="completed">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox" checked> Project review </label>
+                    </div>
+                    <i class="remove mdi mdi-close-circle-outline"></i>
+                  </li>
+                </ul>
+              </div>
+              <div class="events py-4 border-bottom px-3">
+                <div class="wrapper d-flex mb-2">
+                  <i class="mdi mdi-circle-outline text-primary me-2"></i>
+                  <span>Feb 11 2018</span>
+                </div>
+                <p class="mb-0 font-weight-thin text-gray">Creating component page</p>
+                <p class="text-gray mb-0">build a js based app</p>
+              </div>
+              <div class="events pt-4 px-3">
+                <div class="wrapper d-flex mb-2">
+                  <i class="mdi mdi-circle-outline text-primary me-2"></i>
+                  <span>Feb 7 2018</span>
+                </div>
+                <p class="mb-0 font-weight-thin text-gray">Meeting with Alisa</p>
+                <p class="text-gray mb-0 ">Call Sarah Graves</p>
+              </div>
+            </div>
+            <!-- To do section tab ends -->
+            <div class="tab-pane fade" id="chats-section" role="tabpanel" aria-labelledby="chats-section">
+              <div class="d-flex align-items-center justify-content-between border-bottom">
+                <p class="settings-heading border-top-0 mb-3 ps-3 pt-0 border-bottom-0 pb-0">Friends</p>
+                <small class="settings-heading border-top-0 mb-3 pt-0 border-bottom-0 pb-0 pe-3 font-weight-normal">See All</small>
+              </div>
+              <ul class="chat-list">
+                <li class="list active">
+                  <div class="profile"><img src="images/faces/face1.html" alt="image"><span class="online"></span></div>
+                  <div class="info">
+                    <p>Thomas Douglas</p>
+                    <p>Available</p>
+                  </div>
+                  <small class="text-muted my-auto">19 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face2.html" alt="image"><span class="offline"></span></div>
+                  <div class="info">
+                    <div class="wrapper d-flex">
+                      <p>Catherine</p>
+                    </div>
+                    <p>Away</p>
+                  </div>
+                  <div class="badge badge-success badge-pill my-auto mx-2">4</div>
+                  <small class="text-muted my-auto">23 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face3.html" alt="image"><span class="online"></span></div>
+                  <div class="info">
+                    <p>Daniel Russell</p>
+                    <p>Available</p>
+                  </div>
+                  <small class="text-muted my-auto">14 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face4.html" alt="image"><span class="offline"></span></div>
+                  <div class="info">
+                    <p>James Richardson</p>
+                    <p>Away</p>
+                  </div>
+                  <small class="text-muted my-auto">2 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face5.html" alt="image"><span class="online"></span></div>
+                  <div class="info">
+                    <p>Madeline Kennedy</p>
+                    <p>Available</p>
+                  </div>
+                  <small class="text-muted my-auto">5 min</small>
+                </li>
+                <li class="list">
+                  <div class="profile"><img src="images/faces/face6.html" alt="image"><span class="online"></span></div>
+                  <div class="info">
+                    <p>Sarah Graves</p>
+                    <p>Available</p>
+                  </div>
+                  <small class="text-muted my-auto">47 min</small>
+                </li>
+              </ul>
+            </div>
+            <!-- chat tab ends -->
+          </div>
+        </div>
+        <!-- partial -->
+        <!-- partial:partials/_sidebar.html -->
+        {% include "admin_sidbar.html" %}
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                  <i class="mdi mdi-home"></i>
+                </span> Home
+              </h3>
+              <!-- <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">
+                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                  </li>
+                </ul>
+              </nav> -->
+            </div>
+<div class="row">
+<!-- Delivery live trackibg -->
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title text-white">Todo</h4>
+                <div class="list-wrapper">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body px-0">
+          <h4 class="card-title text-white">Todo</h4>
+          <div class="add-items px-2" style="margin-bottom: 0;">
+            <h2 id="orderlist">Banner</h2>
+          </div>
+          <div class="list-wrapper">
+            <div class="container mt-0">
+              <!-- Nav pills -->
+              <ul class="nav nav-pills" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-bs-toggle="pill" href="#SHOPPING"><div style="position: relative;">SHOPPING</div></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="pill" href="#FOOD"><div style="position: relative;">FOOD</div></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link " data-bs-toggle="pill" href="#FRESH"><div style="position: relative;">FRESH CUTS</div></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="pill" href="#DAILY"><div style="position: relative;">DAILY MIO</div></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link " data-bs-toggle="pill" href="#PHARMACY"><div style="position: relative;">PHARMACY</div></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="pill" href="#dORIGINAL"><div style="position: relative;">D-ORIGINAL</div></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link " data-bs-toggle="pill" href="#JEWELLERY"><div style="position: relative;">JEWELLERY</div></a>
+                </li>
+
+              </ul>
+            
+              <!-- Tab panes -->
+              <div class="tab-content">
+                <div id="SHOPPING" class="container tab-pane active"><br>
+                  <div class="table-responsive" style="">
+                    <form method="POST" class="py-2">
+                    <div class="row">
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="input-group" style="justify-content: center;align-items: center;">
+                            <div class="banner"></div>
+                            <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                            <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                            <input type="file" class="imagebanner" name="" id="imageInput" onchange="previewImage()">
+                            <img class="py-1 px-1" id="imagePreview" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="input-group" style="justify-content: center;align-items: center;">
+                            <div class="banner"></div>
+                            <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                            <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                            <input type="file" class="imagebanner" name="" id="imageInput1" onchange="previewImage1()">
+                            <img class="py-1 px-1" id="imagePreview1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="input-group" style="justify-content: center;align-items: center;">
+                            <div class="banner"></div>
+                            <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                            <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                            <input type="file" class="imagebanner" name="" id="imageInput2" onchange="previewImage2()">
+                            <img class="py-1 px-1" id="imagePreview2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="input-group" style="justify-content: center;align-items: center;">
+                            <div class="banner"></div>
+                            <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                            <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                            <input type="file" class="imagebanner" name="" id="imageInput3" onchange="previewImage3()">
+                            <img class="py-1 px-1" id="imagePreview3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="input-group" style="justify-content: center;align-items: center;">
+                            <div class="banner"></div>
+                            <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                            <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                            <input type="file" class="imagebanner" name="" id="imageInput4" onchange="previewImage4()">
+                            <img class="py-1 px-1" id="imagePreview4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                        </div>
+                    </div>
+
+                      
+                  </div>
+                  <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                </form>
+                </div>
+              </div>
+                <div id="FOOD" class="container tab-pane fade"><br>
+                  <div class="table-responsive">
+                    <form method="POST" class="py-2">
+                        <div class="row">
+                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfood" onchange="previewImagefood()">
+                                <img class="py-1 px-1" id="imagePreviewfood" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfood1" onchange="previewImagefood1()">
+                                <img class="py-1 px-1" id="imagePreviewfood1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfood2" onchange="previewImagefood2()">
+                                <img class="py-1 px-1" id="imagePreviewfood2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfood3" onchange="previewImagefood3()">
+                                <img class="py-1 px-1" id="imagePreviewfood3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfood4" onchange="previewImagefood4()">
+                                <img class="py-1 px-1" id="imagePreviewfood4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+    
+                          
+                      </div>
+                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                    </form>
+                      </div>
+
+                </div>
+                <div id="FRESH" class="container tab-pane fade"><br>
+                  <div class="table-responsive">
+                    <form method="POST" class="py-2">
+                        <div class="row">
+                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfresh" onchange="previewImagefresh()">
+                                <img class="py-1 px-1" id="imagePreviewfresh" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfresh1" onchange="previewImagefresh1()">
+                                <img class="py-1 px-1" id="imagePreviewfresh1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfresh2" onchange="previewImagefresh2()">
+                                <img class="py-1 px-1" id="imagePreviewfresh2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfresh3" onchange="previewImagefresh3()">
+                                <img class="py-1 px-1" id="imagePreviewfresh3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputfresh4" onchange="previewImagefresh4()">
+                                <img class="py-1 px-1" id="imagePreviewfresh4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+    
+                          
+                      </div>
+                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                    </form>
+                      </div>
+
+                </div>
+                <div id="DAILY" class="container tab-pane fade"><br>
+                  <div class="table-responsive">
+                    <form method="POST" class="py-2">
+                        <div class="row">
+                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputdaily" onchange="previewImagedaily()">
+                                <img class="py-1 px-1" id="imagePreviewdaily" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputdaily1" onchange="previewImagedaily1()">
+                                <img class="py-1 px-1" id="imagePreviewdaily1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputdaily2" onchange="previewImagedaily2()">
+                                <img class="py-1 px-1" id="imagePreviewdaily2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputdaily3" onchange="previewImagedaily3()">
+                                <img class="py-1 px-1" id="imagePreviewdaily3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputdaily4" onchange="previewImagedaily4()">
+                                <img class="py-1 px-1" id="imagePreviewdaily4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+    
+                          
+                      </div>
+                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                    </form>
+                      </div>
+
+                </div>
+                <div id="PHARMACY" class="container tab-pane fade"><br>
+                  <div class="table-responsive">
+                    <form method="POST" class="py-2">
+                        <div class="row">
+                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy" onchange="previewImagepharmacy()">
+                                <img class="py-1 px-1" id="imagePreviewpharmacy" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy1" onchange="previewImagepharmacy1()">
+                                <img class="py-1 px-1" id="imagePreviewpharmacy1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy2" onchange="previewImagepharmacy2()">
+                                <img class="py-1 px-1" id="imagePreviewpharmacy2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy3" onchange="previewImagepharmacy3()">
+                                <img class="py-1 px-1" id="imagePreviewpharmacy3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy4" onchange="previewImagepharmacy4()">
+                                <img class="py-1 px-1" id="imagePreviewpharmacy4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+    
+                          
+                      </div>
+                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                    </form>
+                      </div>
+
+                </div>
+                <div id="dORIGINAL" class="container tab-pane fade"><br>
+                  <div class="table-responsive">
+                    <form method="POST" class="py-2">
+                        <div class="row">
+                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputoriginal" onchange="previewImageoriginal()">
+                                <img class="py-1 px-1" id="imagePrevieworiginal" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputoriginal1" onchange="previewImageoriginal1()">
+                                <img class="py-1 px-1" id="imagePrevieworiginal1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputoriginal2" onchange="previewImageoriginal2()">
+                                <img class="py-1 px-1" id="imagePrevieworiginal2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputoriginal3" onchange="previewImageoriginal3()">
+                                <img class="py-1 px-1" id="imagePrevieworiginal3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputoriginal4" onchange="previewImageoriginal4()">
+                                <img class="py-1 px-1" id="imagePrevieworiginal4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+    
+                          
+                      </div>
+                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                    </form>
+                      </div>
+
+                </div>
+                <div id="JEWELLERY" class="container tab-pane fade"><br>
+                  <div class="table-responsive">
+                    <form method="POST" class="py-2">
+                        <div class="row">
+                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputjwellery" onchange="previewImagejwellery()">
+                                <img class="py-1 px-1" id="imagePreviewjwellery" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputjwellery1" onchange="previewImagejwellery1()">
+                                <img class="py-1 px-1" id="imagePreviewjwellery1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputjwellery2" onchange="previewImagejwellery2()">
+                                <img class="py-1 px-1" id="imagePreviewjwellery2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputjwellery3" onchange="previewImagejwellery3()">
+                                <img class="py-1 px-1" id="imagePreviewjwellery3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="input-group" style="justify-content: center;align-items: center;">
+                                <div class="banner"></div>
+                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                <input type="file" class="imagebanner" name="" id="imageInputjwellery4" onchange="previewImagejwellery4()">
+                                <img class="py-1 px-1" id="imagePreviewjwellery4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            </div>
+                        </div>
+    
+                          
+                      </div>
+                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                    </form>
+                      </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+</div>
+
+
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <!-- partial -->
+        </div>
+       
+       
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+</div>
+          </div>
+          {% include "admin_footer.html" %}
+        </div>
+      </div>
+    </div>
+    
+    {% include "script.html" %}    <!-- shopping -->
+    <script>
+        // Function to preview the selected image
+        function previewImage() {
+            var input = document.getElementById('imageInput');
+            var preview = document.getElementById('imagePreview');
+      
+            var file = input.files[0];
+            var reader = new FileReader();
+      
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+      
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+        // Function to preview the selected image
+        function previewImage1() {
+            var input = document.getElementById('imageInput1');
+            var preview = document.getElementById('imagePreview1');
+      
+            var file = input.files[0];
+            var reader = new FileReader();
+      
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+      
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+        // Function to preview the selected image
+        function previewImage2() {
+            var input = document.getElementById('imageInput2');
+            var preview = document.getElementById('imagePreview2');
+      
+            var file = input.files[0];
+            var reader = new FileReader();
+      
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+      
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+        // Function to preview the selected image
+        function previewImage3() {
+            var input = document.getElementById('imageInput3');
+            var preview = document.getElementById('imagePreview3');
+      
+            var file = input.files[0];
+            var reader = new FileReader();
+      
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+      
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+        // Function to preview the selected image
+        function previewImage4() {
+            var input = document.getElementById('imageInput4');
+            var preview = document.getElementById('imagePreview4');
+      
+            var file = input.files[0];
+            var reader = new FileReader();
+      
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+      
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+      </script>
+<!-- food -->
+<script>
+    // Function to preview the selected image
+    function previewImagefood() {
+        var input = document.getElementById('imageInputfood');
+        var preview = document.getElementById('imagePreviewfood');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagefood1() {
+        var input = document.getElementById('imageInputfood1');
+        var preview = document.getElementById('imagePreviewfood1');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagefood2() {
+        var input = document.getElementById('imageInputfood2');
+        var preview = document.getElementById('imagePreviewfood2');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagefood3() {
+        var input = document.getElementById('imageInputfood3');
+        var preview = document.getElementById('imagePreviewfood3');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagefood4() {
+        var input = document.getElementById('imageInputfood4');
+        var preview = document.getElementById('imagePreviewfood4');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+  </script>
+<script>
+    // Function to preview the selected image
+    function previewImagefresh() {
+        var input = document.getElementById('imageInputfresh');
+        var preview = document.getElementById('imagePreviewfresh');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagefresh1() {
+        var input = document.getElementById('imageInputfresh1');
+        var preview = document.getElementById('imagePreviewfresh1');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagefresh2() {
+        var input = document.getElementById('imageInputfresh2');
+        var preview = document.getElementById('imagePreviewfresh2');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagefresh3() {
+        var input = document.getElementById('imageInputfresh3');
+        var preview = document.getElementById('imagePreviewfresh3');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagefresh4() {
+        var input = document.getElementById('imageInputfresh4');
+        var preview = document.getElementById('imagePreviewfresh4');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+  </script>
+<script>
+    // Function to preview the selected image
+    function previewImagedaily() {
+        var input = document.getElementById('imageInputdaily');
+        var preview = document.getElementById('imagePreviewdaily');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagedaily1() {
+        var input = document.getElementById('imageInputdaily1');
+        var preview = document.getElementById('imagePreviewdaily1');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagedaily2() {
+        var input = document.getElementById('imageInputdaily2');
+        var preview = document.getElementById('imagePreviewdaily2');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagedaily3() {
+        var input = document.getElementById('imageInputdaily3');
+        var preview = document.getElementById('imagePreviewdaily3');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagedaily4() {
+        var input = document.getElementById('imageInputdaily4');
+        var preview = document.getElementById('imagePreviewdaily4');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+  </script>
+<script>
+    // Function to preview the selected image
+    function previewImagepharmacy() {
+        var input = document.getElementById('imageInputpharmacy');
+        var preview = document.getElementById('imagePreviewpharmacy');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagepharmacy1() {
+        var input = document.getElementById('imageInputpharmacy1');
+        var preview = document.getElementById('imagePreviewpharmacy1');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagepharmacy2() {
+        var input = document.getElementById('imageInputpharmacy2');
+        var preview = document.getElementById('imagePreviewpharmacy2');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagepharmacy3() {
+        var input = document.getElementById('imageInputpharmacy3');
+        var preview = document.getElementById('imagePreviewpharmacy3');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagepharmacy4() {
+        var input = document.getElementById('imageInputpharmacy4');
+        var preview = document.getElementById('imagePreviewpharmacy4');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+  </script>
+<script>
+    // Function to preview the selected image
+    function previewImageoriginal() {
+        var input = document.getElementById('imageInputoriginal');
+        var preview = document.getElementById('imagePrevieworiginal');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImageoriginal1() {
+        var input = document.getElementById('imageInputoriginal1');
+        var preview = document.getElementById('imagePrevieworiginal1');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImageoriginal2() {
+        var input = document.getElementById('imageInputoriginal2');
+        var preview = document.getElementById('imagePrevieworiginal2');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImageoriginal3() {
+        var input = document.getElementById('imageInputoriginal3');
+        var preview = document.getElementById('imagePrevieworiginal3');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImageoriginal4() {
+        var input = document.getElementById('imageInputoriginal4');
+        var preview = document.getElementById('imagePrevieworiginal4');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+  </script>
+<script>
+    // Function to preview the selected image
+    function previewImagejwellery() {
+        var input = document.getElementById('imageInputjwellery');
+        var preview = document.getElementById('imagePreviewjwellery');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagejwellery1() {
+        var input = document.getElementById('imageInputjwellery1');
+        var preview = document.getElementById('imagePreviewjwellery1');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagejwellery2() {
+        var input = document.getElementById('imageInputjwellery2');
+        var preview = document.getElementById('imagePreviewjwellery2');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagejwellery3() {
+        var input = document.getElementById('imageInputjwellery3');
+        var preview = document.getElementById('imagePreviewjwellery3');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    // Function to preview the selected image
+    function previewImagejwellery4() {
+        var input = document.getElementById('imageInputjwellery4');
+        var preview = document.getElementById('imagePreviewjwellery4');
+  
+        var file = input.files[0];
+        var reader = new FileReader();
+  
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+  
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+  </script>
+
+
+  </body>
+
+<!-- Mirrored from demo.bootstrapdash.com/purple/jquery/template/demo_1/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 05 Feb 2024 12:21:10 GMT -->
+</html>

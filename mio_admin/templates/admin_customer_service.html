@@ -1,0 +1,584 @@
+{% include "admin_header.html" %}
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- partial:partials/_settings-panel.html -->
+            <div class="theme-setting-wrapper">
+                <div id="theme-settings" class="settings-panel">
+                    <i class="settings-close mdi mdi-close"></i>
+                    <p class="settings-heading">SIDEBAR SKINS</p>
+                    <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+                        <div class="img-ss rounded-circle bg-light border me-3"></div>Light
+                    </div>
+                    <div class="sidebar-bg-options" id="sidebar-dark-theme">
+                        <div class="img-ss rounded-circle bg-dark border me-3"></div>Dark
+                    </div>
+                    <p class="settings-heading mt-2">HEADER SKINS</p>
+                    <div class="color-tiles mx-0 px-4">
+                        <div class="tiles success"></div>
+                        <div class="tiles warning"></div>
+                        <div class="tiles danger"></div>
+                        <div class="tiles info"></div>
+                        <div class="tiles dark"></div>
+                        <div class="tiles default"></div>
+                    </div>
+                </div>
+                <div id="layout-settings" class="settings-panel">
+                    <i class="settings-close mdi mdi-close"></i>
+                    <div class="d-flex align-items-center justify-content-between border-bottom">
+                        <p class="settings-heading font-weight-bold border-top-0 mb-3 ps-3 pt-0 border-bottom-0 pb-0">
+                            Template Demos </p>
+                    </div>
+                    <div class="demo-screen-wrapper">
+                        <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_1/index.html"
+                            target="_blank" class="demo-thumb-image" id="theme-light-switch">
+                            <img src="../assets/images/screenshots/vertical-light.jpg" alt="demo image">
+                        </a>
+                        <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_2/index.html"
+                            target="_blank" class="demo-thumb-image">
+                            <img src="../assets/images/screenshots/vertical-dark.jpg" alt="demo image">
+                        </a>
+                        <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_3/index.html"
+                            target="_blank" class="demo-thumb-image" id="theme-dark-switch">
+                            <img src="../assets/images/screenshots/horizontal-light.jpg" alt="demo image">
+                        </a>
+                        <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_4/index.html"
+                            target="_blank" class="demo-thumb-image">
+                            <img src="../assets/images/screenshots/horizontal-dark.jpg" alt="demo image">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="right-sidebar" class="settings-panel">
+                <i class="settings-close mdi mdi-close"></i>
+                <ul class="nav nav-tabs" id="setting-panel" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="todo-tab" data-bs-toggle="tab" href="#todo-section" role="tab"
+                            aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="chats-tab" data-bs-toggle="tab" href="#chats-section" role="tab"
+                            aria-controls="chats-section">CHATS</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="setting-content">
+                    <div class="tab-pane fade show active scroll-wrapper" id="todo-section" role="tabpanel"
+                        aria-labelledby="todo-section">
+                        <div class="add-items d-flex px-3 mb-0">
+                            <form class="form w-100">
+                                <div class="form-group d-flex">
+                                    <input type="text" class="form-control todo-list-input" placeholder="Add To-do">
+                                    <button type="submit" class="add btn btn-primary todo-list-add-btn"
+                                        id="add-task">Add</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="list-wrapper px-3">
+                            <ul class="d-flex flex-column-reverse todo-list">
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Team review meeting at 3.00 PM
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Prepare for presentation </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox"> Resolve all the low priority
+                                            tickets due today </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li class="completed">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox" checked> Schedule meeting for next
+                                            week </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li class="completed">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox" checked> Project review </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="events py-4 border-bottom px-3">
+                            <div class="wrapper d-flex mb-2">
+                                <i class="mdi mdi-circle-outline text-primary me-2"></i>
+                                <span>Feb 11 2018</span>
+                            </div>
+                            <p class="mb-0 font-weight-thin text-gray">Creating component page</p>
+                            <p class="text-gray mb-0">build a js based app</p>
+                        </div>
+                        <div class="events pt-4 px-3">
+                            <div class="wrapper d-flex mb-2">
+                                <i class="mdi mdi-circle-outline text-primary me-2"></i>
+                                <span>Feb 7 2018</span>
+                            </div>
+                            <p class="mb-0 font-weight-thin text-gray">Meeting with Alisa</p>
+                            <p class="text-gray mb-0 ">Call Sarah Graves</p>
+                        </div>
+                    </div>
+                    <!-- To do section tab ends -->
+                    <div class="tab-pane fade" id="chats-section" role="tabpanel" aria-labelledby="chats-section">
+                        <div class="d-flex align-items-center justify-content-between border-bottom">
+                            <p class="settings-heading border-top-0 mb-3 ps-3 pt-0 border-bottom-0 pb-0">Friends</p>
+                            <small
+                                class="settings-heading border-top-0 mb-3 pt-0 border-bottom-0 pb-0 pe-3 font-weight-normal">See
+                                All</small>
+                        </div>
+                        <ul class="chat-list">
+                            <li class="list active">
+                                <div class="profile"><img src="images/faces/face1.html" alt="image"><span
+                                        class="online"></span></div>
+                                <div class="info">
+                                    <p>Thomas Douglas</p>
+                                    <p>Available</p>
+                                </div>
+                                <small class="text-muted my-auto">19 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="images/faces/face2.html" alt="image"><span
+                                        class="offline"></span></div>
+                                <div class="info">
+                                    <div class="wrapper d-flex">
+                                        <p>Catherine</p>
+                                    </div>
+                                    <p>Away</p>
+                                </div>
+                                <div class="badge badge-success badge-pill my-auto mx-2">4</div>
+                                <small class="text-muted my-auto">23 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="images/faces/face3.html" alt="image"><span
+                                        class="online"></span></div>
+                                <div class="info">
+                                    <p>Daniel Russell</p>
+                                    <p>Available</p>
+                                </div>
+                                <small class="text-muted my-auto">14 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="images/faces/face4.html" alt="image"><span
+                                        class="offline"></span></div>
+                                <div class="info">
+                                    <p>James Richardson</p>
+                                    <p>Away</p>
+                                </div>
+                                <small class="text-muted my-auto">2 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="images/faces/face5.html" alt="image"><span
+                                        class="online"></span></div>
+                                <div class="info">
+                                    <p>Madeline Kennedy</p>
+                                    <p>Available</p>
+                                </div>
+                                <small class="text-muted my-auto">5 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="images/faces/face6.html" alt="image"><span
+                                        class="online"></span></div>
+                                <div class="info">
+                                    <p>Sarah Graves</p>
+                                    <p>Available</p>
+                                </div>
+                                <small class="text-muted my-auto">47 min</small>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- chat tab ends -->
+                </div>
+            </div>
+            <!-- partial -->
+            <!-- partial:partials/_sidebar.html -->
+            {% include "admin_sidbar.html" %}
+
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="page-header">
+                        <h3 class="page-title">
+                            <span class="page-title-icon bg-gradient-primary text-white me-2">
+                                <i class="mdi mdi-home"></i>
+                            </span> customer service
+                        </h3>
+                        <!-- <nav aria-label="breadcrumb">
+                  <ul class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">
+                      <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    </li>
+                  </ul> -->
+                        </nav>
+                    </div>
+
+
+                    <div class="row">
+                        <!-- Delivery live tracking -->
+                        <div class="col-md-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-white">Todo</h4>
+                                    <div class="list-wrapper">
+                                        <div class="col-md-12 grid-margin stretch-card">
+                                            <div class="card">
+                                                <div class="card-body px-0">
+                                                    <h4 class="card-title text-white">Todo</h4>
+                                                    <div class="add-items px-2" style="margin-bottom:0;">
+                                                        <h2 id="orderlist">Customer Service</h2>
+                                                    </div>
+                                                    <div class="row" style="margin-bottom: 150px;">
+                                                        <div class="col-sm-6 col-6">
+                                                            <div class="dropdown">
+                                                                <button type="button"
+                                                                    class="btn btn-primary dropdown-toggle"
+                                                                    data-bs-toggle="dropdown">
+                                                                    Customer Service
+                                                                </button>
+                                                                <ul class="dropdown-menu"
+                                                                    style="background-color: rgb(183, 109, 253);">
+                                                                    <li><a class="dropdown-item" id="butt1" href="#"
+                                                                            style="color: rgb(132, 10, 246);">Seller ID</a></li>
+                                                                    <li><a class="dropdown-item" id="butt2" href="#"
+                                                                            style="color:  rgb(132, 10, 246);">Product ID</a></li>
+                                                                    <li><a class="dropdown-item" id="butt3" href="#"
+                                                                            style="color:  rgb(132, 10, 246);">Business ID</a></li>
+                                                                    <li><a class="dropdown-item" id="butt4" href="#"
+                                                                            style="color:  rgb(132, 10, 246);">Order ID</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 col-6">
+                                                            <div class="input">
+                                                                <input type="text" 
+                                                                    style="border-radius: 10px; border-style:groove; border-color: rgb(183, 109, 253);">
+                                                                <button type="submit" class="btn btn-primary btn-sm">Click
+                                                                    Me</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="container" style="margin-top: 20px;">
+                                                            <div id="add3"
+                                                                style="text-align: center; border: 1px solid black; padding: 100px;">
+                                                                <h2>Order Details</h2><br>
+                                                                <button type="submit" class="btn btn-success btn-lg"
+                                                                    id="track">Track Me</button>
+                                                                <button type="submit" id="cencel" class="btn btn-danger btn-lg"
+                                                                    id="cencel">Cancel Order</button>
+                                                            </div>
+                                                            <div id="otp" style="text-align: center; border: 1px solid black; padding: 100px;">
+                                                                <h1>OTP verification</h1>
+                                                                <form id="otp-form">
+                                                                    <input type="text" id="otp-input"  style="border-radius: 10px; border-style:groove; border-color: rgb(183, 109, 253);">
+                                                                    <button type="submit" 
+                                                                    class="btn btn-danger btn-sm">Verify OTP</button><br>
+                                                                    <button type="submit" 
+                                                                    class="btn btn-danger btn-sm" id="back">Back</button>
+                                                                </form>
+                                                                </div>
+                                                                <div id="trackbox"
+                                                                style="text-align: center; border: 1px solid black; padding: 100px;">
+                                                                <h2>Tracking ID</h2><br>
+                                                                <input type="text" id="otp-input"  style="border-radius: 10px; border-style:groove; border-color: rgb(183, 109, 253);">
+                                                                <button type="submit" class="btn btn-success btn-sm "
+                                                                    id="track2">Track</button><br>
+                                                                <button type="submit" id="back2" class="btn btn-danger btn-sm"
+                                                                    id="cencel1">back</button>
+                                                            </div>
+                                                                </div>
+                                                            <div id="add1"
+                                                                style="text-align: center; border: 1px solid black; padding: 100px;">
+                                                                <h2>Product Details</h2>
+                                                                <input type="text" 
+                                                                    style="border-radius: 10px; border-style:groove; border-color: rgb(183, 109, 253);">
+                                                                <button type="submit" id="product"
+                                                                    class="btn btn-danger btn-sm">Click
+                                                                    Me</button>
+                                                                <div class="tab-content" id="tpro">
+                                                                    <div class="container tab-pane active"><br>
+                                                                        <div class="table-responsive">
+                                                                            <table class="table">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th> No </th>
+                                                                                        <th> Business Id </th>
+                                                                                        <th> Shop Id </th>
+                                                                                        <th> Product Id </th>
+                                                                                        <th> Product Name </th>
+                                                                                        <th> Created Date </th>
+                                                                                        <th> Edit </th>
+                                                                                        <th> Action </th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            1
+                                                                                        </td>
+                                                                                        <td> #12AWSE </td>
+                                                                                        <td>
+                                                                                            #Shop1234
+                                                                                        </td>
+                                                                                        <td> #12345 </td>
+                                                                                        <td
+                                                                                            style="width: 15%;white-space: normal;">
+                                                                                            Redmi Note 9</td>
+                                                                                        <td>Feb,25,2024</td>
+                                                                                        <td> <i class='fa fa-edit'
+                                                                                                style="font-size: 20px;color: #8B1874;"></i>
+                                                                                        </td>
+                                                                                        <td>
+
+                                                                                            <button type="submit"
+                                                                                                class="btn btn-primary btn-sm">resend</button>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div id="add2"
+                                                                style="text-align: center; border: 1px solid black; padding: 100px;">
+                                                                <h2>Business ID</h2>
+                                                                <input type="text" 
+                                                                    style="border-radius: 10px; border-style:groove; border-color: rgb(183, 109, 253);">
+                                                                <button type="submit" id="business"
+                                                                    class="btn btn-danger btn-sm">click me</button>
+                                                                <div class="tab-content" id="tbuss">
+                                                                    <div class="container tab-pane active"><br>
+                                                                        <div class="table-responsive">
+                                                                            <table class="table">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th> No </th>
+                                                                                        <th> Business Id </th>
+                                                                                        <th> Shop Id </th>
+                                                                                        <th> Product Id </th>
+                                                                                        <th> Product Name </th>
+                                                                                        <th> Created Date </th>
+                                                                                        <th> Edit </th>
+                                                                                        <th> Action </th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            1
+                                                                                        </td>
+                                                                                        <td> #12AWSE </td>
+                                                                                        <td>
+                                                                                            #Shop1234
+                                                                                        </td>
+                                                                                        <td> #12345 </td>
+                                                                                        <td
+                                                                                            style="width: 15%;white-space: normal;">
+                                                                                            Redmi Note 9</td>
+                                                                                        <td>Feb,25,2024</td>
+                                                                                        <td> <i class='fa fa-edit'
+                                                                                                style="font-size: 20px;color: #8B1874;"></i>
+                                                                                        </td>
+                                                                                        <td>
+
+                                                                                            <button
+                                                                                                class="action_a">Accept</button>
+                                                                                            <button
+                                                                                                class="action_r">Reject</button>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                    
+                                                        <div id="add"
+                                                            style="text-align: center; border: 1px solid black; padding: 100px;">
+                                                            <h2>Seller ID</h2>
+                                                            <input type="text"
+                                                                style="border-radius: 10px; border-style:groove; border-color: rgb(183, 109, 253);">
+                                                            <button type="submit" id="seller"
+                                                                class="btn btn-danger btn-sm">click me</button>
+
+                                                            <div class="tab-content" id="tsell">
+                                                                <div class="container tab-pane active"><br>
+                                                                    <div class="table-responsive">
+                                                                        <table class="table">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th> No </th>
+                                                                                    <th> Business Id </th>
+                                                                                    <th> Store Id </th>
+                                                                                    <th> store Name </th>
+                                                                                    <th> Location </th>
+                                                                                    <th> Mobile no</th>
+
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        1
+                                                                                    </td>
+                                                                                    <td> #12AWSE </td>
+                                                                                    <td>
+                                                                                        <a href="demo" rel="stylesheet">
+                                                                                            #Shop1234</a>
+                                                                                    </td>
+                                                                                    <td> nilla </td>
+                                                                                    <td
+                                                                                        style="width: 15%;white-space: normal;">
+                                                                                        madurai</td>
+                                                                                    <td>9876543210</td>
+
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        2
+                                                                                    </td>
+                                                                                    <td> #12AWSE </td>
+                                                                                    <td>
+                                                                                        <a href="demo" rel="stylesheet">
+                                                                                            #Shop1234</a>
+                                                                                    </td>
+                                                                                    <td> aswin </td>
+                                                                                    <td
+                                                                                        style="width: 15%;white-space: normal;">
+                                                                                        <p>chennai </p>
+                                                                                    </td>
+                                                                                    <td>7890654321</td>
+
+                                                                                </tr>
+
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                           
+                                                            
+
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+
+                        {% include "admin_footer.html" %}
+                        <!-- partial -->
+                    </div>
+                    <!-- main-panel ends -->
+                </div>
+                <!-- page-body-wrapper ends -->
+            </div>
+            {% include "script.html" %}
+            <!-- End custom js for this page -->
+     <script>
+    $(document).ready(function () {
+        // Hide all elements initially
+        $("#add, #add1, #add2, #add3, #otp, #tpro, #tbuss, #tsell,#trackbox").hide();
+
+        $("#butt1").click(function () {
+            $("#add").show();
+            $("#add1, #add2, #add3, #otp, #tpro, #tbuss, #tsell").hide(); // Hide other elements
+        });
+
+        $("#butt2").click(function () {
+            $("#add1").show();
+            $("#add, #add2, #add3, #otp, #tpro, #tbuss, #tsell").hide(); // Hide other elements
+        });
+
+        $("#butt3").click(function () {
+            $("#add2").show();
+            $("#add, #add1, #add3, #otp, #tpro, #tbuss, #tsell").hide(); // Hide other elements
+        });
+
+        $("#butt4").click(function () {
+            $("#add3").show();
+            $("#add, #add1, #add2, #otp, #tpro, #tbuss, #tsell").hide(); // Hide other elements
+        });
+
+      
+        $("#cencel").click(function () {
+            $("#add3").hide();
+            $("#add").hide();
+            $("#add1").hide();
+            $("#add2").hide();
+            $("#otp").show(); // Corrected to show the otp element
+        });
+        
+        $("#product").click(function () {
+            $("#add3, #add, #add2").hide();
+            $("#add1").show();
+            $("#tpro").show(); // Show product table
+        });
+
+        $("#business").click(function () {
+            $("#add3, #add, #add1").hide();
+            $("#add2").show();
+            $("#tbuss").show(); // Show business table
+        });
+
+        $("#seller").click(function () {
+            $("#add3, #add1, #add2").hide(); // Hide unnecessary elements
+            $("#add").show();
+            $("#tsell").show(); // Show seller table
+        });
+        
+        $("#back").click(function () {
+            $("#add3").show();
+            $("#add").hide();
+            $("#add1").hide();
+            $("#add2").hide();
+            $("#otp").hide(); // Corrected to show the otp element
+        });
+
+          
+        $("#track").click(function () {
+            $("#add3").hide();
+            $("#add").hide();
+            $("#add1").hide();
+            $("#add2").hide();
+            $("#otp").hide(); 
+            $("#trackbox").show();
+        });
+        $("#back2").click(function () {
+            $("#add3").show();
+            $("#add").hide();
+            $("#add1").hide();
+            $("#add2").hide();
+            $("#otp").hide(); 
+            $("#trackbox").hide();
+        });
+
+    });
+</script>
+
+
+</body>
+
+<!-- Mirrored from demo.bootstrapdash.com/purple/jquery/template/demo_1/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 05 Feb 2024 12:21:10 GMT -->
+
+</html>
