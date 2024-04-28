@@ -28,7 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('business_signup/',business_views.business_signup),
-    path('business_otp/<id>',business_views.business_otp),
+    path('business_otp/',business_views.business_otp),
     path('business_signin/',business_views.business_signin),
     path('my_accounts_data/<id>',business_views.my_accounts_data),
     path('forget_password/',business_views.forget_password),
@@ -37,7 +37,11 @@ urlpatterns = [
     path('business_profile_update/<id>',business_views.business_profile_update),
     path('get_quickproduct_order/<id>/',business_views.get_quickproduct_order),
     path('get_normalproduct_order/<id>/',business_views.get_normalproduct_order),
-        
+    path('get_allproducts_order/<id>/<str:prostatus>/',business_views.get_allproducts_order),
+    path('business_status_pickedUp/<order_id>',business_views.business_status_pickedUp),
+    path('product_status_golivePause/<id>/<str:business_status>/',business_views.product_status_golivePause),
+    path('businessnotify_status_true/<id>',business_views.businessnotify_status_true),
+    path('business_notify_status_false/<id>',business_views.business_notify_status_false),
 # shopping
     path('shopping/<id>',business_views.shopping),
     path('shopping_alldata',business_views.shopping_alldata),
@@ -50,6 +54,7 @@ urlpatterns = [
     path('shop_orderstatus/<id>',business_views.shop_orderstatus),
     # shop_product 
     path('shop_products/<id>',business_views.shop_products),
+    path('shop_product_save/<id>',business_views.shop_product_save),
     path('shop_get_products/<id>',business_views.shop_get_products),
     path('shop_get_my_product/<id>/product/<product_id>',business_views.shop_get_my_product),
     path('shop_delete_product/<id>/product/<product_id>',business_views.shop_delete_product),
@@ -70,6 +75,7 @@ urlpatterns = [
     path('jewel_orderstatus/<id>',business_views.jewel_orderstatus),
     # jewellery_product gold
     path('jewel_products/<id>',business_views.jewel_products),
+    path('jewel_product_save/<id>',business_views.jewel_product_save),
     path('jewel_get_products/<id>',business_views.jewel_get_products),
     path('jewel_get_my_product/<id>/product/<product_id>',business_views.jewel_get_my_product),
     path('jewel_delete_product/<id>/product/<product_id>',business_views.jewel_delete_product),
@@ -87,7 +93,8 @@ urlpatterns = [
     path('food_mon_revenue/<id>',business_views.food_mon_revenue),
     path('food_orderstatus/<id>',business_views.food_orderstatus),
     # food_product 
-    path('food_products/<id>',business_views.food_products),
+    path('food_add_products/<id>',business_views.food_products),
+    path('food_product_save/<id>',business_views.food_product_save),
     path('food_get_products/<id>',business_views.food_get_products),
     path('food_get_my_product/<id>/product/<product_id>',business_views.food_get_my_product),
     path('food_delete_product/<id>/product/<product_id>',business_views.food_delete_product),
@@ -106,6 +113,7 @@ urlpatterns = [
     path('fresh_orderstatus/<id>',business_views.fresh_orderstatus),
     # fresh_product 
     path('fresh_products/<id>',business_views.fresh_products),
+    path('fresh_product_save/<id>',business_views.fresh_product_save),
     path('fresh_get_products/<id>',business_views.fresh_get_products),
     path('fresh_get_my_product/<id>/product/<product_id>',business_views.fresh_get_my_product),
     path('fresh_delete_product/<id>/product/<product_id>',business_views.fresh_delete_product),
@@ -125,6 +133,7 @@ urlpatterns = [
     path('dmio_orderstatus/<id>',business_views.dmio_orderstatus),
     # dailymio_products
     path('dmio_products/<id>',business_views.dmio_products),
+    path('dmio_product_save/<id>',business_views.dmio_product_save),
     path('dmio_get_products/<id>',business_views.dmio_get_products),
     path('dmio_get_my_product/<id>/product/<product_id>',business_views.dmio_get_my_product),
     path('dmio_delete_product/<id>/product/<product_id>',business_views.dmio_delete_product),
@@ -143,6 +152,7 @@ urlpatterns = [
     path('pharm_orderstatus/<id>',business_views.pharm_orderstatus),
     # pharmacy_ products 
     path('pharmacy_products/<id>',business_views.pharmacy_products),
+    path('pharmacy_product_save/<id>',business_views.pharmacy_product_save),
     path('pharmacy_get_products/<id>',business_views.pharmacy_get_products),
     path('pharmacy_get_my_product/<id>/product/<product_id>',business_views.pharmacy_get_my_product),
     path('pharmacy_delete_product/<id>/product/<product_id>',business_views.pharmacy_delete_product),
@@ -161,6 +171,7 @@ urlpatterns = [
     path('d_origin_orderstatus/<id>',business_views.d_origin_orderstatus),
     # d_original_get_products
     path('d_original_products/<id>',business_views.d_original_products),
+    path('d_original_product_save/<id>',business_views.d_original_product_save),
     path('d_original_get_products/<id>',business_views.d_original_get_products),
     path('d_original_get_district_products/<id>/<str:district>/',business_views.d_original_get_district_products),
     path('d_original_get_my_product/<id>/product/<product_id>',business_views.d_original_get_my_product),
@@ -182,10 +193,11 @@ urlpatterns = [
     path('end_profile_picture/<id>',end_user_views.end_profile_picture),
     path('enduser_profile_update/<id>',end_user_views.enduser_profile_update),
     path('end_user_address/<id>',end_user_views.end_user_address),
+    path('update_end_user_address/<id>/',end_user_views.update_end_user_address),
     path('single_users_data/<id>',end_user_views.single_users_data),
+    path('locationupdate/<id>',end_user_views.locationupdate),
 
-    path('enduser_order_create/<id>/<product_id>/<str:category>/',end_user_views.enduser_order_create),
-    path('enduser_order_cancel/<id>/<order_id>',end_user_views.enduser_order_cancel),
+
 
     # before login
     path('all_shopproducts/',end_user_views.all_shopproducts),
@@ -228,7 +240,7 @@ urlpatterns = [
     path('user_get_category_d_original/<id>/<user_id>/<str:subcategory>/',end_user_views.user_get_category_d_original),
     path('user_get_single_d_originalproduct/<id>/<user_id>/<product_id>',end_user_views.user_get_single_d_originalproduct),
     # beforelogin
-    path('all_pharmproducts/',end_user_views.user_get_all_pharmproducts),
+    path('all_pharmproducts/',end_user_views.all_pharmproducts),
     path('category_based_pharm/<str:subcategory>/',end_user_views.category_based_pharm),
     path('single_pharmproduct/<id>/<product_id>',end_user_views.get_single_pharmproduct),
     # afterlogin
@@ -246,34 +258,76 @@ urlpatterns = [
     path('user_get_single_d_originalproduct/<id>/<user_id>/<product_id>',end_user_views.user_get_single_d_originalproduct),
     path('user_d_original_district_products/<id>/<user_id>/<str:district>/',end_user_views.user_d_original_district_products),
 
+    # orderproducts
+    
+    path('enduser_order_create/<id>/<product_id>/<str:category>/',end_user_views.enduser_order_create),
+    path('enduser_order_cancel/<id>/<order_id>',end_user_views.enduser_order_cancel),
+    path('enduser_order_list/<id>/',end_user_views.enduser_order_list),
+    path('enduser_single_order_list/<id>/<order_id>',end_user_views.enduser_single_order_list),
 
+
+    # cart products
+    path('cart_product/<id>/<product_id>/<str:category>/',end_user_views.cart_product),
+    path('cartlist/<id>',end_user_views.cartlist),
+    path('cartremove/<id>/<cart_id>/',end_user_views.cartremove),
+    path('cartupdate/<id>',end_user_views.cartupdate),
+    path('create_reviews_for_delivered_products/<id>/<product_id>/',end_user_views.create_reviews_for_delivered_products),
+    path('get_all_reviews/',end_user_views.get_all_reviews),
+
+    # whishlist
+    path('whishlist_product/<id>/<product_id>/<str:category>/',end_user_views.whishlist_product),
+    path('all_wishlist/<id>',end_user_views.all_wishlist),
+    path('remove_wish/<id>/<product_id>/',end_user_views.remove_wish),
+
+# usedproducts
+    path('used_products/<id>',end_user_views.used_products),
+    path('get_used_products/<id>',end_user_views.get_used_products),
+    path('get_single_used_products/<product_id>',end_user_views.get_single_used_products),
+    path('used_update_product/<id>/<product_id>',end_user_views.used_update_product),
+    path('get_allused_products/',end_user_views.get_allused_products),
+    path('get_used_products_category/<str:subcategory>/',end_user_views.get_used_products_category),
 
 
 # # ..............enduser_web................
-#     path('enduser/usersignup',end_usersview.usersignup),
-#     path('enduser/usersignin',end_usersview.usersignin),
-#     path('enduser/end_user_otp/<id>',end_usersview.otp),
-#     path('enduser/profile_picture/<id>',end_usersview.profile_picture),
-#     path('enduser/dashboard/<id>',end_usersview.dashboard),
-#     path("shopproducts/shop/<id>",end_usersview.shop),
-#     path("foodproducts/food",end_usersview.food),
-#     path("freshproducts/fresh_cuts",end_usersview.fresh_cuts),
-#     path("doriginalproducts/doriginal",end_usersview.doriginal),
-#     path("dailymioproducts/daily_mio",end_usersview.daily_mio),
-#     path("jewelleryproducts/jewellery/<id>",end_usersview.jewellery),
-#     path("pharmacyproducts/pharmacy",end_usersview.pharmacy),
+
 
 # .........................delivery...........................
 
-    path('delivery_person_signup/',delivery_views.delivery_person_signup),
-    path('delivery_person_signin/',delivery_views.delivery_person_signin),
+    path('delivery_person_signup/<id>',delivery_views.delivery_person_signup),
+    # path('delivery_person_signin/',delivery_views.delivery_person_signin),
     path('all_delivery_person_data/',delivery_views.all_delivery_person_data),
     path('single_delivery_person_data/<id>',delivery_views.single_delivery_person_data),
     path('delivery_person_update/<id>',delivery_views.delivery_person_update),
-    path('delivery_product_order_status_accept/<id>/<product_id>/<order_id>/',delivery_views.delivery_product_order_status_accept),
-    path('delivery_get_normalproduct_order/<id>/<str:region>/<str:delivery_person_latitude>/<str:delivery_person_longitude>/',delivery_views.delivery_get_normalproduct_order),
+    # path('delivery_get_Normalproduct_order/<id>/<str:region>/',delivery_views.delivery_get_Normalproduct_order),
+    path('delivery_get_product_order/<id>/<str:region>/',delivery_views.delivery_get_product_order),
+
+
     path('delivery_yourissue/<id>/',delivery_views.delivery_yourissue),
-    # path('today_earnings/<id>',delivery_views.today_earnings),
+    path('delivery_login_table/<id>',delivery_views.delivery_login_table),
+    path('delivery_send_otp/',delivery_views.delivery_send_otp),
+    path('delivery_verify_otp/',delivery_views.delivery_verify_otp),
+
+    path('product_status_delivered/<id>/<order_id>',delivery_views.product_status_delivered),
+    path('delivery_product_order_status_accept/<id>/<product_id>/<order_id>/',delivery_views.delivery_product_order_status_accept),
+
+    path('delivery_product_order_status_reject/<id>/<product_id>/<order_id>/',delivery_views.delivery_product_order_status_reject),
+    path('delivery_produt_emergency/<id>/<order_id>',delivery_views.delivery_produt_emergency),
+    path('delivery_signin_otp/<id>/',delivery_views.delivery_signin_otp),
+    path('product_status/<id>/<order_id>/<str:orderstatus>/',delivery_views.product_status),
+    path('delivered_productorder_date/<id>',delivery_views.delivered_productorder_date),
+    path('todays_order/<id>/<str:delivery_date>',delivery_views.todays_order),
+    path('todays_incencentiveorder/<id>/<str:delivery_date>',delivery_views.todays_incencentiveorder),
+    path('delivery_payableamount/<id>',delivery_views.delivery_payableamount),
+    path('delivery_withdraw_status/<id>',delivery_views.delivery_withdraw_status),
+    path('deliverynotify_status_true/<id>',delivery_views.deliverynotify_status_true),
+    path('delivery_notify_status_false/<id>',delivery_views.delivery_notify_status_false),
+# notification
+    path('delivery_notification/',delivery_views.delivery_notification),
+    path('notification_data/<id>/',delivery_views.notification_data),
+    path('delivery_person_notify_delete/<id>/',delivery_views.delivery_person_notify_delete),
+    path('delete_all_notification/<id>/',delivery_views.delete_all_notification),
+
+
 
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

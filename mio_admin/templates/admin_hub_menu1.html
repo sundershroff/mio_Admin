@@ -238,33 +238,50 @@
                                     <h4 class="card-title text-white">Todo</h4>
                                     <div class="list-wrapper">
                                         <div class="table-responsive">
-                                            <table class="table" id="dataTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>User ID</th>
-                                                        <th>Password</th>
-                                                        <th>Hub</th>
-                                                        <th>Location</th>
-                                                        <th>Address</th>
-                                                        <th>Contact</th>
-                                                        <th>Email</th>
-                                                        <th>Alter Number</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                  <tr>
-                                                    <td>1234567</td>
-                                                    <td>dtyfyugiu</td>
-                                                    <td>NAGERCOVIL</td>
-                                                    <td>MARTHANDAM</td>
-                                                    <td>dvfbgunhun</td>
-                                                    <td>4567889987</td>
-                                                    <td>gth@hggfydgj</td>
-                                                    <td>9876543456</td>
-                                                  </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                          <h1 style="text-align: left;">Hub Users</h1>
+                                          <table class="table" id="dataTable">
+                                            <thead>
+                                                <tr>
+                                                  <th>S.no</th>
+                                                    <th>User Name</th>
+                                                    <th>Password</th>
+                                                    <th>NAME</th>
+                                                    <th>Address</th>
+                                                    <th>Contact</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody >
+                                              {% for i in data %}
+                                              <tr>
+                                                <td>{{forloop.counter}}</td>
+                                              <td>{{i.username}}</td>
+                                              <td>{{i.password}}</td>
+                                              <td>{{i.name}}</td>
+                                              <td>{{i.door_no}},{{i.street}},{{i.city}},
+                                                {{i.state}},{{i.country}}
+                                              </td>
+                                              <td>{{i.phonenumber}}</td>
+                                            
+                                              <td>
+                                                <a href="/admin_hub_update/{{i.id}}"><i class="fa fa-edit" style="font-size:24px;color: #8B1874 !important;"></i></a>
+                                                <form method="POST" style="
+                                                display: contents;
+                                            ">
+                                                  {% csrf_token %}
+                                                <button type="submit" name="delete" value="{{i.id}}" style="
+                                                background-color: white;
+                                                border: 0px;
+                                                color: red;
+                                            "><i class="fa fa-trash" style="font-size:24px"></i></button>
+                                            </form>
+                                              </td>
+        
+                                            </tr>
+                                            {% endfor %}
+                                          </tbody>
+                                        </table>
+                                                </div>
                                     </div>
                                 </div>
                             </div>

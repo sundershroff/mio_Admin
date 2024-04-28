@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from api import models
 
-
 class DeliverypersonSerializer(serializers.Serializer):
+    otp=serializers.IntegerField()
     uid = serializers.CharField()
     name = serializers.CharField()
     phone_number = serializers.CharField()
@@ -26,14 +26,17 @@ class DeliverypersonSerializer(serializers.Serializer):
     region =serializers.CharField()
     submit_issues = serializers.CharField()
     upload_issues = serializers.CharField()
-       
+    device_id = serializers.CharField()
+    total_order_amount=serializers.CharField()
+    has_withdrawn =serializers.BooleanField()
+    notification_status=serializers.CharField()
 
 
 class SignupSerializer(serializers.Serializer):
     # Your fields here
-    uid = serializers.CharField()
+
     name = serializers.CharField()
-    phone_number = serializers.CharField()
+    # phone_number = serializers.CharField()
     wp_number = serializers.CharField()
     email = serializers.EmailField()
     aadhar_number = serializers.CharField()
@@ -51,29 +54,33 @@ class SignupSerializer(serializers.Serializer):
     delivery_type = serializers.CharField()
     region =serializers.CharField()
     approve_status =serializers.CharField()
-    def create(self, data):
-        return models.Delivery_model.objects.create(**data
-            # uid = data['uid'],
-            # name = data['name'],
-            # phone_number = data['phone_number'],
-            # wp_number = data['wp_number'],
-            # email = data['email'],
-            # aadhar_number = data['aadhar_number'],
-            # pan_number = data['pan_number'],
-            # driving_licensenum = data['driving_licensenum'],
-            # profile_picture = data['profile_picture'],
-            # bank_name = data['bank_name'],
-            # acc_number = data['acc_number'],
-            # name_asper_passbook = data['name_asper_passbook'],
-            # ifsc_code = data['ifsc_code'],
-            # bank_passbok_pic = data['bank_passbok_pic'],
-            # aadhar_pic = data['aadhar_pic'],
-            # pan_pic = data['pan_pic'],
-            # drlicence_pic = data['drlicence_pic'],
-            # delivery_type = data['delivery_type'],
-           
+    device_id = serializers.CharField()
+    def update(self, instance, data):
+        instance.name = data['name']
+        # instance.phone_number = data['phone_number']
+        instance.wp_number = data['wp_number']
+        instance.email = data['email']
+        instance.aadhar_number = data['aadhar_number']
+        instance.pan_number = data['pan_number']
+        instance.driving_licensenum = data['driving_licensenum']
+        instance.profile_picture = data['profile_picture']
+        instance.bank_name = data['bank_name']
+        instance.acc_number = data['acc_number']
+        instance.name_asper_passbook = data['name_asper_passbook']
+        instance.ifsc_code = data['ifsc_code']
+        instance.bank_passbok_pic = data['bank_passbok_pic']
+        instance.aadhar_pic = data['aadhar_pic']
+        instance.pan_pic = data['pan_pic']
+        instance.drlicence_pic = data['drlicence_pic']
+        instance.delivery_type = data['delivery_type']
+        instance.drlicence_pic = data['drlicence_pic']
+        instance.region = data['region']
+        instance.approve_status = data['approve_status']
+        instance.device_id = data['device_id']
+        instance.save()
+        return instance
 
-        )
+    
 
 
 class deliveryperson_edit_serializer(serializers.Serializer):
@@ -121,6 +128,7 @@ class deliveryperson_edit_serializer(serializers.Serializer):
         instance.save()
         return instance
 
+
 class delivery_yourissue_serializer(serializers.Serializer):
     submit_issues = serializers.CharField()
     upload_issues = serializers.CharField()
@@ -130,8 +138,43 @@ class delivery_yourissue_serializer(serializers.Serializer):
         instance.save()
         return instance
 
-        
+
+class deliverytimetablelistSerializer(serializers.Serializer):
+    today_date= serializers.DateField()
+    login_time = serializers.TimeField()
+    logout_time= serializers.TimeField()
+    deliveryperson= serializers.PrimaryKeyRelatedField(queryset=models.Delivery_model.objects.all())
+    status=serializers.BooleanField()
+    # Your fields here
+
+class OTPSerializer(serializers.Serializer):
+    user_otp = serializers.IntegerField()
+    
+    def update(self, instance, data):
+        instance.user_otp = data['user_otp']
+        instance.save()
+        return instance
+    
+
+class notificationSerializer(serializers.Serializer):
+    notify_id=serializers.CharField()
+    sender_id=serializers.CharField()
+    notify_message=serializers.CharField()
+    recever_id=serializers.CharField()
+    
+    def create(self,data):
+        return models.Notification.objects.create(
+        notify_id = data['notify_id'],
+        sender_id = data['sender_id'],
+        notify_message = data['notify_message'],
+        recever_id = data['recever_id'],
+        )
 
 
-
-
+class notificationlistSerializer(serializers.Serializer):
+    notify_id=serializers.CharField()
+    sender_id=serializers.CharField()
+    notify_message=serializers.CharField()
+    recever_id= serializers.DateField()
+    is_read=serializers.CharField()
+    notify_date = serializers.DateField()

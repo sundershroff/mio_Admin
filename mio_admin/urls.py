@@ -21,17 +21,29 @@ from django.urls import path, include
 from mio_admin import views
 
 urlpatterns = [
+    
     path('admin_index/',views.index),
     path('admin_dashboard/',views.dashboard),
     path('admin_product_details/',views.product_details),
     path('admin_order_details/',views.order_details),
-    path('admin_banner/',views.banner),
+    path('admin_banner/',views.bannerr),
     path('admin_customer_service/',views.customer_service),
     path('admin_product_appaoval/',views.product_appaoval),
+    path('admin/edit_product/<product_id>/<category>',views.edit_product),
     path('admin_hub_details/',views.hub_details),
     path('admin_hub_menu1/',views.hub_menu1),
+    path('admin_hub_update/<id>',views.hub_update),
     path('admin_user_add/',views.user_add),
     path('admin_user_menu/',views.user_menu),
+    path('admin_user_update/<id>',views.user_update),
+    path('admin/customer/',views.customer),
+    path('admin/delivery_boy_add/',views.delivery_boy_add),
+    path('admin/delivery_boy_manage/',views.delivery_boy_manage),
+    path('admin/delivery_boy_single/<id>',views.delivery_boy_single),
+    path('admin/delivery_Commision/',views.delivery_Commision),
+    path('admin/business_Commision/',views.business_Commision),
+    path('admin/shutdown/',views.shutdown),
+    path('admin/zone/',views.zonee),
 ]
 
 

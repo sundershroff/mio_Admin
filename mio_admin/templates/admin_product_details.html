@@ -227,6 +227,34 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title text-white">Todo</h4>
+                  <div class="row py-4">
+                    <!-- Delivery live trackibg -->
+                    <div class="dropdown">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                        REGION
+                      </button>
+                      <form method="POST" class="dropdown-menu">
+                        {% csrf_token %}
+                      <select name="region_select" style="
+                      width: 100%;
+                      height: 100%;
+                      border: 0px;
+                  " onchange="this.form.submit()">
+                  <option value="">Select</option>
+                        <option value="nagercoil">Nagercoil</option>
+                        <option value="kanniyakumari">Kanyakumari</option>
+                        <option value="thuckalay">Tuckalay</option>
+                        <option value="marthandam">Marthandam</option>
+                        <option value="karungal">Karungal</option>
+                        <option value="nithiravilai">Nithiravilai</option>
+                      </select>
+                      <script>
+
+                      </script>
+                    </form>
+                    </div>
+                  </div>
+
                   <div class="list-wrapper">
 
 
@@ -263,7 +291,7 @@
                           <div class="card-body px-0">
                             <h4 class="card-title text-white">Todo</h4>
                             <div class="add-items px-2" style="margin-bottom: 0;">
-                              <h2 id="orderlist">product Datils</h2>
+                              <h2 id="orderlist">Store Details</h2>
                             </div>
 
                             <div class="list-wrapper">
@@ -271,41 +299,27 @@
                                 <!-- Nav pills -->
                                 <ul class="nav nav-pills" role="tablist">
                                   <li class="nav-item">
-                                    <a class="nav-link active" data-bs-toggle="pill" href="#SHOPPING">
-                                      <div style="position: relative;">SHOPPING</div>
-                                    </a>
+                                    <a class="nav-link active" data-bs-toggle="pill" href="#SHOPPING"><div style="position: relative;">SHOPPING<span class="count_order" style="left: 90px;">{{shopping|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="pill" href="#FOOD">
-                                      <div style="position: relative;">FOOD</div>
-                                    </a>
+                                    <a class="nav-link" data-bs-toggle="pill" href="#FOOD"><div style="position: relative;">FOOD<span class="count_order" style="left: 60px;">{{food|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link " data-bs-toggle="pill" href="#FRESH">
-                                      <div style="position: relative;">FRESH CUTS</div>
-                                    </a>
+                                    <a class="nav-link " data-bs-toggle="pill" href="#FRESH"><div style="position: relative;">FRESH CUTS<span class="count_order" style="left: 110px;">{{fresh_cuts|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="pill" href="#DAILY">
-                                      <div style="position: relative;">DAILY MIO</div>
-                                    </a>
+                                    <a class="nav-link" data-bs-toggle="pill" href="#DAILY"><div style="position: relative;">DAILY MIO<span class="count_order" style="left: 90px;">{{daily_mio|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link " data-bs-toggle="pill" href="#PHARMACY">
-                                      <div style="position: relative;">PHARMACY</div>
-                                    </a>
+                                    <a class="nav-link " data-bs-toggle="pill" href="#PHARMACY"><div style="position: relative;">PHARMACY<span class="count_order" style="left: 100px;">{{pharmacy|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="pill" href="#dORIGINAL">
-                                      <div style="position: relative;">D-ORIGINAL</div>
-                                    </a>
+                                    <a class="nav-link" data-bs-toggle="pill" href="#dORIGINAL"><div style="position: relative;">D-ORIGINAL<span class="count_order" style="left: 103px;">{{d_original|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link " data-bs-toggle="pill" href="#JEWELLERY">
-                                      <div style="position: relative;">JEWELLERY</div>
-                                    </a>
+                                    <a class="nav-link " data-bs-toggle="pill" href="#JEWELLERY"><div style="position: relative;">JEWELLERY<span class="count_order" style="left: 103px;">{{jewellery|length}}</span></div></a>
                                   </li>
-
+                  
                                 </ul>
 
                                 <!-- Tab panes -->
@@ -314,13 +328,13 @@
                                     <div class="table-responsive">
                               
 
-                                      <h2>total store</h2>
                                       <table class="table">
                                         <thead>
                                           <tr>
                                             <th> No </th>
                                             <th> Business Id </th>
-                                            <th> Store Id </th>
+                                            <th>Seller Name</th>
+                                            <th> Shop Id </th>
                                             <th> store Name </th>
                                             <th> Location </th>
                                             <th> Mobile no</th>
@@ -328,35 +342,22 @@
                                           </tr>
                                         </thead>
                                         <tbody>
+                                          {% for i in shopping %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
+                                            <td> {{i.Business_id}} </td>
+                                            <td> {{i.seller_name  }} </td>
                                             <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
+                                              <a href="demo" rel="stylesheet"> {{i.shop_id}}</a>
                                             </td>
-                                            <td> nilla </td>
-                                            <td style="width: 15%;white-space: normal;"> madurai</td>
-                                            <td>9876543210</td>
+                                            <td> {{i.business_name}} </td>
+                                            <td style="width: 15%;white-space: normal;">{{i.door_number}},{{i.street_name}},{{i.area}},{{i.pin_number}} </td>
+                                            <td>+91 {{i.contact}}</td>
 
                                           </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
-                                            </td>
-                                            <td> aswin </td>
-                                            <td style="width: 15%;white-space: normal;">
-                                              <p>chennai </p>
-                                            </td>
-                                            <td>7890654321</td>
-
-                                          </tr>
-
+                                          {% endfor %}
                                         </tbody>
                                       </table>
                                     </div>
@@ -368,60 +369,8 @@
                                           <tr>
                                             <th> No </th>
                                             <th> Business Id </th>
+                                            <th>Seller Name</th>
                                             <th> Shop Id </th>
-                                            <th> Product Id </th>
-                                            <th> Product Name </th>
-                                            <th> Created Date </th>
-                                            <th> Edit </th>
-                                            <th> Action </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <tr>
-                                            <td>
-                                              1
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              A.remya
-                                            </td>
-                                            <td> #12345 </td>
-                                            <td> Idly</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
-                                            <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              A.Anu
-                                            </td>
-                                            <td> #12345 </td>
-                                            <td> Dosa</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
-                                            <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
-
-                                        </tbody>
-                                      </table><br>
-
-                                      <h2>total store</h2>
-                                      <table class="table">
-                                        <thead>
-                                          <tr>
-                                            <th> No </th>
-                                            <th> Business Id </th>
-                                            <th> Store Id </th>
                                             <th> store Name </th>
                                             <th> Location </th>
                                             <th> Mobile no</th>
@@ -429,35 +378,22 @@
                                           </tr>
                                         </thead>
                                         <tbody>
+                                          {% for i in food %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
+                                            <td> {{i.Business_id}} </td>
+                                            <td> {{i.seller_name  }} </td>
                                             <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
+                                              <a href="demo" rel="stylesheet"> {{i.food_id}}</a>
                                             </td>
-                                            <td> nilla </td>
-                                            <td style="width: 15%;white-space: normal;"> madurai</td>
-                                            <td>9876543210</td>
+                                            <td> {{i.business_name}} </td>
+                                            <td style="width: 15%;white-space: normal;">{{i.door_number}},{{i.street_name}},{{i.area}},{{i.pin_number}} </td>
+                                            <td>+91 {{i.contact}}</td>
 
                                           </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
-                                            </td>
-                                            <td> aswin </td>
-                                            <td style="width: 15%;white-space: normal;">
-                                              <p>chennai </p>
-                                            </td>
-                                            <td>7890654321</td>
-
-                                          </tr>
-
+                                          {% endfor %}
                                         </tbody>
                                       </table>
                                     </div>
@@ -466,64 +402,51 @@
                                   <div id="FRESH" class="container tab-pane fade"><br>
                                     <div class="table-responsive">
                                   
-                                    <h2>total store</h2>
-                                      <table class="table">
-                                        <thead>
-                                          <tr>
-                                            <th> No </th>
-                                            <th> Business Id </th>
-                                            <th> Store Id </th>
-                                            <th> store Name </th>
-                                            <th> Location </th>
-                                            <th> Mobile no</th>
+                                    <table class="table">
+                                      <thead>
+                                        <tr>
+                                          <th> No </th>
+                                          <th> Business Id </th>
+                                          <th>Seller Name</th>
+                                          <th> Shop Id </th>
+                                          <th> store Name </th>
+                                          <th> Location </th>
+                                          <th> Mobile no</th>
 
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <tr>
-                                            <td>
-                                              1
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
-                                            </td>
-                                            <td> nilla </td>
-                                            <td style="width: 15%;white-space: normal;"> madurai</td>
-                                            <td>9876543210</td>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {% for i in fresh_cuts %}
+                                        <tr>
+                                          <td>
+                                            {{forloop.counter}}
+                                          </td>
+                                          <td> {{i.Business_id}} </td>
+                                          <td> {{i.seller_name  }} </td>
+                                          <td>
+                                            <a href="demo" rel="stylesheet"> {{i.fresh_id}}</a>
+                                          </td>
+                                          <td> {{i.business_name}} </td>
+                                          <td style="width: 15%;white-space: normal;">{{i.door_number}},{{i.street_name}},{{i.area}},{{i.pin_number}} </td>
+                                          <td>+91 {{i.contact}}</td>
 
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
-                                            </td>
-                                            <td> aswin </td>
-                                            <td style="width: 15%;white-space: normal;">
-                                              <p>chennai </p>
-                                            </td>
-                                            <td>7890654321</td>
-
-                                          </tr>
-
-                                        </tbody>
-                                      </table>
-                                    </div>
+                                        </tr>
+                                        {% endfor %}
+                                      </tbody>
+                                    </table>
+                                  </div>
 
                                   </div>
                                   <div id="DAILY" class="container tab-pane fade"><br>
                                     <div class="table-responsive">
                                      
-                                      <h2>total store</h2>
                                       <table class="table">
                                         <thead>
                                           <tr>
                                             <th> No </th>
                                             <th> Business Id </th>
-                                            <th> Store Id </th>
+                                            <th>Seller Name</th>
+                                            <th> Shop Id </th>
                                             <th> store Name </th>
                                             <th> Location </th>
                                             <th> Mobile no</th>
@@ -531,35 +454,22 @@
                                           </tr>
                                         </thead>
                                         <tbody>
+                                          {% for i in daily_mio %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
+                                            <td> {{i.Business_id}} </td>
+                                            <td> {{i.seller_name  }} </td>
                                             <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
+                                              <a href="demo" rel="stylesheet"> {{i.dmio_id}}</a>
                                             </td>
-                                            <td> nilla </td>
-                                            <td style="width: 15%;white-space: normal;"> madurai</td>
-                                            <td>9876543210</td>
+                                            <td> {{i.business_name}} </td>
+                                            <td style="width: 15%;white-space: normal;">{{i.door_number}},{{i.street_name}},{{i.area}},{{i.pin_number}} </td>
+                                            <td>+91 {{i.contact}}</td>
 
                                           </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
-                                            </td>
-                                            <td> aswin </td>
-                                            <td style="width: 15%;white-space: normal;">
-                                              <p>chennai </p>
-                                            </td>
-                                            <td>7890654321</td>
-
-                                          </tr>
-
+                                          {% endfor %}
                                         </tbody>
                                       </table>
 
@@ -571,13 +481,13 @@
                                   <div id="PHARMACY" class="container tab-pane fade"><br>
                                     <div class="table-responsive">
 
-                                      <h2>total store</h2>
                                       <table class="table">
                                         <thead>
                                           <tr>
                                             <th> No </th>
                                             <th> Business Id </th>
-                                            <th> Store Id </th>
+                                            <th>Seller Name</th>
+                                            <th> Shop Id </th>
                                             <th> store Name </th>
                                             <th> Location </th>
                                             <th> Mobile no</th>
@@ -585,35 +495,22 @@
                                           </tr>
                                         </thead>
                                         <tbody>
+                                          {% for i in pharmacy %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
+                                            <td> {{i.Business_id}} </td>
+                                            <td> {{i.seller_name  }} </td>
                                             <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
+                                              <a href="demo" rel="stylesheet"> {{i.pharm_id}}</a>
                                             </td>
-                                            <td> nilla </td>
-                                            <td style="width: 15%;white-space: normal;"> madurai</td>
-                                            <td>9876543210</td>
+                                            <td> {{i.business_name}} </td>
+                                            <td style="width: 15%;white-space: normal;">{{i.door_number}},{{i.street_name}},{{i.area}},{{i.pin_number}} </td>
+                                            <td>+91 {{i.contact}}</td>
 
                                           </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
-                                            </td>
-                                            <td> aswin </td>
-                                            <td style="width: 15%;white-space: normal;">
-                                              <p>chennai </p>
-                                            </td>
-                                            <td>7890654321</td>
-
-                                          </tr>
-
+                                          {% endfor %}
                                         </tbody>
                                       </table>
                                     </div>
@@ -621,13 +518,13 @@
                                   </div>
                                   <div id="dORIGINAL" class="container tab-pane fade"><br>
                                     <div class="table-responsive">
-                                      <h2>total store</h2>
                                       <table class="table">
                                         <thead>
                                           <tr>
                                             <th> No </th>
                                             <th> Business Id </th>
-                                            <th> Store Id </th>
+                                            <th>Seller Name</th>
+                                            <th> Shop Id </th>
                                             <th> store Name </th>
                                             <th> Location </th>
                                             <th> Mobile no</th>
@@ -635,35 +532,22 @@
                                           </tr>
                                         </thead>
                                         <tbody>
+                                          {% for i in d_original %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
+                                            <td> {{i.Business_id}} </td>
+                                            <td> {{i.seller_name  }} </td>
                                             <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
+                                              <a href="demo" rel="stylesheet"> {{i.d_id}}</a>
                                             </td>
-                                            <td> nilla </td>
-                                            <td style="width: 15%;white-space: normal;"> madurai</td>
-                                            <td>9876543210</td>
+                                            <td> {{i.business_name}} </td>
+                                            <td style="width: 15%;white-space: normal;">{{i.door_number}},{{i.street_name}},{{i.area}},{{i.pin_number}} </td>
+                                            <td>+91 {{i.contact}}</td>
 
                                           </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
-                                            </td>
-                                            <td> aswin </td>
-                                            <td style="width: 15%;white-space: normal;">
-                                              <p>chennai </p>
-                                            </td>
-                                            <td>7890654321</td>
-
-                                          </tr>
-
+                                          {% endfor %}
                                         </tbody>
                                       </table>
                                     </div>
@@ -671,13 +555,13 @@
                                   </div>
                                   <div id="JEWELLERY" class="container tab-pane fade"><br>
                                     <div class="table-responsive">
-                                      <h2>total store</h2>
                                       <table class="table">
                                         <thead>
                                           <tr>
                                             <th> No </th>
                                             <th> Business Id </th>
-                                            <th> Store Id </th>
+                                            <th>Seller Name</th>
+                                            <th> Shop Id </th>
                                             <th> store Name </th>
                                             <th> Location </th>
                                             <th> Mobile no</th>
@@ -685,35 +569,22 @@
                                           </tr>
                                         </thead>
                                         <tbody>
+                                          {% for i in jewellery %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
+                                            <td> {{i.Business_id}} </td>
+                                            <td> {{i.seller_name  }} </td>
                                             <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
+                                              <a href="demo" rel="stylesheet"> {{i.jewel_id}}</a>
                                             </td>
-                                            <td> nilla </td>
-                                            <td style="width: 15%;white-space: normal;"> madurai</td>
-                                            <td>9876543210</td>
+                                            <td> {{i.business_name}} </td>
+                                            <td style="width: 15%;white-space: normal;">{{i.door_number}},{{i.street_name}},{{i.area}},{{i.pin_number}} </td>
+                                            <td>+91 {{i.contact}}</td>
 
                                           </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              <a href="demo" rel="stylesheet"> #Shop1234</a>
-                                            </td>
-                                            <td> aswin </td>
-                                            <td style="width: 15%;white-space: normal;">
-                                              <p>chennai </p>
-                                            </td>
-                                            <td>7890654321</td>
-
-                                          </tr>
-
+                                          {% endfor %}
                                         </tbody>
                                       </table>
                                     </div>

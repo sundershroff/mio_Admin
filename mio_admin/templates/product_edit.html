@@ -1,0 +1,376 @@
+{% include "admin_header.html" %}
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+      <div class="theme-setting-wrapper">
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close mdi mdi-close"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+            <div class="img-ss rounded-circle bg-light border me-3"></div>Light
+          </div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme">
+            <div class="img-ss rounded-circle bg-dark border me-3"></div>Dark
+          </div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles success"></div>
+            <div class="tiles warning"></div>
+            <div class="tiles danger"></div>
+            <div class="tiles info"></div>
+            <div class="tiles dark"></div>
+            <div class="tiles default"></div>
+          </div>
+        </div>
+        <div id="layout-settings" class="settings-panel">
+          <i class="settings-close mdi mdi-close"></i>
+          <div class="d-flex align-items-center justify-content-between border-bottom">
+            <p class="settings-heading font-weight-bold border-top-0 mb-3 ps-3 pt-0 border-bottom-0 pb-0">Template Demos
+            </p>
+          </div>
+          <div class="demo-screen-wrapper">
+            <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_1/index.html" target="_blank"
+              class="demo-thumb-image" id="theme-light-switch">
+              <img src="../assets/images/screenshots/vertical-light.jpg" alt="demo image">
+            </a>
+            <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_2/index.html" target="_blank"
+              class="demo-thumb-image">
+              <img src="../assets/images/screenshots/vertical-dark.jpg" alt="demo image">
+            </a>
+            <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_3/index.html" target="_blank"
+              class="demo-thumb-image" id="theme-dark-switch">
+              <img src="../assets/images/screenshots/horizontal-light.jpg" alt="demo image">
+            </a>
+            <a href="https://www.bootstrapdash.com/demo/purple/jquery/template/demo_4/index.html" target="_blank"
+              class="demo-thumb-image">
+              <img src="../assets/images/screenshots/horizontal-dark.jpg" alt="demo image">
+            </a>
+          </div>
+        </div>
+      </div>
+      <div id="right-sidebar" class="settings-panel">
+        <i class="settings-close mdi mdi-close"></i>
+        <ul class="nav nav-tabs" id="setting-panel" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="todo-tab" data-bs-toggle="tab" href="#todo-section" role="tab"
+              aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="chats-tab" data-bs-toggle="tab" href="#chats-section" role="tab"
+              aria-controls="chats-section">CHATS</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="setting-content">
+          <div class="tab-pane fade show active scroll-wrapper" id="todo-section" role="tabpanel"
+            aria-labelledby="todo-section">
+            <div class="add-items d-flex px-3 mb-0">
+              <form class="form w-100">
+                <div class="form-group d-flex">
+                  <input type="text" class="form-control todo-list-input" placeholder="Add To-do">
+                  <button type="submit" class="add btn btn-primary todo-list-add-btn" id="add-task">Add</button>
+                </div>
+              </form>
+            </div>
+            <div class="list-wrapper px-3">
+              <ul class="d-flex flex-column-reverse todo-list">
+                <li>
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="checkbox" type="checkbox"> Team review meeting at 3.00 PM </label>
+                  </div>
+                  <i class="remove mdi mdi-close-circle-outline"></i>
+                </li>
+                <li>
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="checkbox" type="checkbox"> Prepare for presentation </label>
+                  </div>
+                  <i class="remove mdi mdi-close-circle-outline"></i>
+                </li>
+                <li>
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="checkbox" type="checkbox"> Resolve all the low priority tickets due today </label>
+                  </div>
+                  <i class="remove mdi mdi-close-circle-outline"></i>
+                </li>
+                <li class="completed">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="checkbox" type="checkbox" checked> Schedule meeting for next week </label>
+                  </div>
+                  <i class="remove mdi mdi-close-circle-outline"></i>
+                </li>
+                <li class="completed">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="checkbox" type="checkbox" checked> Project review </label>
+                  </div>
+                  <i class="remove mdi mdi-close-circle-outline"></i>
+                </li>
+              </ul>
+            </div>
+            <div class="events py-4 border-bottom px-3">
+              <div class="wrapper d-flex mb-2">
+                <i class="mdi mdi-circle-outline text-primary me-2"></i>
+                <span>Feb 11 2018</span>
+              </div>
+              <p class="mb-0 font-weight-thin text-gray">Creating component page</p>
+              <p class="text-gray mb-0">build a js based app</p>
+            </div>
+            <div class="events pt-4 px-3">
+              <div class="wrapper d-flex mb-2">
+                <i class="mdi mdi-circle-outline text-primary me-2"></i>
+                <span>Feb 7 2018</span>
+              </div>
+              <p class="mb-0 font-weight-thin text-gray">Meeting with Alisa</p>
+              <p class="text-gray mb-0 ">Call Sarah Graves</p>
+            </div>
+          </div>
+          <!-- To do section tab ends -->
+          <div class="tab-pane fade" id="chats-section" role="tabpanel" aria-labelledby="chats-section">
+            <div class="d-flex align-items-center justify-content-between border-bottom">
+              <p class="settings-heading border-top-0 mb-3 ps-3 pt-0 border-bottom-0 pb-0">Friends</p>
+              <small class="settings-heading border-top-0 mb-3 pt-0 border-bottom-0 pb-0 pe-3 font-weight-normal">See
+                All</small>
+            </div>
+            <ul class="chat-list">
+              <li class="list active">
+                <div class="profile"><img src="images/faces/face1.html" alt="image"><span class="online"></span></div>
+                <div class="info">
+                  <p>Thomas Douglas</p>
+                  <p>Available</p>
+                </div>
+                <small class="text-muted my-auto">19 min</small>
+              </li>
+              <li class="list">
+                <div class="profile"><img src="images/faces/face2.html" alt="image"><span class="offline"></span></div>
+                <div class="info">
+                  <div class="wrapper d-flex">
+                    <p>Catherine</p>
+                  </div>
+                  <p>Away</p>
+                </div>
+                <div class="badge badge-success badge-pill my-auto mx-2">4</div>
+                <small class="text-muted my-auto">23 min</small>
+              </li>
+              <li class="list">
+                <div class="profile"><img src="images/faces/face3.html" alt="image"><span class="online"></span></div>
+                <div class="info">
+                  <p>Daniel Russell</p>
+                  <p>Available</p>
+                </div>
+                <small class="text-muted my-auto">14 min</small>
+              </li>
+              <li class="list">
+                <div class="profile"><img src="images/faces/face4.html" alt="image"><span class="offline"></span></div>
+                <div class="info">
+                  <p>James Richardson</p>
+                  <p>Away</p>
+                </div>
+                <small class="text-muted my-auto">2 min</small>
+              </li>
+              <li class="list">
+                <div class="profile"><img src="images/faces/face5.html" alt="image"><span class="online"></span></div>
+                <div class="info">
+                  <p>Madeline Kennedy</p>
+                  <p>Available</p>
+                </div>
+                <small class="text-muted my-auto">5 min</small>
+              </li>
+              <li class="list">
+                <div class="profile"><img src="images/faces/face6.html" alt="image"><span class="online"></span></div>
+                <div class="info">
+                  <p>Sarah Graves</p>
+                  <p>Available</p>
+                </div>
+                <small class="text-muted my-auto">47 min</small>
+              </li>
+            </ul>
+          </div>
+          <!-- chat tab ends -->
+        </div>
+      </div>
+      <!-- partial -->
+      {% include "admin_sidbar.html" %}
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">
+              <span class="page-title-icon bg-gradient-primary text-white me-2">
+                <i class="mdi mdi-home"></i>
+              </span> Home
+            </h3>
+            <!-- <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">
+                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                  </li>
+                </ul>
+              </nav> -->
+          </div>
+          <div class="row">
+            <!-- Delivery live trackibg -->
+
+            <div class="form">
+              <form method="POST" enctype="multipart/form-data" onclick="return calculateGrades()">
+                {% csrf_token %}
+                  <h1>UPDATE</h1>
+                  <h2>Product Datails</h2>
+                  <div class="formcontainer">
+                      <div class="container">
+                          <label for="number1"><strong>Primary image:</strong></label>
+                          <div class="input-group" style="justify-content: center;align-items: center;">
+                            <div class="banner"></div>
+                            <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                            <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                            <input type="file" class="imagebanner" name="primary_image" id="imageInputfresh4" onchange="previewImagefresh4()">
+                            <img src="{{shop_product.product.primary_image}}" class="py-1 px-1" id="imagePreviewfresh4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                        </div>
+                      <label for="number2"><strong>Other images:</strong></label>
+                      <div class="row">
+                        {% for i in shop_product.product.other_images %}
+                        <div class="col-md-4" style="padding-bottom: 15px;">
+                          <div class="input-group" style="justify-content: center;align-items: center;">
+                              <div class="banner"></div>
+                              <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                              <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                              <input type="file" class="imagebanner" name="other_images" id="imageInputfresh4" onchange="previewImagefresh4()">
+                              <img src="{{i}}" class="py-1 px-1" id="imagePreviewfresh4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                          </div>
+                      </div>
+  
+                        {% endfor %}
+                    <div class="col-md-4" style="padding-bottom: 15px;">
+                      <div class="input-group" style="justify-content: center;align-items: center;">
+                          <div class="banner"></div>
+                          <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                          <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                          <input type="file" class="imagebanner" name="" id="imageInputfresh4" onchange="previewImagefresh4()">
+                          <img class="py-1 px-1" id="imagePreviewfresh4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                      </div>
+                  </div>
+                  <div class="col-md-4" style="padding-bottom: 15px;">
+                    <div class="input-group" style="justify-content: center;align-items: center;">
+                        <div class="banner"></div>
+                        <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                        <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                        <input type="file" class="imagebanner" name="" id="imageInputfresh4" onchange="previewImagefresh4()">
+                        <img class="py-1 px-1" id="imagePreviewfresh4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                    </div>
+                </div>
+                </div>
+                          <label><strong>Brand</strong></label>
+                          <input type="text" name="brand" value="{{shop_product.product.brand.0}}" placeholder="Enter brand name"  required><br>
+                          <label ><strong>Model Name:</strong></label>
+                          <input type="text" name="model_name" value="{{shop_product.product.model_name.0}}" placeholder="Enter model name" required><br>
+
+                          <label for="number8"><strong>Custom Description:</strong> </label>
+                          <div class="custom" id="panel" style=" display: block;">
+                            {% for key,values in custom_description.items %}
+                    
+                            <div class="print" style="width: 100%;">
+                              <div class="custom" style="display: flex;column-gap: 10px;">
+                                  <input type="text" value="{{key}}" class="name1" placeholder="Enter key" required="" fdprocessedid="r9jxhm" style="width: 70%;">
+                                  <input type="text" name="{{key}}" value="{{values.0}}" class="name1" placeholder="Enter value" required="" fdprocessedid="yzt6b" style="width: 70%;">
+                                  <i class="fa fa-minus-circle delete-btn" style="font-size:34px;color:red;cursor:pointer;"></i>
+                              </div></div>
+                            {% endfor %}
+                            
+                              </div>
+                              <i class="fa fa-plus-circle" style="font-size: 31px;color: green;padding-top: 10px;padding-bottom: 10px;font-weight: 600;" id="flip">ADD</i> 
+                            
+                          
+                    <div class="buttons">
+                          
+                          <input type="checkbox" name="delivery_type" value="paid_delivery" class="btn-check " id="btn-check" autocomplete="off" style="width: 8%;height: 50px;opacity: 0%;">
+                          <label class="btn btn-danger" for="btn-check" style="padding: 12px;">Paid Delivery</label>  
+
+                          <input type="checkbox" name="delivery_type" value="free_delivery" class="btn-check " id="btn-check" autocomplete="off" style="width: 8%;height: 50px;opacity: 0%;">
+                          <label class="btn btn-info" for="btn-check" style="padding: 12px;">Free Delivery</label>  
+                        </div>
+                          <div class="pricing">
+                            <label for="number6"><strong>Actual Price:</strong></label>
+                            <input type="number" name="actual_price" value="{{shop_product.product.actual_price.0}}" placeholder="Enter price" required><br>
+                            <label for="number6"><strong>Discount Price:</strong></label>
+                            <input type="number" name="discount_price" value="{{shop_product.product.discount_price.0}}" placeholder="Enter Price" required><br>
+                            {% comment %} <label for="number6"><strong>GST:</strong></label>
+                            <input type="number"  placeholder="Enter name" required><br> {% endcomment %}
+                            <label for="number6"><strong>Sellin Price:</strong></label>
+                            <input type="number" name="selling_price" value="{{shop_product.product.selling_price}}" placeholder="Enter name" required><br>
+                          </div>&nbsp;&nbsp;
+
+                      </div>
+                      <br>
+                      <div>
+                          <button type="submit" href="edit-menu.html">update</button><br><br>
+                      
+                      </div>
+                  </div>
+              </form>
+              </div>
+
+          </div>
+          </div>
+
+
+
+
+          <div class="row">
+            <!-- Delivery live trackibg -->
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title text-white">Todo</h4>
+                  <div class="list-wrapper">
+                    <footer class="footer my-0 ">
+                        <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                          <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2024 <a href="https://www.bootstrapdash.com/" target="_blank">Clovion Tech Solution pvt Ltd </a>. All rights reserved.</span>
+                          <!-- <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Clovion Tech Solution pvt Ltd <i class="mdi mdi-heart text-danger"></i></span> -->
+                        </div>
+                      </footer>
+                    <!-- main-panel ends -->
+                  </div>
+                  <!-- page-body-wrapper ends -->
+                </div>
+             <!-- container-scroller -->
+    <!-- plugins:js -->
+    <!-- JavaScript imports -->
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+  
+    {% include "script.html" %}
+    <!-- Custom JavaScript -->
+    <script>
+      $(document).ready(function() {
+      $("#flip").click(function() {
+  
+        var newDivContent = `
+        <div class="print" style="width: 100%;">
+    <div class="custom" style="display: flex;column-gap: 10px;">
+        <input type="text" class="name1" placeholder="Enter Key" required>
+        <input type="text" class="name1" placeholder="Enter value" required>
+        <i class="fa fa-minus-circle delete-btn" style="font-size:34px;color:red;cursor:pointer;"></i>
+    </div></div>`; // Note the <br> here for extra separation
+
+          $("#panel").append(newDivContent+"<br>");
+      });
+
+   
+      $("#panel").on("click", ".delete-btn", function() {
+          $(this).parent().remove();
+      });
+   });
+  
+  
+        
+    
+  </script>
+   
+    </body>    
+        <!-- Mirrored from demo.bootstrapdash.com/purple/jquery/template/demo_1/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 05 Feb 2024 12:21:10 GMT -->
+            </html>

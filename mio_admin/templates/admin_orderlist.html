@@ -1,4 +1,10 @@
 {% include "admin_header.html" %}
+<head>
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" /> -->
+
+</head>
 
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
@@ -210,8 +216,36 @@
               <div class="card-body">
                 <h4 class="card-title text-white">Todo</h4>
                 <div class="list-wrapper">
+                  <div class="row">
+                    <!-- Delivery live trackibg -->
+                    <div class="dropdown">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                        REGION
+                      </button>
+                      <form method="POST" class="dropdown-menu">
+                        {% csrf_token %}
+                      <select name="region_select" style="
+                      width: 100%;
+                      height: 100%;
+                      border: 0px;
+                  " onchange="this.form.submit()">
+                  <option value="">Select</option>
+                        <option value="nagercoil">Nagercoil</option>
+                        <option value="kanniyakumari">Kanyakumari</option>
+                        <option value="thuckalay">Tuckalay</option>
+                        <option value="marthandam">Marthandam</option>
+                        <option value="karungal">Karungal</option>
+                        <option value="nithiravilai">Nithiravilai</option>
+                      </select>
+                      <script>
+
+                      </script>
+                    </form>
+                    </div>
+                  </div>
+
     <div class="col-md-12 grid-margin stretch-card">
-      <div class="card">
+      <div class="card" style="border: 0px;">
         <div class="card-body px-0">
           <h4 class="card-title text-white">Todo</h4>
           <div class="add-items px-2" style="margin-bottom: 0;">
@@ -222,25 +256,25 @@
               <!-- Nav pills -->
               <ul class="nav nav-pills" role="tablist">
                 <li class="nav-item">
-                  <a class="nav-link active" data-bs-toggle="pill" href="#SHOPPING"><div style="position: relative;">SHOPPING<span class="count_order" style="left: 90px;">0</span></div></a>
+                  <a class="nav-link active" data-bs-toggle="pill" href="#SHOPPING"><div style="position: relative;">SHOPPING<span class="count_order" style="left: 90px;">{{shopping|length}}</span></div></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" data-bs-toggle="pill" href="#FOOD"><div style="position: relative;">FOOD<span class="count_order" style="left: 60px;">0</span></div></a>
+                  <a class="nav-link" data-bs-toggle="pill" href="#FOOD"><div style="position: relative;">FOOD<span class="count_order" style="left: 60px;">{{food|length}}</span></div></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="pill" href="#FRESH"><div style="position: relative;">FRESH CUTS<span class="count_order" style="left: 110px;">0</span></div></a>
+                  <a class="nav-link " data-bs-toggle="pill" href="#FRESH"><div style="position: relative;">FRESH CUTS<span class="count_order" style="left: 110px;">{{fresh_cuts|length}}</span></div></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" data-bs-toggle="pill" href="#DAILY"><div style="position: relative;">DAILY MIO<span class="count_order" style="left: 90px;">0</span></div></a>
+                  <a class="nav-link" data-bs-toggle="pill" href="#DAILY"><div style="position: relative;">DAILY MIO<span class="count_order" style="left: 90px;">{{daily_mio|length}}</span></div></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="pill" href="#PHARMACY"><div style="position: relative;">PHARMACY<span class="count_order" style="left: 100px;">0</span></div></a>
+                  <a class="nav-link " data-bs-toggle="pill" href="#PHARMACY"><div style="position: relative;">PHARMACY<span class="count_order" style="left: 100px;">{{pharmacy|length}}</span></div></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" data-bs-toggle="pill" href="#dORIGINAL"><div style="position: relative;">D-ORIGINAL<span class="count_order" style="left: 103px;">0</span></div></a>
+                  <a class="nav-link" data-bs-toggle="pill" href="#dORIGINAL"><div style="position: relative;">D-ORIGINAL<span class="count_order" style="left: 103px;">{{d_original|length}}</span></div></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="pill" href="#JEWELLERY"><div style="position: relative;">JEWELLERY<span class="count_order" style="left: 103px;">0</span></div></a>
+                  <a class="nav-link " data-bs-toggle="pill" href="#JEWELLERY"><div style="position: relative;">JEWELLERY<span class="count_order" style="left: 103px;">{{jwellery|length}}</span></div></a>
                 </li>
 
               </ul>
@@ -253,7 +287,6 @@
                       <thead>
                         <tr>
                           <th> No </th>
-                          <th> Uid </th>
                           <th> Name </th>
                           <th>  Product Id </th>
                           <th> Product Name </th>
@@ -265,58 +298,74 @@
                         </tr>
                       </thead>
                       <tbody>
+                        {% for i in shopping %}
+                        
                         <tr>
                           <td>
-                              1
+                              {{forloop.counter}}
                             </td>
-                          <td> #12AWSE </td>
                           <td>
-                           A.Sunderavel
+                           {{i.end_user.full_name}}
                           </td>
-                          <td>  #12345 </td>
-                          <td> Redmi Note 9</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> COD</td>
-                          <td style="color: green;">Delivered</td>
-                          <td style=""><a href="invoice.html" style="text-decoration: none;color: #8B1874;"><i class="fa fa-eye" style="font-size:20px"></i></a>
+                          <td>  {{i.shop_product.product_id}} </td>
+                          <td> {{i.shop_product.product.name}}</td>
+                          <td><label class="badge badge-gradient-success">{{i.track_id}}</label></td>
+                          <td> {{i.order_id}}</td>
+                          <td> {{i.payment_type}}</td>
+                          <td style="color: green;">{{i.status}}</td>
+                          
+                          <td style="">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal{{i.order_id}}" style="text-decoration: none;color: #8B1874;
+                                border: 0px;
+                                background-color: transparent;">
+                                <i class="fa fa-eye" style="font-size:20px"></i></button>
                             <a href="" class="px-2" style="
                             text-decoration: none;
-                            font-size: large;
-                        ">Invoice</a></td>
+                            font-size: large;">Invoice</a></td>
                         </tr>
-                        <tr>
-                          <td>
-                              2
-                            </td>
-                          <td> #12AWSE </td>
-                          <td>
-                           A.Abijith
-                          </td>
-                          <td>  #12345 </td>
-                          <td> Redmi Note 10</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> Card</td>
-                          <td style="color: red;">Pending</td>
-                          <td style=""><a href="" style="text-decoration: none;color: #8B1874;"><i class="fa fa-eye" style="font-size:20px"></i></a>
-                            <a href="" class="px-2" style="
-                            text-decoration: none;
-                            font-size: large;
-                        ">Invoice</a></td>
-                        </tr>
+
+                        {% endfor %}
+
 
                       </tbody>
                     </table>
                   </div>
               </div>
+              {% for i in shopping %}
+                                                             <!-- The Modal -->
+                                                             <div class="modal" id="myModal{{i.order_id}}">
+                                                              <div class="modal-dialog modal-fullscreen" style="margin-top: 0px;">
+                                                                <div class="modal-content">
+                                                            
+                                                                  <!-- Modal Header -->
+                                                                  <div class="modal-header">
+                                                                    <h4 class="modal-title">Invoice</h4>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                  </div>
+                                                            
+                                                                  <!-- Modal body -->
+                                                                  <div class="modal-body">
+                                                                    {% include 'invoice.html' %}
+                                                                  </div>
+                                                            
+                                                            
+                                                            
+                                                                  <!-- Modal footer -->
+                                                                  <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                                                  </div>
+                                                            
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                         {% endfor %}   
+
                 <div id="FOOD" class="container tab-pane fade"><br>
                   <div class="table-responsive">
                     <table class="table">
                       <thead>
                         <tr>
                           <th> No </th>
-                          <th> Uid </th>
                           <th> Name </th>
                           <th>  Product Id </th>
                           <th> Product Name </th>
@@ -324,39 +373,38 @@
                           <th> Order Id </th>
                           <th> Payment Method </th>
                           <th> Status </th>
+                          <th> Action </th>
                         </tr>
                       </thead>
                       <tbody>
+                        {% for i in food %}
+                        
                         <tr>
                           <td>
-                              1
+                              {{forloop.counter}}
                             </td>
-                          <td> #12AWSE </td>
                           <td>
-                           A.remya
+                           {{i.end_user.full_name}}
                           </td>
-                          <td>  #12345 </td>
-                          <td> Idly</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> COD</td>
-                          <td style="color: green;">Delivered</td>
+                          <td>  {{i.food_product.product_id}} </td>
+                          <td> {{i.food_product.product.name}}</td>
+                          <td><label class="badge badge-gradient-success">{{i.track_id}}</label></td>
+                          <td> {{i.order_id}}</td>
+                          <td> {{i.payment_type}}</td>
+                          <td style="color: green;">{{i.status}}</td>
+                          
+                          <td style="">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal{{i.order_id}}" style="text-decoration: none;color: #8B1874;
+                                border: 0px;
+                                background-color: transparent;">
+                                <i class="fa fa-eye" style="font-size:20px"></i></button>
+                            <a href="" class="px-2" style="
+                            text-decoration: none;
+                            font-size: large;">Invoice</a></td>
                         </tr>
-                        <tr>
-                          <td>
-                              2
-                            </td>
-                          <td> #12AWSE </td>
-                          <td>
-                           A.Anu
-                          </td>
-                          <td>  #12345 </td>
-                          <td> Dosa</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> Card</td>
-                          <td style="color: red;">Pending</td>
-                        </tr>
+
+                        {% endfor %}
+
 
                       </tbody>
                     </table>
@@ -369,7 +417,6 @@
                       <thead>
                         <tr>
                           <th> No </th>
-                          <th> Uid </th>
                           <th> Name </th>
                           <th>  Product Id </th>
                           <th> Product Name </th>
@@ -377,39 +424,38 @@
                           <th> Order Id </th>
                           <th> Payment Method </th>
                           <th> Status </th>
+                          <th> Action </th>
                         </tr>
                       </thead>
                       <tbody>
+                        {% for i in fresh_cuts %}
+                        
                         <tr>
                           <td>
-                              1
+                              {{forloop.counter}}
                             </td>
-                          <td> #12AWSE </td>
                           <td>
-                           A.remya
+                           {{i.end_user.full_name}}
                           </td>
-                          <td>  #12345 </td>
-                          <td> Idly</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> COD</td>
-                          <td style="color: green;">Delivered</td>
+                          <td>  {{i.freshcut_product.product_id}} </td>
+                          <td> {{i.freshcut_product.product.name}}</td>
+                          <td><label class="badge badge-gradient-success">{{i.track_id}}</label></td>
+                          <td> {{i.order_id}}</td>
+                          <td> {{i.payment_type}}</td>
+                          <td style="color: green;">{{i.status}}</td>
+                          
+                          <td style="">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal{{i.order_id}}" style="text-decoration: none;color: #8B1874;
+                                border: 0px;
+                                background-color: transparent;">
+                                <i class="fa fa-eye" style="font-size:20px"></i></button>
+                            <a href="" class="px-2" style="
+                            text-decoration: none;
+                            font-size: large;">Invoice</a></td>
                         </tr>
-                        <tr>
-                          <td>
-                              2
-                            </td>
-                          <td> #12AWSE </td>
-                          <td>
-                           A.Anu
-                          </td>
-                          <td>  #12345 </td>
-                          <td> Dosa</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> Card</td>
-                          <td style="color: red;">Pending</td>
-                        </tr>
+
+                        {% endfor %}
+
 
                       </tbody>
                     </table>
@@ -422,7 +468,6 @@
                       <thead>
                         <tr>
                           <th> No </th>
-                          <th> Uid </th>
                           <th> Name </th>
                           <th>  Product Id </th>
                           <th> Product Name </th>
@@ -430,39 +475,38 @@
                           <th> Order Id </th>
                           <th> Payment Method </th>
                           <th> Status </th>
+                          <th> Action </th>
                         </tr>
                       </thead>
                       <tbody>
+                        {% for i in daily_mio %}
+                        
                         <tr>
                           <td>
-                              1
+                              {{forloop.counter}}
                             </td>
-                          <td> #12AWSE </td>
                           <td>
-                           A.remya
+                           {{i.end_user.full_name}}
                           </td>
-                          <td>  #12345 </td>
-                          <td> Idly</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> COD</td>
-                          <td style="color: green;">Delivered</td>
+                          <td>  {{i.dmio_product.product_id}} </td>
+                          <td> {{i.dmio_product.product.name}}</td>
+                          <td><label class="badge badge-gradient-success">{{i.track_id}}</label></td>
+                          <td> {{i.order_id}}</td>
+                          <td> {{i.payment_type}}</td>
+                          <td style="color: green;">{{i.status}}</td>
+                          
+                          <td style="">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal{{i.order_id}}" style="text-decoration: none;color: #8B1874;
+                                border: 0px;
+                                background-color: transparent;">
+                                <i class="fa fa-eye" style="font-size:20px"></i></button>
+                            <a href="" class="px-2" style="
+                            text-decoration: none;
+                            font-size: large;">Invoice</a></td>
                         </tr>
-                        <tr>
-                          <td>
-                              2
-                            </td>
-                          <td> #12AWSE </td>
-                          <td>
-                           A.Anu
-                          </td>
-                          <td>  #12345 </td>
-                          <td> Dosa</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> Card</td>
-                          <td style="color: red;">Pending</td>
-                        </tr>
+
+                        {% endfor %}
+
 
                       </tbody>
                     </table>
@@ -475,7 +519,6 @@
                       <thead>
                         <tr>
                           <th> No </th>
-                          <th> Uid </th>
                           <th> Name </th>
                           <th>  Product Id </th>
                           <th> Product Name </th>
@@ -483,39 +526,38 @@
                           <th> Order Id </th>
                           <th> Payment Method </th>
                           <th> Status </th>
+                          <th> Action </th>
                         </tr>
                       </thead>
                       <tbody>
+                        {% for i in pharmacy %}
+                        
                         <tr>
                           <td>
-                              1
+                              {{forloop.counter}}
                             </td>
-                          <td> #12AWSE </td>
                           <td>
-                           A.remya
+                           {{i.end_user.full_name}}
                           </td>
-                          <td>  #12345 </td>
-                          <td> Idly</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> COD</td>
-                          <td style="color: green;">Delivered</td>
+                          <td>  {{i.pharmacy_product.product_id}} </td>
+                          <td> {{i.pharmacy_product.product.name}}</td>
+                          <td><label class="badge badge-gradient-success">{{i.track_id}}</label></td>
+                          <td> {{i.order_id}}</td>
+                          <td> {{i.payment_type}}</td>
+                          <td style="color: green;">{{i.status}}</td>
+                          
+                          <td style="">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal{{i.order_id}}" style="text-decoration: none;color: #8B1874;
+                                border: 0px;
+                                background-color: transparent;">
+                                <i class="fa fa-eye" style="font-size:20px"></i></button>
+                            <a href="" class="px-2" style="
+                            text-decoration: none;
+                            font-size: large;">Invoice</a></td>
                         </tr>
-                        <tr>
-                          <td>
-                              2
-                            </td>
-                          <td> #12AWSE </td>
-                          <td>
-                           A.Anu
-                          </td>
-                          <td>  #12345 </td>
-                          <td> Dosa</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> Card</td>
-                          <td style="color: red;">Pending</td>
-                        </tr>
+
+                        {% endfor %}
+
 
                       </tbody>
                     </table>
@@ -528,7 +570,6 @@
                       <thead>
                         <tr>
                           <th> No </th>
-                          <th> Uid </th>
                           <th> Name </th>
                           <th>  Product Id </th>
                           <th> Product Name </th>
@@ -536,39 +577,38 @@
                           <th> Order Id </th>
                           <th> Payment Method </th>
                           <th> Status </th>
+                          <th> Action </th>
                         </tr>
                       </thead>
                       <tbody>
+                        {% for i in d_original %}
+                        
                         <tr>
                           <td>
-                              1
+                              {{forloop.counter}}
                             </td>
-                          <td> #12AWSE </td>
                           <td>
-                           A.remya
+                           {{i.end_user.full_name}}
                           </td>
-                          <td>  #12345 </td>
-                          <td> Idly</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> COD</td>
-                          <td style="color: green;">Delivered</td>
+                          <td>  {{i.d_original_product.product_id}} </td>
+                          <td> {{i.d_original_product.product.name}}</td>
+                          <td><label class="badge badge-gradient-success">{{i.track_id}}</label></td>
+                          <td> {{i.order_id}}</td>
+                          <td> {{i.payment_type}}</td>
+                          <td style="color: green;">{{i.status}}</td>
+                          
+                          <td style="">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal{{i.order_id}}" style="text-decoration: none;color: #8B1874;
+                                border: 0px;
+                                background-color: transparent;">
+                                <i class="fa fa-eye" style="font-size:20px"></i></button>
+                            <a href="" class="px-2" style="
+                            text-decoration: none;
+                            font-size: large;">Invoice</a></td>
                         </tr>
-                        <tr>
-                          <td>
-                              2
-                            </td>
-                          <td> #12AWSE </td>
-                          <td>
-                           A.Anu
-                          </td>
-                          <td>  #12345 </td>
-                          <td> Dosa</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> Card</td>
-                          <td style="color: red;">Pending</td>
-                        </tr>
+
+                        {% endfor %}
+
 
                       </tbody>
                     </table>
@@ -581,7 +621,6 @@
                       <thead>
                         <tr>
                           <th> No </th>
-                          <th> Uid </th>
                           <th> Name </th>
                           <th>  Product Id </th>
                           <th> Product Name </th>
@@ -589,39 +628,38 @@
                           <th> Order Id </th>
                           <th> Payment Method </th>
                           <th> Status </th>
+                          <th> Action </th>
                         </tr>
                       </thead>
                       <tbody>
+                        {% for i in jwellery %}
+                        
                         <tr>
                           <td>
-                              1
+                              {{forloop.counter}}
                             </td>
-                          <td> #12AWSE </td>
                           <td>
-                           A.remya
+                           {{i.end_user.full_name}}
                           </td>
-                          <td>  #12345 </td>
-                          <td> Idly</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> COD</td>
-                          <td style="color: green;">Delivered</td>
+                          <td>  {{i.jewel_product.product_id}} </td>
+                          <td> {{i.jewel_product.product.name}}</td>
+                          <td><label class="badge badge-gradient-success">{{i.track_id}}</label></td>
+                          <td> {{i.order_id}}</td>
+                          <td> {{i.payment_type}}</td>
+                          <td style="color: green;">{{i.status}}</td>
+                          
+                          <td style="">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal{{i.order_id}}" style="text-decoration: none;color: #8B1874;
+                                border: 0px;
+                                background-color: transparent;">
+                                <i class="fa fa-eye" style="font-size:20px"></i></button>
+                            <a href="" class="px-2" style="
+                            text-decoration: none;
+                            font-size: large;">Invoice</a></td>
                         </tr>
-                        <tr>
-                          <td>
-                              2
-                            </td>
-                          <td> #12AWSE </td>
-                          <td>
-                           A.Anu
-                          </td>
-                          <td>  #12345 </td>
-                          <td> Dosa</td>
-                          <td><label class="badge badge-gradient-success">#TRACK12345</label></td>
-                          <td> #ORDER12345</td>
-                          <td> Card</td>
-                          <td style="color: red;">Pending</td>
-                        </tr>
+
+                        {% endfor %}
+
 
                       </tbody>
                     </table>

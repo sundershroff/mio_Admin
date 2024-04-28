@@ -16,8 +16,10 @@ class Businessmodel(models.Model):
     user_otp = models.IntegerField(null=True)
     full_name=models.TextField()
     created_date=models.TextField(null=True)
-    
     profile_picture = models.TextField(null=True)
+    device_id = models.JSONField(null=True)
+    notification_status=models.BooleanField(default=False,null=True)
+
 
 class shoppingmodel(models.Model):
     shop_id = models.TextField(null=True)
@@ -33,7 +35,7 @@ class shoppingmodel(models.Model):
     area = models.TextField(null=True)
     region = models.TextField(null=True)
     aadhar_number = models.TextField(null=True)
-    pin_number = models.TextField()
+    pincode = models.TextField(null=True)
     pin_your_location = models.TextField()
     name = models.TextField()
     account_number = models.TextField()
@@ -69,7 +71,7 @@ class jewellerymodel(models.Model):
     area = models.TextField(null=True)
     region = models.TextField(null=True)
     aadhar_number=models.TextField(null=True)
-    pin_number = models.TextField()
+    pincode = models.TextField(null=True)
     pin_your_location = models.TextField()
     name = models.TextField()
     account_number = models.TextField()
@@ -101,7 +103,7 @@ class foodmodel(models.Model):
     street_name = models.TextField(null=True)
     area = models.TextField(null=True)
     aadhar_number=models.TextField(null=True)
-    pin_number = models.TextField()
+    pincode = models.TextField(null=True)
     fssa = models.TextField()
     region = models.TextField(null=True)
     pin_your_location = models.TextField()
@@ -135,7 +137,7 @@ class freshcutsmodel(models.Model):
     street_name = models.TextField(null=True)
     area = models.TextField(null=True)
     aadhar_number=models.TextField(null=True)
-    pin_number = models.TextField()
+    pincode = models.TextField(null=True)
     fssa = models.TextField()
     region = models.TextField(null=True)
     pin_your_location = models.TextField()
@@ -169,7 +171,7 @@ class dailymio_model(models.Model):
     street_name = models.TextField(null=True)
     area = models.TextField(null=True)
     aadhar_number=models.TextField(null=True)
-    pin_number = models.TextField(null=True)
+    pincode = models.TextField(null=True)
     fssa = models.TextField(null=True)
     region = models.TextField(null=True)
     pin_your_location = models.TextField(null=True)
@@ -199,7 +201,7 @@ class pharmacy_model(models.Model):
     gst = models.TextField()
     contact = models.TextField()
     alternate_contact = models.TextField()
-    pin_number = models.TextField()
+    pincode = models.TextField(null=True)
     aadhar_number=models.TextField(null=True)
     door_number = models.TextField(null=True)
     street_name = models.TextField(null=True)
@@ -238,7 +240,7 @@ class d_originalmodel(models.Model):
     area = models.TextField(null=True)
     region = models.TextField(null=True)
     aadhar_number=models.TextField(null=True)
-    pin_number = models.TextField()
+    pincode = models.TextField(null=True)
     fssa = models.TextField()
     pin_your_location = models.TextField()
     name = models.TextField()
@@ -264,6 +266,7 @@ class shop_productsmodel(models.Model):
     product_id = models.TextField(null=True)
     shop_id = models.TextField(null=True)
     status = models.TextField(default=False,null=True)
+    business_status=models.TextField(null=True)
     category = models.TextField(null=True)
     subcategory = models.TextField(null=True)
     subcategory1 = models.TextField(null=True)
@@ -279,6 +282,7 @@ class jewel_productsmodel(models.Model):
     category = models.TextField(null=True)
     subcategory = models.TextField(null=True)
     product= models.JSONField(null=True)
+    business_status=models.TextField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
 
 # food
@@ -290,6 +294,7 @@ class food_productsmodel(models.Model):
     subcategory = models.TextField(null=True)
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
+    business_status=models.TextField(null=True)
 
 #freshcutsproductmodel
 
@@ -301,6 +306,7 @@ class fresh_productsmodel(models.Model):
     subcategory = models.TextField(null=True)
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
+    business_status=models.TextField(null=True)
 
 # dailymioproducts
 
@@ -312,6 +318,7 @@ class dmio_productsmodel(models.Model):
     subcategory = models.TextField(null=True)
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
+    business_status=models.TextField(null=True)
 
 #pharmacy products
 
@@ -323,6 +330,7 @@ class pharmacy_productsmodel(models.Model):
     subcategory = models.TextField(null=True)
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
+    business_status=models.TextField(null=True)
 
 # d_originalproducts
     
@@ -335,6 +343,7 @@ class d_original_productsmodel(models.Model):
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
     district = models.TextField(null=True)
+    business_status=models.TextField(null=True)
 
 
 
@@ -353,8 +362,11 @@ class End_Usermodel(models.Model):
     user_otp = models.IntegerField(null=True)
     profile_picture = models.TextField(null=True)
     address_data = models.JSONField(null=True)
-    temp_address =  models.JSONField(null=True)
-
+    
+    # temp_address =  models.JSONField(null=True)
+    latitude = models.TextField(null=True)
+    longitude = models.TextField(null=True)
+    notification_status=models.BooleanField(default=False,null=True)
 
 # -------------delivery person---------------------
 # delivery signin
@@ -382,6 +394,25 @@ class Delivery_model(models.Model):
     region = models.TextField(null=True)
     submit_issues = models.TextField(null=True)
     upload_issues = models.TextField(null=True)
+    otp = models.IntegerField(null=True)
+    device_id = models.TextField(null=True)
+    # verified=models.TextField(default=False,null=True)
+    user_otp=models.IntegerField(null=True)
+    total_order_amount=models.TextField(null=True)
+    has_withdrawn = models.BooleanField(default=False)
+    notification_status=models.BooleanField(default=False,null=True)
+
+class deliverylogintable_model(models.Model):
+    today_date=models.DateField(auto_now_add=True,null=True)
+    login_time = models.TimeField(auto_now_add=True,null=True)
+    logout_time= models.TimeField(null=True)
+    deliveryperson=models.ForeignKey(Delivery_model,models.CASCADE,null=True)
+    status=models.BooleanField(null=True)
+    # distance=models.TextField(null=True)
+    delivery_status = models.TextField(null=True)
+    delivery_type = models.TextField(null=True)
+    region = models.TextField(null=True)
+
 
 
 
@@ -393,11 +424,11 @@ class Product_Ordermodel(models.Model):
     order_id = models.TextField(null=True)
     track_id = models.TextField(null=True)
     quantity = models.TextField(null=True)
-    order_date = datetime.date.today()
+    orderdate = datetime.date.today()
+    order_date = models.DateField(auto_now_add=True,null=True)
     total_amount = models.TextField(null=True)
     business = models.ForeignKey(Businessmodel,on_delete=models.CASCADE,null=True)
     end_user = models.ForeignKey(End_Usermodel,on_delete=models.CASCADE,null=True)
-    # delivery = models.ForeignKey(Delivery_model,on_delete=models.CASCADE,null=True)
     shop_id= models.ForeignKey(shoppingmodel,on_delete=models.CASCADE,null=True)
     jewel_id=models.ForeignKey(jewellerymodel,on_delete=models.CASCADE,null=True)
     food_id=models.ForeignKey(foodmodel,on_delete=models.CASCADE,null=True)
@@ -414,14 +445,29 @@ class Product_Ordermodel(models.Model):
     d_original_product = models.ForeignKey(d_original_productsmodel,on_delete=models.CASCADE,null=True)
     freshcut_product = models.ForeignKey(fresh_productsmodel,on_delete=models.CASCADE,null=True)
     status = models.TextField(null=True)
-    expDate= order_date + datetime.timedelta(days=7)
+    expDate= orderdate + datetime.timedelta(days=7)
     expected_deliverydate=models.DateField(default=expDate,null=True)   
     delivery_date = models.DateField(null=True)
     payment_status = models.TextField(null=True)
     delivery_type= models.TextField(null=True)
     category_data = models.TextField(null=True)
     payment_type = models.TextField(null=True)
-
+    deliveryperson = models.ForeignKey(Delivery_model,on_delete=models.CASCADE,null=True)
+    reason = models.TextField(null=True)
+    reason_optional = models.TextField(null=True)
+    delivery_address = models.JSONField(null=True)
+    pincode = models.TextField(null=True)
+    emergency =models.TextField(null=True)
+    region =models.TextField(null=True)
+    emergency_optional = models.TextField(null=True)
+    distance = models.TextField(null=True)
+    business_pickup = models.BooleanField(null=True)
+    order_total=models.TextField(null=True)
+    # business_status=models.TextField(null=True)
+    incentive =models.TextField(null=True)
+    ready_to_pick_up = models.BooleanField(default=0)
+    ship_to_other_region = models.TextField(null=True)
+    
     def save(self, *args, **kwargs):
         if self.status == 'delivered' and not self.delivery_date:
             self.delivery_date = timezone.now().date()
@@ -431,33 +477,46 @@ class Product_Ordermodel(models.Model):
 
 
 class Carts(models.Model):
-    shop_product=models.ForeignKey(shop_productsmodel,on_delete=models.CASCADE)
-    jewel_product=models.ForeignKey(jewel_productsmodel,on_delete=models.CASCADE)
-    d_origin_product=models.ForeignKey(d_original_productsmodel,on_delete=models.CASCADE)
-    dailymio_product=models.ForeignKey(dmio_productsmodel,on_delete=models.CASCADE)
-    pharmacy_product=models.ForeignKey(pharmacy_productsmodel,on_delete=models.CASCADE)
-    food_product=models.ForeignKey(food_productsmodel,on_delete=models.CASCADE)
-    freshcut_product=models.ForeignKey(fresh_productsmodel,on_delete=models.CASCADE)
-    user=models.ForeignKey(End_Usermodel,on_delete=models.CASCADE)
+    cart_id = models.TextField(null=True)
+    shop_product=models.ForeignKey(shop_productsmodel,on_delete=models.CASCADE,null=True)
+    jewel_product=models.ForeignKey(jewel_productsmodel,on_delete=models.CASCADE,null=True)
+    d_origin_product=models.ForeignKey(d_original_productsmodel,on_delete=models.CASCADE,null=True)
+    dailymio_product=models.ForeignKey(dmio_productsmodel,on_delete=models.CASCADE,null=True)
+    pharmacy_product=models.ForeignKey(pharmacy_productsmodel,on_delete=models.CASCADE,null=True)
+    food_product=models.ForeignKey(food_productsmodel,on_delete=models.CASCADE,null=True)
+    freshcut_product=models.ForeignKey(fresh_productsmodel,on_delete=models.CASCADE,null=True)
+    user=models.ForeignKey(End_Usermodel,on_delete=models.CASCADE,null=True)
     created_date=models.DateTimeField(auto_now_add=True)
+    quantity=models.TextField(null=True)
+    total=models.FloatField(blank=True, null=True)
+    category = models.TextField(null=True)
+    status = models.TextField(null=True)
 
-    qty=models.PositiveIntegerField(default=1)
-
-
+class whishlistmodel(models.Model):
+    shop_product=models.ForeignKey(shop_productsmodel,on_delete=models.CASCADE,null=True)
+    jewel_product=models.ForeignKey(jewel_productsmodel,on_delete=models.CASCADE,null=True)
+    d_origin_product=models.ForeignKey(d_original_productsmodel,on_delete=models.CASCADE,null=True)
+    dailymio_product=models.ForeignKey(dmio_productsmodel,on_delete=models.CASCADE,null=True)
+    pharmacy_product=models.ForeignKey(pharmacy_productsmodel,on_delete=models.CASCADE,null=True)
+    food_product=models.ForeignKey(food_productsmodel,on_delete=models.CASCADE,null=True)
+    freshcut_product=models.ForeignKey(fresh_productsmodel,on_delete=models.CASCADE,null=True)
+    user=models.ForeignKey(End_Usermodel,on_delete=models.CASCADE,null=True)
+    date_added=models.DateTimeField(auto_now_add=True)
+    category = models.TextField(null=True)
 
 
 class Reviews(models.Model):
-    user=models.ForeignKey(End_Usermodel,on_delete=models.CASCADE)
-    shop_product=models.ForeignKey(shop_productsmodel,on_delete=models.CASCADE)
-    jewel_product=models.ForeignKey(jewel_productsmodel,on_delete=models.CASCADE)
-    d_origin_product=models.ForeignKey(d_original_productsmodel,on_delete=models.CASCADE)
-    dailymio_product=models.ForeignKey(dmio_productsmodel,on_delete=models.CASCADE)
-    pharmacy_product=models.ForeignKey(pharmacy_productsmodel,on_delete=models.CASCADE)
-    food_product=models.ForeignKey(food_productsmodel,on_delete=models.CASCADE)
-    freshcut_product=models.ForeignKey(fresh_productsmodel,on_delete=models.CASCADE)
-    comment=models.CharField(max_length=240)
+    user=models.ForeignKey(End_Usermodel,on_delete=models.CASCADE,null=True)
+    shop_product=models.ForeignKey(shop_productsmodel,on_delete=models.CASCADE,null=True)
+    jewel_product=models.ForeignKey(jewel_productsmodel,on_delete=models.CASCADE,null=True)
+    d_origin_product=models.ForeignKey(d_original_productsmodel,on_delete=models.CASCADE,null=True)
+    dailymio_product=models.ForeignKey(dmio_productsmodel,on_delete=models.CASCADE,null=True)
+    pharmacy_product=models.ForeignKey(pharmacy_productsmodel,on_delete=models.CASCADE,null=True)
+    food_product=models.ForeignKey(food_productsmodel,on_delete=models.CASCADE,null=True)
+    freshcut_product=models.ForeignKey(fresh_productsmodel,on_delete=models.CASCADE,null=True)
+    comment=models.TextField(null=True)
     rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)])
-
+    created_date = models.DateField(auto_now_add=True,null=True)
     def __str__(self):
         return self.comment
 
@@ -479,3 +538,22 @@ class Offers(models.Model):
 
 
 
+# used_products model
+class used_productsmodel(models.Model):
+    user = models.TextField(null=True)
+    product_id = models.TextField(null=True)
+    status = models.TextField(default=False,null=True)
+    category = models.TextField(null=True)
+    subcategory = models.TextField(null=True)
+    product= models.JSONField(null=True)
+    created_date=models.DateField(auto_now_add=True,null=True)
+
+
+
+class Notification(models.Model):
+    notify_id=models.TextField(null=True)
+    sender_id=models.TextField(null=True)
+    notify_message=models.TextField(null=True)
+    recever_id=models.TextField(null=True)
+    is_read=models.BooleanField(default=False,null=True)
+    notify_date=models.DateField(auto_now_add=True,null=True)

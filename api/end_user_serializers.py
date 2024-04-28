@@ -1,6 +1,9 @@
 from rest_framework import serializers
-from api import models
 
+from api import models
+from api.business_serializers import BusinessSerializer, jewel_productlistserializer,shop_productlistserializer,dmio_productlistserializer,d_original_productlistserializer,pharmacy_productlistserializer,dailymio_list_serializer,food_productlistserializer,fresh_productlistserializer
+from api.business_serializers import jewellery_list_serializer,shopping_list_serializer,freshcuts_list_serializer,food_list_serializer,dailymio_list_serializer,d_original_list_serializer,pharmacy_list_serializer
+from api.delivery_serializers import DeliverypersonSerializer
 
 class EnduserSerializer(serializers.Serializer):
     uid = serializers.CharField()
@@ -10,8 +13,12 @@ class EnduserSerializer(serializers.Serializer):
     otp = serializers.IntegerField()
     user_otp = serializers.IntegerField()
     profile_picture = serializers.CharField()
-    full_name=serializers.CharField()
-    created_date=serializers.CharField()
+    full_name = serializers.CharField()
+    created_date = serializers.CharField()
+    latitude = serializers.CharField()
+    longitude = serializers.CharField()
+    address_data = serializers.JSONField()
+
 
 class SignupSerializer(serializers.Serializer):
     uid = serializers.CharField()
@@ -21,6 +28,7 @@ class SignupSerializer(serializers.Serializer):
     otp = serializers.IntegerField()
     password = serializers.CharField()
     created_date=serializers.CharField()
+
     def create(self, data):
         return models.End_Usermodel.objects.create(
             uid = data['uid'],
@@ -30,6 +38,7 @@ class SignupSerializer(serializers.Serializer):
             otp = data['otp'],
             password = data['password'],
             created_date = data['created_date'],
+
         )
     
 class OTPSerializer(serializers.Serializer):
@@ -78,29 +87,37 @@ class AddressSerializer(serializers.Serializer):
     pincode = serializers.CharField()
 
     def create(self, validated_data):
-        return models.End_Usermodel.objects.create(address_data=validated_data)
+        return validated_data
 
     def update(self, instance, validated_data):
-        instance.address_data = validated_data
-        instance.save()
-        return instance 
-    
-class TempAddressSerializer(serializers.Serializer):
-    doorno = serializers.CharField()
-    area = serializers.CharField()
-    landmark = serializers.CharField()
-    place = serializers.CharField()
-    district = serializers.CharField()
-    state = serializers.CharField()
-    pincode = serializers.CharField()
-
-    def create(self, validated_data):
-        return models.End_Usermodel.objects.create(temp_address=validated_data)
-
-    def update(self, instance, validated_data):
-        instance.temp_address = validated_data
+        new_address = {
+            'doorno': validated_data.get('doorno'),
+            'area': validated_data.get('area'),
+            'landmark': validated_data.get('landmark'),
+            'place': validated_data.get('place'),
+            'district': validated_data.get('district'),
+            'state': validated_data.get('state'),
+            'pincode': validated_data.get('pincode')
+        }
+        address_data = instance.address_data or []
+        address_data.append(new_address)
+        instance.address_data = address_data
         instance.save()
         return instance
+
+
+
+
+class locationSerializer(serializers.Serializer):
+    latitude = serializers.CharField()
+    longitude = serializers.CharField()
+    def update(self,instance,data):
+        instance.latitude = data["latitude"]
+        instance.longitude = data['longitude']
+        instance.save()
+        return instance
+    
+
     
 
 class product_orderSerializer(serializers.Serializer):
@@ -146,6 +163,11 @@ class product_orderSerializer(serializers.Serializer):
             category_data = data['category_data'],
 
         )
+    
+
+
+
+
 
 class update_acc_serializer(serializers.Serializer):
 
@@ -155,3 +177,123 @@ class update_acc_serializer(serializers.Serializer):
         instance.profile_picture=data["profile_picture"]
         instance.save()
         return instance
+
+class Cartserializer(serializers.Serializer):
+    cart_id =serializers.CharField()
+    shop_product=shop_productlistserializer()
+    jewel_product=jewel_productlistserializer()
+    d_origin_product=d_original_productlistserializer()
+    dailymio_product=dmio_productlistserializer()
+    pharmacy_product=pharmacy_productlistserializer()
+    food_product=food_productlistserializer()
+    freshcut_product=fresh_productlistserializer()
+    user=EnduserSerializer()
+    created_date=serializers.DateTimeField()
+    quantity=serializers.CharField()
+    total=serializers.IntegerField()
+    category = serializers.CharField()
+    status = serializers.CharField()
+
+
+class Cartupdateserializer(serializers.Serializer):
+    quantity = serializers.CharField()
+    total = serializers.FloatField()
+    def update(self, instance, validated_data):
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.total = validated_data.get('total', instance.total)
+        instance.save()
+        return instance
+
+        
+        
+
+
+class wishlistSerializer(serializers.Serializer):
+    shop_product=shop_productlistserializer()
+    jewel_product=jewel_productlistserializer()
+    d_origin_product=d_original_productlistserializer()
+    dailymio_product=dmio_productlistserializer()
+    pharmacy_product=pharmacy_productlistserializer()
+    food_product=food_productlistserializer()
+    freshcut_product=fresh_productlistserializer()
+    user=EnduserSerializer()
+    date_added=serializers.DateTimeField()
+    category = serializers.CharField()
+
+
+
+class product_orderlistSerializer(serializers.Serializer):
+    order_id = serializers.CharField()
+    track_id = serializers.CharField()
+    quantity = serializers.CharField()
+    total_amount = serializers.CharField()
+    business=BusinessSerializer()
+    end_user = EnduserSerializer()
+    # delivery = DeliverypersonSerializer()
+    shop_product = shop_productlistserializer()
+    food_product = food_productlistserializer()
+    jewel_product= jewel_productlistserializer()
+    dmio_product =dmio_productlistserializer()
+    pharmacy_product = pharmacy_productlistserializer()
+    d_original_product = d_original_productlistserializer()
+    freshcut_product = fresh_productlistserializer()
+    shop_id= shopping_list_serializer()
+    jewel_id=jewellery_list_serializer()
+    food_id=food_list_serializer()
+    fresh_id=freshcuts_list_serializer()
+    d_id=d_original_list_serializer()
+    dmio_id= dailymio_list_serializer()
+    pharm_id= pharmacy_list_serializer()
+    product_id= serializers.CharField()
+    status = serializers.CharField()    
+    delivery_date = serializers.CharField()
+    payment_status = serializers.CharField()
+    delivery_type= serializers.CharField()
+    category_data = serializers.CharField()
+    payment_type = serializers.CharField()
+    delivery_address =serializers.JSONField()
+    expected_deliverydate = serializers.DateField()
+    distance=serializers.CharField()
+    region=serializers.CharField()
+    business_pickup=serializers.CharField()
+    business_status=serializers.CharField()
+    ready_to_pick_up = serializers.CharField()
+    incentive = serializers.CharField()
+    ship_to_other_region = serializers.CharField()
+
+
+class review_serializer(serializers.Serializer):
+    user= EnduserSerializer()
+    shop_product=shop_productlistserializer()
+    jewel_product=jewel_productlistserializer()
+    d_origin_product=d_original_productlistserializer()
+    dailymio_product=dmio_productlistserializer()
+    pharmacy_product=pharmacy_productlistserializer()
+    food_product=food_productlistserializer()
+    freshcut_product=fresh_productlistserializer()
+    comment=serializers.CharField()
+    rating=serializers.CharField()
+
+class used_productserializer(serializers.Serializer):
+    user = serializers.CharField()
+    product_id = serializers.CharField()
+    category = serializers.CharField()
+    subcategory=serializers.CharField()
+    product = serializers.CharField()
+    def create(self,data):
+        return models.used_productsmodel.objects.create(
+            user=data['user'],
+            product_id = data['product_id'],
+            category = data['category'],
+            subcategory=data['subcategory'],
+            product = data['product'],
+            
+        )
+class used_productlistserializer(serializers.Serializer):
+    user = serializers.CharField()
+    product_id = serializers.CharField()
+    status=serializers.CharField()
+    category = serializers.CharField()
+    subcategory=serializers.CharField()
+    product = serializers.JSONField()
+

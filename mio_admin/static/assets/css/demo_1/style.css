@@ -6712,6 +6712,7 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
   background: none;
   border: 0;
   border-radius: var(--bs-nav-pills-border-radius);
+  color: #8B1874 !important;
 }
 .nav-pills .nav-link:disabled {
   color: var(--bs-nav-link-disabled-color);
@@ -6720,8 +6721,9 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
 }
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
-  color: var(--bs-nav-pills-link-active-color);
-  background-color: #8B1874;
+  color: white !important;
+  /* color: var(--bs-nav-pills-link-active-color); */
+  background-color: #8B1874 !important;
 }
 
 .nav-fill > .nav-link,

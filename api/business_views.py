@@ -18,13 +18,40 @@ from django.utils import timezone
 import datetime
 from django.db import transaction
 from django.db.models import Q
-from mio_admin.models import business_commision
-
-
-
+from mio_admin.models import business_commision,zone
+from geopy.distance import geodesic
+from mio_admin.models import comission_Editing,zone
+import requests
 
 all_image_url = "http://127.0.0.1:3000/"
 x = datetime.datetime.now()
+
+def send_notification(registration_ids , message_title , message_desc):
+    fcm_api = "AAAAwN1-l3g:APA91bF58TyTj5cEDKz6qpeltmumxQEnzh9xwDN9A9QXLcNEzdAJGY1DrURU9xFOqOpdBA0SMyYd7MrAxtmYp4iWVBHuPhICBZHLFoLj9x6-tQicyMVUWwnM_0KYESKY7kxHqXS2C3P3"
+    url = "https://fcm.googleapis.com/fcm/send"
+    
+    headers = {
+    "Content-Type":"application/json",
+    "Authorization": 'key='+fcm_api
+    }    
+
+    payload = {
+        "registration_ids" :registration_ids,
+        "priority" : "high",
+        "notification" : {
+            "body" : message_desc,
+            "title" : message_title,
+            "image" : "https://i.ytimg.com/vi/m5WUPHRgdOA/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDwz-yjKEdwxvKjwMANGk5BedCOXQ",
+            "icon": "https://yt3.ggpht.com/ytc/AKedOLSMvoy4DeAVkMSAuiuaBdIGKC7a5Ib75bKzKO3jHg=s900-c-k-c0x00ffffff-no-rj",
+            
+        }
+    }
+
+    result = requests.post(url,  data=json.dumps(payload), headers=headers )
+    print(result.status_code)
+    print(result.json())
+ 
+# send_notification("resgistration_ids" , 'hii' , 'hello world')
 
 @api_view(['POST'])
 def business_signup(request):
@@ -33,6 +60,7 @@ def business_signup(request):
             if business_extension.validate_email(request.data['email']):
                 return Response("User Already Exists", status=status.HTTP_302_FOUND)
             else:
+                global datas
                 x = datetime.datetime.now()
                 datas = {
                     'uid': business_extension.id_generate(),
@@ -41,7 +69,8 @@ def business_signup(request):
                     'email': request.data["email"],
                     'phone_number': request.data["phone_number"],
                     'password': request.data["password"],
-                    'created_date':str(x.strftime("%d"))+" "+str(x.strftime("%B"))+","+str(x.year)
+                    'created_date':str(x.strftime("%d"))+" "+str(x.strftime("%B"))+","+str(x.year),
+                    'device_id':request.data.getlist("device_id"),
                 }
                 print(datas)
                 dataserializer = business_serializers.SignupSerializer(data=datas)
@@ -49,7 +78,7 @@ def business_signup(request):
                 print(datas['uid'])
                 if dataserializer.is_valid():
                     print("valid")
-                    dataserializer.save()
+                
                     print("Valid Data")
                     business_extension.send_mail(datas['email'], datas['otp'])
                     print("Email send")
@@ -60,31 +89,22 @@ def business_signup(request):
             return Response({"Invalid Json Format (OR) Invalid Key"}, status=status.HTTP_400_BAD_REQUEST)
     except:
         return Response({"Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
+
 @api_view(['POST'])
-def business_otp(request, id):
-    try:
-        try:
-            if business_extension.validate_otp(id, int(request.data['user_otp'])):
-                try:
-                    userData = Businessmodel.objects.get(uid=id)
-                    print(userData)
-                    serializer_validate = business_serializers.OTPSerializer(
-                        instance=userData, data=request.POST, partial=True)
-                    if serializer_validate.is_valid():
-                        serializer_validate.save()
-                        print("Valid OTP")
-                        return Response(id, status=status.HTTP_200_OK)
-                    else:
-                        return Response({"Cannot Verify OTP"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-                except:
-                    return Response({"serializer Issue"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            else:
-                return Response({"Wrong OTP"}, status=status.HTTP_403_FORBIDDEN)
-        except:
-            return Response({"Invalid Json Format (OR) Invalid Key"}, status=status.HTTP_400_BAD_REQUEST)
-    except:
-        return Response({"Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+def business_otp(request):
+    if int(datas['otp']) == int(request.data['user_otp']):
+        user = business_serializers.SignupSerializer(data=datas, partial=True)
+        
+        if user.is_valid():
+            user.save()
+            return Response(datas['uid'], status=status.HTTP_200_OK)
+        else:
+            return Response({"Cannot Verify OTP"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return Response({"Wrong OTP"}, status=status.HTTP_403_FORBIDDEN)
+
+
 
 @api_view(['POST'])
 def business_signin(request):
@@ -93,8 +113,15 @@ def business_signin(request):
         try:
             if business_extension.validate_email(request.data['email']):
                 if business_extension.verify_user(request.data['email'], request.data['password']):
-                    if business_extension.verify_user_otp(request.data['email']):
                         if business_extension.get_user_id(request.data['email']):
+                            data = Businessmodel.objects.get(email = request.data['email'])
+                            if request.data['device_id'] not in data.device_id:
+                                print("new")
+                                print(type(data.device_id))
+                                print(type(request.data['device_id']))
+                                data.device_id.append(request.data['device_id'])
+                                data.save()
+                                
                             return Response(business_extension.get_user_id(request.data['email']), status=status.HTTP_200_OK)
                         else:
                             return Response({"Didn't Completed OTP Verification"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -132,7 +159,7 @@ def my_accounts_data(request,id):
     if request.method == 'GET':
        allDataa = Businessmodel.objects.filter(uid=id)
        alldataserializer = business_serializers.BusinessSerializer(allDataa,many=True)
-    return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
+    return Response(data=alldataserializer.data[0], status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def forget_password(request):
@@ -195,45 +222,43 @@ def business_profile_picture(request,id):
 
 
 @api_view(['POST'])
-def business_profile_update(request,id):
-    
+def business_profile_update(request, id):
     print(request.POST)
-    print(request.FILES)
+    print(f" profile_picture:{request.FILES}")
     fs = FileSystemStorage()
     userdata = models.Businessmodel.objects.get(uid=id)
     print(userdata)
     datas = Businessmodel.objects.filter(uid=id).values()[0]
-    print(datas)
+    # print(datas)
     if "profile_picture" in request.FILES:
-        profile_picture= str(request.FILES['profile_picture']).replace(" ", "_")
-        path = fs.save(f"api/business/{id}/profile_picture/"+profile_picture, request.FILES['profile_picture'])
-        full_path = all_image_url+fs.url(path)
+        profile_picture = str(request.FILES['profile_picture']).replace(" ", "_")
+        path = fs.save(f"api/business/{id}/profile_picture/" + profile_picture, request.FILES['profile_picture'])
+        full_path = all_image_url + fs.url(path)
         print(full_path)
     else:
         full_path = datas['profile_picture']
     print("valid")
 
-    data = {
+    profile_update = Businessmodel.objects.get(uid=id)
+    profile_update.phone_number = request.data.get('phone_number', profile_update.phone_number)
+    profile_update.profile_picture = full_path
+    profile_update.save()
+    return Response(id, status=status.HTTP_200_OK)
 
-        'phone_number': request.POST['phone_number'],
-        'profile_picture': full_path
-        
-    }
+    # data = {
+    #     'phone_number': request.POST['phone_number'],
+    #     'profile_picture': full_path
+    # }
 
     # print(data)
-    basicdetailsserializer = business_serializers.update_acc_serializer(
-        instance=userdata, data=data, partial=True)
-    if basicdetailsserializer.is_valid():
-        basicdetailsserializer.save()
-        print("Valid Data")
-        return Response(id, status=status.HTTP_200_OK)
-    else:
-        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
-
-
-    
-
-
+    # basicdetailsserializer = business_serializers.update_acc_serializer(
+    #     instance=userdata, data=data, partial=True)
+    # if basicdetailsserializer.is_valid():
+    #     basicdetailsserializer.save()
+    #     print("Valid Data")
+    #     return Response(id, status=status.HTTP_200_OK)
+    # else:
+    #     return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
 
 
 
@@ -306,102 +331,178 @@ def update_product_order_status_accept(request,id,product_id,order_id):
     try:
         business = models.Businessmodel.objects.get(uid=id) 
         print(business.uid)
+
         product_orders = models.Product_Ordermodel.objects.filter(business__uid=business.uid, product_id=product_id, order_id=order_id)
         print(product_orders)
+
         if product_orders.exists():
             for product_order in product_orders:
                 # Update the status field with the new value
                 product_order.status = "accepted"
                 product_order.save()
-            return Response("Status updated successfully", status=status.HTTP_200_OK)
+            print(order_id)
+            if product_order.delivery_type == "Quick":
+                end_user= models.Product_Ordermodel.objects.get(order_id=order_id)
+                end_user_location = (end_user.end_user.latitude, end_user.end_user.longitude)
+                print(end_user_location)
+                # shop
+                shops=models.Product_Ordermodel.objects.get(order_id=order_id)
+                if shops.food_id != None:
+                    shop_location = (shops.food_id.latitude, shops.food_id.longitude)
+                    print(shop_location)
+                elif shops.fresh_id != None:
+                    shop_location = (shops.fresh_id.latitude, shops.fresh_id.longitude)
+                    print(shop_location)
+                elif shops.dmio_id !=None:
+                    shop_location = (shops.dmio_id.latitude, shops.dmio_id.longitude)
+                    print(shop_location)
+                elif shops.pharm_id != None:
+                    shop_location = (shops.pharm_id.latitude, shops.pharm_id.longitude)
+                    print(shop_location)
+
+                distance = geodesic(shop_location, end_user_location).kilometers
+                print(distance)
+                deliverydistance=float(distance)
+                delivery_distance = "{:.2f}".format(deliverydistance)
+                print(delivery_distance)
+                
+                shops.distance=delivery_distance
+                shops.save()
+                admin_data = comission_Editing.objects.get(id=1)  
+                per_km = (admin_data.per_km)  
+                incentive =(admin_data.incentive)
+
+                total_amount=per_km*distance
+                shops.incentive=incentive
+                shops.order_total=int(total_amount)
+                shops.save()
+                return Response("Status updated successfully", status=status.HTTP_200_OK)
+            elif product_order.delivery_type == "Normal":
+                shops=models.Product_Ordermodel.objects.get(order_id=order_id)
+                print(shops)
+                admin_data = comission_Editing.objects.get(id=1)  
+                incentive =(admin_data.normal_delivery_commision)
+                shops.incentive=incentive
+                shops.order_total=incentive
+                shops.save()
+                return Response("Status updated successfully", status=status.HTTP_200_OK)
+
         else:
             return Response("Product order not found", status=status.HTTP_404_NOT_FOUND)
     except:
         return Response("Product order not found", status=status.HTTP_404_NOT_FOUND)
 
-# @api_view(["POST"])
-# def product_status_delivered(request,id):
-#     try:
-#         print(request.POST)
-#         pro=get_object_or_404(models.shop_ordermodel,order_id=id)
-#         print(pro)
-#         pro.status="delivered"
-#         pro.save()
-#         return Response("success",status=status.HTTP_200_OK)
-#     except:
-#         return Response("nostatus",status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def business_status_pickedUp(request,order_id):
+    try:
+        pro=get_object_or_404(models.Product_Ordermodel,order_id=order_id)
+        
+        pro.business_pickup= "1"
+        pro.save()
+        return Response({"order_id":order_id},status=status.HTTP_200_OK)
+    except:
+        return Response("nostatus",status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
 # shopping 
 @api_view(['POST'])
 def shopping(request,id):
-    # print(request.data)
-    # print(request.FILES)
-    fs = FileSystemStorage()
-    aadhar = str(request.FILES['aadhar']).replace(" ", "_")
-    aadhar_path = fs.save(f"api/shopping/{id}/aahar/"+aadhar, request.FILES['aadhar'])
-    pan_file = str(request.FILES['pan_file']).replace(" ", "_")
-    pan_file_path = fs.save(f"api/shopping/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
-    profile = str(request.FILES['profile']).replace(" ", "_")
-    profile_path = fs.save(f"api/shopping/{id}/profile/"+profile, request.FILES['profile'])
-    bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
-    bank_passbook_path = fs.save(f"api/shopping/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
-    gst_file = str(request.FILES['gst_file']).replace(" ", "_")
-    gst_file_path = fs.save(f"api/shopping/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+    if request.method == "POST":
+        print(request.POST)
+        pincode = request.POST['pincode']
 
-    aadhar_paths = all_image_url+fs.url(aadhar_path)
-    pan_file_paths = all_image_url+fs.url(pan_file_path)
-    profile_paths = all_image_url+fs.url(profile_path)
-    bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
-    gst_file_paths = all_image_url+fs.url(gst_file_path)
-    x = datetime.datetime.now()
-    shopping_id=business_extension.shop_id_generate()
-    while True:
-        if id == shopping_id:
-            shopping_id=business_extension.shop_id_generate()
+        data1 = zone.objects.all()
+        print(data1)
+        get_zone = None  # Initialize get_zone variable
+
+        for x in data1:
+            print(x)
+            if x.pincode is not None and pincode in x.pincode:
+                get_zone = x.zone
+                print(get_zone)
+                break  # Once the zone is found, exit the loop
+
+        print(get_zone)  # Check if zone is retrieved correctly
+        # print(request.data)
+        # print(request.FILES)
+        fs = FileSystemStorage()
+        aadhar = str(request.FILES['aadhar']).replace(" ", "_")
+        aadhar_path = fs.save(f"api/shopping/{id}/aahar/"+aadhar, request.FILES['aadhar'])
+        pan_file = str(request.FILES['pan_file']).replace(" ", "_")
+        pan_file_path = fs.save(f"api/shopping/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
+        profile = str(request.FILES['profile']).replace(" ", "_")
+        profile_path = fs.save(f"api/shopping/{id}/profile/"+profile, request.FILES['profile'])
+        bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
+        bank_passbook_path = fs.save(f"api/shopping/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
+        gst_file = str(request.FILES['gst_file']).replace(" ", "_")
+        gst_file_path = fs.save(f"api/shopping/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+
+        aadhar_paths = all_image_url+fs.url(aadhar_path)
+        pan_file_paths = all_image_url+fs.url(pan_file_path)
+        profile_paths = all_image_url+fs.url(profile_path)
+        bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
+        gst_file_paths = all_image_url+fs.url(gst_file_path)
+        x = datetime.datetime.now()
+        shopping_id=business_extension.shop_id_generate()
+        while True:
+            if id == shopping_id:
+                shopping_id=business_extension.shop_id_generate()
+            else:
+                break
+        
+
+
+
+        data = {
+            'Business_id': id,
+            'shop_id': shopping_id,
+            'seller_name': request.POST['seller_name'],
+            'business_name': request.POST['business_name'],
+            'pan_number': request.POST['pan_number'],
+            'gst': request.POST['gst'],
+            'contact': request.POST['contact'],
+            'alternate_contact': request.POST['alternate_contact'],
+            'door_number' : request.POST['door_number'],
+            'street_name' : request.POST['street_name'],
+            'area' : request.POST['area'],
+            'region' : get_zone,
+            'pincode': request.POST['pincode'],
+            'aadhar_number' : request.POST['aadhar_number'],
+            # 'pin_your_location': request.POST['pin_your_location'],           
+            'name': request.POST['name'],           
+            'account_number':request.POST['account_number'],
+            'ifsc_code':request.POST['ifsc_code'],
+            'upi_id':request.POST['upi_id'],
+            'gpay_number':request.POST['gpay_number'],
+            'aadhar':aadhar_paths,
+            'pan_file': pan_file_paths,
+            'profile': profile_paths,
+            'bank_passbook': bank_passbook_paths,
+            'gst_file': gst_file_paths,
+            'category':"shopping",
+            'latitude':request.POST['latitude'],
+            'longitude':request.POST['longitude'],
+            }
+
+        
+        print(data)
+        basicdetailsserializer = business_serializers.shopping_serializer(data=data)
+        print(basicdetailsserializer)
+        if basicdetailsserializer.is_valid():
+                basicdetailsserializer.save()
+                print("Valid Data")
+                return Response(id, status=status.HTTP_200_OK)
         else:
-            break
-
-    data = {
-        'Business_id': id,
-        'shop_id': shopping_id,
-        'seller_name': request.POST['seller_name'],
-        'business_name': request.POST['business_name'],
-        'pan_number': request.POST['pan_number'],
-        'gst': request.POST['gst'],
-        'contact': request.POST['contact'],
-        'alternate_contact': request.POST['alternate_contact'],
-        'door_number' : request.POST['door_number'],
-        'street_name' : request.POST['street_name'],
-        'area' : request.POST['area'],
-        'region' : request.POST['region'],
-        'pin_number': request.POST['pin_number'],
-        'aadhar_number' : request.POST['aadhar_number'],
-        'pin_your_location': request.POST['pin_your_location'],           
-        'name': request.POST['name'],           
-        'account_number':request.POST['account_number'],
-        'ifsc_code':request.POST['ifsc_code'],
-        'upi_id':request.POST['upi_id'],
-        'gpay_number':request.POST['gpay_number'],
-        'aadhar':aadhar_paths,
-        'pan_file': pan_file_paths,
-        'profile': profile_paths,
-        'bank_passbook': bank_passbook_paths,
-        'gst_file': gst_file_paths,
-        'category':"shopping",
-        }
-      
-    print(data)
-    basicdetailsserializer = business_serializers.shopping_serializer(data=data)
-    
-    if basicdetailsserializer.is_valid():
-            basicdetailsserializer.save()
-            print("Valid Data")
-            return Response(id, status=status.HTTP_200_OK)
+            print("serializer prblm")
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
     else:
-        print("serializer prblm")
-        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 def shopping_alldata(request):
@@ -424,10 +525,42 @@ def business_shopping_data(request,id):
         serializer = business_serializers.shopping_list_serializer(data,many=True)
         return Response(data=serializer.data,status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def get_allproducts_order(request,id,prostatus):
+    if request.method == "GET":
+        if models.Product_Ordermodel.objects.filter(shop_id__shop_id=id).exists():
+            data= models.Product_Ordermodel.objects.filter(shop_id__shop_id=id,status=prostatus)
+            alldataserializer= end_user_serializers.product_orderlistSerializer(data,many=True)
+            return Response(data=alldataserializer.data,status=status.HTTP_200_OK)
+        elif models.Product_Ordermodel.objects.filter(food_id__food_id=id).exists():
+            data= models.Product_Ordermodel.objects.filter(shop_id__shop_id=id,status=prostatus)
+            alldataserializer= end_user_serializers.product_orderlistSerializer(data,many=True)
+            return Response(data=alldataserializer.data,status=status.HTTP_200_OK)
+        elif models.Product_Ordermodel.objects.filter(fresh_id__fresh_id=id).exists():
+            data= models.Product_Ordermodel.objects.filter(shop_id__shop_id=id,status=prostatus)
+            alldataserializer= end_user_serializers.product_orderlistSerializer(data,many=True)
+            return Response(data=alldataserializer.data,status=status.HTTP_200_OK)      
+        elif models.Product_Ordermodel.objects.filter(dmio_id__dmio_id=id).exists():
+            data= models.Product_Ordermodel.objects.filter(shop_id__shop_id=id,status=prostatus)
+            alldataserializer= end_user_serializers.product_orderlistSerializer(data,many=True)
+            return Response(data=alldataserializer.data,status=status.HTTP_200_OK)       
+        elif models.Product_Ordermodel.objects.filter(jewel_id__jewel_id=id).exists():
+            data= models.Product_Ordermodel.objects.filter(shop_id__shop_id=id,status=prostatus)
+            alldataserializer= end_user_serializers.product_orderlistSerializer(data,many=True)
+            return Response(data=alldataserializer.data,status=status.HTTP_200_OK)
+        elif models.Product_Ordermodel.objects.filter(d_id__d_id=id).exists():
+            data= models.Product_Ordermodel.objects.filter(shop_id__shop_id=id,status=prostatus)
+            alldataserializer= end_user_serializers.product_orderlistSerializer(data,many=True)
+            return Response(data=alldataserializer.data,status=status.HTTP_200_OK)
+        elif models.Product_Ordermodel.objects.filter(pharm_id__pharm_id=id).exists():
+            data= models.Product_Ordermodel.objects.filter(shop_id__shop_id=id,status=prostatus)
+            alldataserializer= end_user_serializers.product_orderlistSerializer(data,many=True)
+            return Response(data=alldataserializer.data,status=status.HTTP_200_OK)
+
+
 @api_view(["POST"])
 def shopping_update(request,id,shop_id):
     try:
-
         # Instantiate FileSystemStorage
         fs = FileSystemStorage()
         
@@ -439,35 +572,35 @@ def shopping_update(request,id,shop_id):
         if "aadhar" in request.FILES:
             aadhar = request.FILES['aadhar']
             aadhar_path = fs.save(f"api/shopping/{id}/aadhar/{aadhar.name}", aadhar)
-            aadhar_paths = fs.url(aadhar_path)
+            aadhar_paths =all_image_url+fs.url(aadhar_path)
         else:
             aadhar_paths = shop_datas["aadhar"]
 
         if "pan_file" in request.FILES:
             pan_file = request.FILES["pan_file"]
             pan_file_path = fs.save(f"api/shopping/{id}/pan_file/{pan_file.name}", pan_file)
-            pan_file_paths = fs.url(pan_file_path)
+            pan_file_paths = all_image_url+fs.url(pan_file_path)
         else:
             pan_file_paths = shop_datas["pan_file"]
 
         if "profile" in request.FILES:
             profile = request.FILES["profile"]
             profile_path = fs.save(f"api/shopping/{id}/profile/{profile.name}", profile)
-            profile_paths = fs.url(profile_path)
+            profile_paths = all_image_url+fs.url(profile_path)
         else:
             profile_paths = shop_datas["profile"]
 
         if "bank_passbook" in request.FILES:
             bank_passbook = request.FILES["bank_passbook"]
             bank_passbook_path = fs.save(f"api/shopping/{id}/bank_passbook/{bank_passbook.name}", bank_passbook)
-            bank_passbook_paths = fs.url(bank_passbook_path)
+            bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
         else:
             bank_passbook_paths = shop_datas["bank_passbook"]
 
         if "gst_file" in request.FILES:
             gst_file = request.FILES["gst_file"]
             gst_file_path = fs.save(f"api/shopping/{id}/gst_file/{gst_file.name}", gst_file)
-            gst_file_paths = fs.url(gst_file_path)
+            gst_file_paths = all_image_url+fs.url(gst_file_path)
         else:
             gst_file_paths = shop_datas["gst_file"]
         
@@ -484,14 +617,16 @@ def shopping_update(request,id,shop_id):
         shop_data.street_name = request.data.get('street_name', shop_data.street_name)
         shop_data.area = request.data.get('area', shop_data.area)
         shop_data.region = request.data.get('region', shop_data.region)
-        shop_data.pin_number = request.data.get('pin_number', shop_data.pin_number)
+        shop_data.pincode = request.data.get('pincode', shop_data.pincode)
         shop_data.aadhar_number = request.data.get('aadhar_number', shop_data.aadhar_number)
-        shop_data.pin_your_location = request.data.get('pin_your_location', shop_data.pin_your_location)
+        # shop_data.pin_your_location = request.data.get('pin_your_location', shop_data.pin_your_location)
         shop_data.name = request.data.get('name', shop_data.name)
         shop_data.account_number = request.data.get('account_number', shop_data.account_number)
         shop_data.ifsc_code = request.data.get('ifsc_code', shop_data.ifsc_code)
         shop_data.upi_id = request.data.get('upi_id', shop_data.upi_id)
         shop_data.gpay_number = request.data.get('gpay_number', shop_data.gpay_number)
+        shop_data.latitude = request.data.get('latitude', shop_data.latitude)
+        shop_data.longitude = request.data.get('longitude', shop_data.longitude)
         # Update other fields similarly
 
         # Save changes
@@ -507,39 +642,38 @@ def shopping_update(request,id,shop_id):
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
 
 
-# shop products
 @api_view(['POST'])
-def shop_products(request,id):
+def shop_products(request, id):
     product_id = business_extension.product_id_generate()
     while True:
         if id == product_id:
             product_id = business_extension.product_id_generate()
         else:
             break
-   
-    #add
+
+    # add
     fs = FileSystemStorage()
 
     primary_image = str(request.FILES['primary_image']).replace(" ", "_")
-    primary_image_path = fs.save(f"api/shop_products/{id}/primary_image/"+primary_image, request.FILES['primary_image'])
-    primary_image_paths = all_image_url+fs.url(primary_image_path)
+    primary_image_path = fs.save(f"api/shop_products/{id}/primary_image/" + primary_image,
+                                 request.FILES['primary_image'])
+    primary_image_paths = all_image_url + fs.url(primary_image_path)
     print(primary_image_paths)
     other_image = []
     other_imagelist = []
     for sav in request.FILES.getlist('other_images'):
-        ot = fs.save(f"api/shop_products/{id}/other_images/"+sav.name, sav) 
-        other_image.append(str(ot).replace(" ","_"))
-            
+        ot = fs.save(f"api/shop_products/{id}/other_images/" + sav.name, sav)
+        other_image.append(str(ot).replace(" ", "_"))
+
         print(other_image)
         for iname in other_image:
             other_images_path = iname
-            other_imagelist.append(all_image_url+fs.url(other_images_path))
+            other_imagelist.append(all_image_url + fs.url(other_images_path))
 
-    
-    admin_data = business_commision.objects.get(id=1)  
-    commission = float(admin_data.commission)  
-    gst = float(admin_data.gst)  
-    
+    admin_data = business_commision.objects.get(id=1)
+    commission = float(admin_data.commission)
+    gst = int(request.POST["gst"])
+
     actualprice = int(request.POST["actual_price"])
     discountprice = int(request.POST["discount_price"])
 
@@ -547,35 +681,52 @@ def shop_products(request,id):
     commission_amount = sellingprice + ((commission / 100) * sellingprice)
 
     selling_price = commission_amount + ((gst / 100) * commission_amount)
-   
-    shop_products = dict(request.POST)
+
+    shop_products = dict(request.data)
+
     shop_products['shop_id'] = id
     shop_products['product_id'] = product_id
     shop_products['primary_image'] = primary_image_paths
-    shop_products['other_images'] = other_imagelist
+    # shop_products['other_images'] = other_imagelist
     shop_products['selling_price'] = selling_price
-    print(shop_products)
-
-    data= {
-        'shop_id' : id,
-        'product_id' : product_id,
-        'status':False,
-        'category':request.POST['category'],
-        'subcategory':request.POST['subcategory'],
-        'product':shop_products
-        
+    print(f"{shop_products}")
+    cleaned_data_dict = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in
+                         shop_products.items()}
+    cleaned_data_dict ['other_imagelist'] = other_imagelist
+    
+    global shop_product_data
+    shop_product_data = {
+        'shop_id': id,
+        'product_id': product_id,
+        'status': False,
+        'category': request.data['category'],
+        'subcategory': request.data['subcategory'],
+        'product': cleaned_data_dict
     }
-    print(data)
-
-    new_shop_product = models.shop_productsmodel(**data)
+    # shopping_product = models.shop_productsmodel(**shop_product_data)
+    print(f"my datas {shop_product_data}")
     try:
-        # new_shop_product.full_clean()  # Validate model fields if needed
-        new_shop_product.save()
+        # shopping_product.save()
         print("Data saved successfully")
-        return Response(id, status=status.HTTP_200_OK)
+        return Response({'discount': cleaned_data_dict['discount'], 'selling_price': selling_price},
+                        status=status.HTTP_200_OK)
     except Exception as e:
         print("Error while saving data:", e)
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['POST'])
+def shop_product_save(request, id):
+    print(type(shop_product_data["shop_id"]))
+    print(type(id))
+    print(shop_product_data["shop_id"])
+    if shop_product_data["shop_id"] == id:
+        print("is working")
+        new_shop_product = models.shop_productsmodel(**shop_product_data)
+        new_shop_product.save()
+        return Response({"Data saved successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Data saved unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -588,12 +739,78 @@ def shop_get_subcategoryproducts(request, id, subcategory):
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
 
 
+
 @api_view(['GET'])
 def shop_get_products(request,id):
     if request.method == "GET":
         data= models.shop_productsmodel.objects.filter(shop_id=id)
         alldataserializer= business_serializers.shop_productlistserializer(data,many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST',"GET"])
+def product_status_golivePause(request,id,business_status):
+    if request.method == "GET":
+        if models.shop_productsmodel.objects.filter(shop_id=id).exists():
+            data = models.shop_productsmodel.objects.filter(shop_id=id)
+            serializer = business_serializers.shop_productlistserializer(data, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        elif models.jewel_productsmodel.objects.filter(jewel_id=id).exists():
+            data = models.jewel_productsmodel.objects.filter(jewel_id=id)
+            serializer = business_serializers.jewel_productlistserializer(data, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        elif models.food_productsmodel.objects.filter(food_id=id).exists():
+            data = models.food_productsmodel.objects.filter(food_id=id)
+            serializer = business_serializers.food_productlistserializer(data, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        elif models.fresh_productsmodel.objects.filter(fresh_id=id).exists():
+            data = models.fresh_productsmodel.objects.filter(fresh_id=id)
+            serializer = business_serializers.fresh_productlistserializer(data, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        elif models.dmio_productsmodel.objects.filter(dmio_id=id).exists():
+            data = models.dmio_productsmodel.objects.filter(dmio_id=id)
+            serializer = business_serializers.dmio_productlistserializer(data, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        elif models.pharmacy_productsmodel.objects.filter(pharm_id=id).exists():
+            data = models.pharmacy_productsmodel.objects.filter(pharm_id=id)
+            serializer = business_serializers.pharmacy_productlistserializer(data, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        elif models.d_original_productsmodel.objects.filter(d_id=id).exists():
+            data = models.d_original_productsmodel.objects.filter(d_id=id)
+            serializer = business_serializers.d_original_productlistserializer(data, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+    elif request.method == "POST":
+            # Assuming you're passing the product ID to update and the new status in the request data
+
+            product_id = request.data.get('product_id')
+            new_status = business_status
+            try:
+                if models.shop_productsmodel.objects.filter(product_id=product_id, shop_id=id).exists():
+                    product = models.shop_productsmodel.objects.get(product_id=product_id, shop_id=id)
+                elif models.jewel_productsmodel.objects.filter(product_id=product_id,jewel_id=id).exists():
+                    product = models.jewel_productsmodel.objects.get(product_id=product_id,jewel_id=id)
+                elif models.food_productsmodel.objects.filter(product_id=product_id,food_id=id).exists():
+                    product=models.food_productsmodel.objects.get(product_id=product_id,food_id=id)
+                elif models.fresh_productsmodel.objects.filter(product_id=product_id,fresh_id=id).exists():
+                    product=models.fresh_productsmodel.objects.get(product_id=product_id,fresh_id=id)
+                elif models.dmio_productsmodel.objects.filter(product_id=product_id,dmio_id=id).exists():
+                    product=models.dmio_productsmodel.objects.get(product_id=product_id,dmio_id=id)
+                elif models.pharmacy_productsmodel.objects.filter(product_id=product_id,pharm_id=id).exists():
+                    product=models.pharmacy_productsmodel.objects.get(product_id=product_id,pharm_id=id)
+                elif models.d_original_productsmodel.objects.filter(product_id=product_id,d_id=id).exists():
+                    product=models.d_original_productsmodel.objects.get(product_id=product_id,d_id=id)
+
+            except models.shop_productsmodel.DoesNotExist:
+                return Response({"message": "Product not found for this shop"}, status=status.HTTP_404_NOT_FOUND)
+            product.business_status= new_status
+            product.save()
+            # Update the status
+
+
+            return Response({"message": "Product status updated successfully"}, status=status.HTTP_200_OK)
+
+ 
 
 
 @api_view(['GET'])
@@ -698,10 +915,6 @@ def shop_productorder_date(request,id):
 
 
 
-
-
-
-
 # jewels_dashboard
     
 @api_view(['GET'])
@@ -750,75 +963,96 @@ def jewel_orderstatus(request,id):
 # jewellery
 @api_view(['POST'])
 def jewellery(request,id):
-    # print(request.data)
-    # print(request.FILES)
-    fs = FileSystemStorage()
-    aadhar = str(request.FILES['aadhar']).replace(" ", "_")
-    aadhar_path = fs.save(f"api/jewellery/{id}/aahar/"+aadhar, request.FILES['aadhar'])
-    pan_file = str(request.FILES['pan_file']).replace(" ", "_")
-    pan_file_path = fs.save(f"api/jewellery/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
-    profile = str(request.FILES['profile']).replace(" ", "_")
-    profile_path = fs.save(f"api/jewellery/{id}/profile/"+profile, request.FILES['profile'])
-    bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
-    bank_passbook_path = fs.save(f"api/jewellery/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
-    gst_file = str(request.FILES['gst_file']).replace(" ", "_")
-    gst_file_path = fs.save(f"api/jewellery/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
-
-    aadhar_paths = all_image_url+fs.url(aadhar_path)
-    pan_file_paths = all_image_url+fs.url(pan_file_path)
-    profile_paths = all_image_url+fs.url(profile_path)
-    bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
-    gst_file_paths = all_image_url+fs.url(gst_file_path)
-    x = datetime.datetime.now()
-    jewels_id=business_extension.jewel_id_generate()
-    while True:
-        if id == jewels_id:
-            jewels_id=business_extension.jewel_id_generate()
-        else:
-            break
-
-    data = {
-        'Business_id': id,
-        'jewel_id': jewels_id,
-        'seller_name': request.POST['seller_name'],
-        'business_name': request.POST['business_name'],
-        'pan_number': request.POST['pan_number'],
-        'gst': request.POST['gst'],
-        'contact': request.POST['contact'],
-        'alternate_contact': request.POST['alternate_contact'],
-        'pin_number': request.POST['pin_number'],
-        'aadhar_number' : request.POST['aadhar_number'],
-        'door_number' : request.POST['door_number'],
-        'street_name' : request.POST['street_name'],
-        'area' : request.POST['area'],
-        'region' : request.POST['region'],
-        'pin_your_location': request.POST['pin_your_location'],           
-        'name': request.POST['name'],           
-        'account_number':request.POST['account_number'],
-        'ifsc_code':request.POST['ifsc_code'],
-        'upi_id':request.POST['upi_id'],
-        'gpay_number':request.POST['gpay_number'],
-        'aadhar':aadhar_paths,
-        'pan_file': pan_file_paths,
-        'profile': profile_paths,
-        'bank_passbook': bank_passbook_paths,
-        'gst_file': gst_file_paths,
-        'category':"jewellery",
+    if request.method == "POST":
+        print(request.POST)
         
+        
+        pincode = request.POST['pincode']
 
-        }
+        data1 = zone.objects.all()
+        print(data1)
+        get_zone = None  # Initialize get_zone variable
 
-    print(data)
-    basicdetailsserializer = business_serializers.jewellery_serializer(data=data)
-    
-    if basicdetailsserializer.is_valid():
-        basicdetailsserializer.save()
-        print("Valid Data")
-        return Response(id, status=status.HTTP_200_OK)
+        for x in data1:
+            print(x)
+            if x.pincode is not None and pincode in x.pincode:
+                get_zone = x.zone
+                print(get_zone)
+                break  # Once the zone is found, exit the loop
+
+        print(get_zone)  # Check if zone is retrieved correctly
+        # print(request.data)
+        # print(request.FILES)
+        fs = FileSystemStorage()
+        aadhar = str(request.FILES['aadhar']).replace(" ", "_")
+        aadhar_path = fs.save(f"api/jewellery/{id}/aahar/"+aadhar, request.FILES['aadhar'])
+        pan_file = str(request.FILES['pan_file']).replace(" ", "_")
+        pan_file_path = fs.save(f"api/jewellery/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
+        profile = str(request.FILES['profile']).replace(" ", "_")
+        profile_path = fs.save(f"api/jewellery/{id}/profile/"+profile, request.FILES['profile'])
+        bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
+        bank_passbook_path = fs.save(f"api/jewellery/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
+        gst_file = str(request.FILES['gst_file']).replace(" ", "_")
+        gst_file_path = fs.save(f"api/jewellery/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+
+        aadhar_paths = all_image_url+fs.url(aadhar_path)
+        pan_file_paths = all_image_url+fs.url(pan_file_path)
+        profile_paths = all_image_url+fs.url(profile_path)
+        bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
+        gst_file_paths = all_image_url+fs.url(gst_file_path)
+        x = datetime.datetime.now()
+        jewels_id=business_extension.jewel_id_generate()
+        while True:
+            if id == jewels_id:
+                jewels_id=business_extension.jewel_id_generate()
+            else:
+                break
+
+        data = {
+            'Business_id': id,
+            'jewel_id': jewels_id,
+            'seller_name': request.POST['seller_name'],
+            'business_name': request.POST['business_name'],
+            'pan_number': request.POST['pan_number'],
+            'gst': request.POST['gst'],
+            'contact': request.POST['contact'],
+            'alternate_contact': request.POST['alternate_contact'],
+            'pincode': request.POST['pincode'],
+            'aadhar_number' : request.POST['aadhar_number'],
+            'door_number' : request.POST['door_number'],
+            'street_name' : request.POST['street_name'],
+            'area' : request.POST['area'],
+            'region' : get_zone,
+            # 'pin_your_location': request.POST['pin_your_location'],           
+            'name': request.POST['name'],           
+            'account_number':request.POST['account_number'],
+            'ifsc_code':request.POST['ifsc_code'],
+            'upi_id':request.POST['upi_id'],
+            'gpay_number':request.POST['gpay_number'],
+            'aadhar':aadhar_paths,
+            'pan_file': pan_file_paths,
+            'profile': profile_paths,
+            'bank_passbook': bank_passbook_paths,
+            'gst_file': gst_file_paths,
+            'category':"jewellery",
+            'latitude':request.POST['latitude'],
+            'longitude':request.POST['longitude'],
+            
+
+            }
+
+        print(data)
+        basicdetailsserializer = business_serializers.jewellery_serializer(data=data)
+        
+        if basicdetailsserializer.is_valid():
+            basicdetailsserializer.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        else:
+            print("serializer prblm")
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
     else:
-        print("serializer prblm")
-        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
-    
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def jewellery_alldata(request):
@@ -858,35 +1092,35 @@ def jewellery_update(request,id,jewel_id):
         if "aadhar" in request.FILES:
             aadhar = request.FILES['aadhar']
             aadhar_path = fs.save(f"api/jewellery/{id}/aadhar/{aadhar.name}", aadhar)
-            aadhar_paths = fs.url(aadhar_path)
+            aadhar_paths = all_image_url+fs.url(aadhar_path)
         else:
             aadhar_paths = jewel_datas["aadhar"]
 
         if "pan_file" in request.FILES:
             pan_file = request.FILES["pan_file"]
             pan_file_path = fs.save(f"api/jewellery/{id}/pan_file/{pan_file.name}", pan_file)
-            pan_file_paths = fs.url(pan_file_path)
+            pan_file_paths = all_image_url+fs.url(pan_file_path)
         else:
             pan_file_paths = jewel_datas["pan_file"]
 
         if "profile" in request.FILES:
             profile = request.FILES["profile"]
             profile_path = fs.save(f"api/jewellery/{id}/profile/{profile.name}", profile)
-            profile_paths = fs.url(profile_path)
+            profile_paths = all_image_url+fs.url(profile_path)
         else:
             profile_paths = jewel_datas["profile"]
 
         if "bank_passbook" in request.FILES:
             bank_passbook = request.FILES["bank_passbook"]
             bank_passbook_path = fs.save(f"api/jewellery/{id}/bank_passbook/{bank_passbook.name}", bank_passbook)
-            bank_passbook_paths = fs.url(bank_passbook_path)
+            bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
         else:
             bank_passbook_paths = jewel_datas["bank_passbook"]
 
         if "gst_file" in request.FILES:
             gst_file = request.FILES["gst_file"]
             gst_file_path = fs.save(f"api/jewellery/{id}/gst_file/{gst_file.name}", gst_file)
-            gst_file_paths = fs.url(gst_file_path)
+            gst_file_paths = all_image_url+fs.url(gst_file_path)
         else:
             gst_file_paths = jewel_datas["gst_file"]
         
@@ -903,14 +1137,16 @@ def jewellery_update(request,id,jewel_id):
         jewel_data.street_name = request.data.get('street_name', jewel_data.street_name)
         jewel_data.area = request.data.get('area', jewel_data.area)
         jewel_data.region = request.data.get('region', jewel_data.region)
-        jewel_data.pin_number = request.data.get('pin_number', jewel_data.pin_number)
+        jewel_data.pincode = request.data.get('pincode', jewel_data.pincode)
         jewel_data.aadhar_number = request.data.get('aadhar_number', jewel_data.aadhar_number)
-        jewel_data.pin_your_location = request.data.get('pin_your_location', jewel_data.pin_your_location)
+        # jewel_data.pin_your_location = request.data.get('pin_your_location', jewel_data.pin_your_location)
         jewel_data.name = request.data.get('name', jewel_data.name)
         jewel_data.account_number = request.data.get('account_number', jewel_data.account_number)
         jewel_data.ifsc_code = request.data.get('ifsc_code', jewel_data.ifsc_code)
         jewel_data.upi_id = request.data.get('upi_id', jewel_data.upi_id)
         jewel_data.gpay_number = request.data.get('gpay_number', jewel_data.gpay_number)
+        jewel_data.latitude = request.data.get('latitude', jewel_data.latitude)
+        jewel_data.longitude = request.data.get('longitude', jewel_data.longitude)
         # Update other fields similarly
 
         # Save changes
@@ -928,6 +1164,7 @@ def jewellery_update(request,id,jewel_id):
 # jewellery products 
 
 # jewel products    
+
 @api_view(['POST'])
 def jewel_products(request,id):
     product_id = business_extension.product_id_generate()
@@ -958,7 +1195,7 @@ def jewel_products(request,id):
     
     admin_data = business_commision.objects.get(id=1)  
     commission = float(admin_data.commission)  
-    gst = float(admin_data.gst)  
+    gst =   int(request.POST["gst"])
     
     actualprice = int(request.POST["actual_price"])
     discountprice = int(request.POST["discount_price"])
@@ -972,32 +1209,47 @@ def jewel_products(request,id):
     jewel_products['jewel_id'] = id
     jewel_products['product_id'] = product_id
     jewel_products['primary_image'] = primary_image_paths
-    jewel_products['other_images'] = other_imagelist
+    # jewel_products['other_images'] = other_imagelist
     jewel_products['selling_price'] = selling_price
     print(jewel_products)
+    cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in jewel_products.items()}
 
+    cleaned_data_dict ['other_imagelist'] = other_imagelist
 
-
+    global data
     data= {
         'jewel_id' : id,
         'product_id' : product_id,
         'status':False,
         'category':request.POST['category'],
         'subcategory':request.POST['subcategory'],
-        'product':jewel_products
+        'product':cleaned_data_dict
         
     }
     print(data)
-
-    new_jewel_product = models.jewel_productsmodel(**data)
     try:
-        # new_jewel_product.full_clean()  # Validate model fields if needed
-        new_jewel_product.save()
+        # shopping_product.save()
         print("Data saved successfully")
-        return Response(id, status=status.HTTP_200_OK)
+        return Response({'discount': cleaned_data_dict['discount'], 'selling_price': selling_price},
+                        status=status.HTTP_200_OK)
     except Exception as e:
         print("Error while saving data:", e)
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['POST'])
+def jewel_product_save(request, id):
+    print(type(data["jewel_id"]))
+    print(type(id))
+    print(data["jewel_id"])
+    if data["jewel_id"] == id:
+        print("is working")
+        new_shop_product = models.jewel_productsmodel(**data)
+        new_shop_product.save()
+        return Response({"Data saved successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Data saved unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -1070,10 +1322,10 @@ def jewel_update_product(request,id,product_id):
 
     try:
         jewel_product_instance = models.jewel_productsmodel.objects.get(jewel_id=id, product_id=product_id)
+
         
         existing_product_data = jewel_product_instance.product
         
-        # Updating product field with new data
         new_product_data = dict(request.POST)
         existing_product_data.update(new_product_data)
         
@@ -1082,7 +1334,11 @@ def jewel_update_product(request,id,product_id):
             # Updating only the product field
             jewel_product_instance.product = existing_product_data
             jewel_product_instance.save()
-        
+            # cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in new_product_data.items()}
+            # print(cleaned_data_dict)
+            # jewel_product_instance.product = cleaned_data_dict
+
+            jewel_product_instance.save()
         return Response(id, status=status.HTTP_200_OK)
     except models.jewel_productsmodel.DoesNotExist:
         return Response({"error": "Shop product not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -1166,75 +1422,94 @@ def food_orderstatus(request,id):
 #foodview  
 @api_view(['POST'])
 def food(request,id):
-    # print(request.data)
-    # print(request.FILES)
-    fs = FileSystemStorage()
-    aadhar = str(request.FILES['aadhar']).replace(" ", "_")
-    aadhar_path = fs.save(f"api/food/{id}/aahar/"+aadhar, request.FILES['aadhar'])
-    pan_file = str(request.FILES['pan_file']).replace(" ", "_")
-    pan_file_path = fs.save(f"api/food/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
-    profile = str(request.FILES['profile']).replace(" ", "_")
-    profile_path = fs.save(f"api/food/{id}/profile/"+profile, request.FILES['profile'])
-    bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
-    bank_passbook_path = fs.save(f"api/food/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
-    gst_file = str(request.FILES['gst_file']).replace(" ", "_")
-    gst_file_path = fs.save(f"api/food/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+    if request.method == "POST":
+        print(request.POST)
+        pincode = request.POST['pincode']
 
-    aadhar_paths = all_image_url+fs.url(aadhar_path)
-    pan_file_paths = all_image_url+fs.url(pan_file_path)
-    profile_paths = all_image_url+fs.url(profile_path)
-    bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
-    gst_file_paths = all_image_url+fs.url(gst_file_path)
-    x = datetime.datetime.now()
-    foods_id=business_extension.food_id_generate()
-    while True:
-        if id == foods_id:
-            foods_id=business_extension.food_id_generate()
+        data1 = zone.objects.all()
+        print(data1)
+        get_zone = None  # Initialize get_zone variable
+
+        for x in data1:
+            print(x)
+            if x.pincode is not None and pincode in x.pincode:
+                get_zone = x.zone
+                print(get_zone)
+                break  # Once the zone is found, exit the loop
+
+        print(get_zone)  # Check if zone is retrieved correctly
+        # print(request.data)
+        # print(request.FILES)
+        fs = FileSystemStorage()
+        aadhar = str(request.FILES['aadhar']).replace(" ", "_")
+        aadhar_path = fs.save(f"api/food/{id}/aahar/"+aadhar, request.FILES['aadhar'])
+        pan_file = str(request.FILES['pan_file']).replace(" ", "_")
+        pan_file_path = fs.save(f"api/food/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
+        profile = str(request.FILES['profile']).replace(" ", "_")
+        profile_path = fs.save(f"api/food/{id}/profile/"+profile, request.FILES['profile'])
+        bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
+        bank_passbook_path = fs.save(f"api/food/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
+        gst_file = str(request.FILES['gst_file']).replace(" ", "_")
+        gst_file_path = fs.save(f"api/food/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+
+        aadhar_paths = all_image_url+fs.url(aadhar_path)
+        pan_file_paths = all_image_url+fs.url(pan_file_path)
+        profile_paths = all_image_url+fs.url(profile_path)
+        bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
+        gst_file_paths = all_image_url+fs.url(gst_file_path)
+        x = datetime.datetime.now()
+        foods_id=business_extension.food_id_generate()
+        while True:
+            if id == foods_id:
+                foods_id=business_extension.food_id_generate()
+            else:
+                break
+
+        data = {
+            'Business_id': id,
+            'food_id': foods_id,
+            'seller_name': request.POST['seller_name'],
+            'business_name': request.POST['business_name'],
+            'pan_number': request.POST['pan_number'],
+            'gst': request.POST['gst'],
+            'contact': request.POST['contact'],
+            'alternate_contact': request.POST['alternate_contact'],
+            'pincode': request.POST['pincode'],
+            'aadhar_number' : request.POST['aadhar_number'],
+            'door_number' : request.POST['door_number'],
+            'street_name' : request.POST['street_name'],
+            'area' : request.POST['area'],
+            'fssa':request.POST['fssa'],
+            'region':get_zone,
+            # 'pin_your_location': request.POST['pin_your_location'],           
+            'name': request.POST['name'],           
+            'account_number':request.POST['account_number'],
+            'ifsc_code':request.POST['ifsc_code'],
+            'upi_id':request.POST['upi_id'],
+            'gpay_number':request.POST['gpay_number'],
+            'aadhar':aadhar_paths,
+            'pan_file': pan_file_paths,
+            'profile': profile_paths,
+            'bank_passbook': bank_passbook_paths,
+            'gst_file': gst_file_paths,
+            'category':"food",
+            'latitude':request.POST['latitude'],
+            'longitude':request.POST['longitude'],
+
+            }
+
+        print(data)
+        basicdetailsserializer = business_serializers.food_serializer(data=data)
+        
+        if basicdetailsserializer.is_valid():
+            basicdetailsserializer.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
         else:
-            break
-
-    data = {
-        'Business_id': id,
-        'food_id': foods_id,
-        'seller_name': request.POST['seller_name'],
-        'business_name': request.POST['business_name'],
-        'pan_number': request.POST['pan_number'],
-        'gst': request.POST['gst'],
-        'contact': request.POST['contact'],
-        'alternate_contact': request.POST['alternate_contact'],
-        'pin_number': request.POST['pin_number'],
-        'aadhar_number' : request.POST['aadhar_number'],
-        'door_number' : request.POST['door_number'],
-        'street_name' : request.POST['street_name'],
-        'area' : request.POST['area'],
-        'fssa':request.POST['fssa'],
-        'region':request.POST['region'],
-        'pin_your_location': request.POST['pin_your_location'],           
-        'name': request.POST['name'],           
-        'account_number':request.POST['account_number'],
-        'ifsc_code':request.POST['ifsc_code'],
-        'upi_id':request.POST['upi_id'],
-        'gpay_number':request.POST['gpay_number'],
-        'aadhar':aadhar_paths,
-        'pan_file': pan_file_paths,
-        'profile': profile_paths,
-        'bank_passbook': bank_passbook_paths,
-        'gst_file': gst_file_paths,
-        'category':"food",
-
-        }
-
-    print(data)
-    basicdetailsserializer = business_serializers.food_serializer(data=data)
-    
-    if basicdetailsserializer.is_valid():
-        basicdetailsserializer.save()
-        print("Valid Data")
-        return Response(id, status=status.HTTP_200_OK)
+            print("serializer prblm")
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
     else:
-        print("serializer prblm")
-        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
-
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['GET'])
 def food_alldata(request):
     if request.method == "GET":
@@ -1273,35 +1548,35 @@ def food_update(request,id,food_id):
         if "aadhar" in request.FILES:
             aadhar = request.FILES['aadhar']
             aadhar_path = fs.save(f"api/food/{id}/aadhar/{aadhar.name}", aadhar)
-            aadhar_paths = fs.url(aadhar_path)
+            aadhar_paths = all_image_url+fs.url(aadhar_path)
         else:
             aadhar_paths = food_datas["aadhar"]
 
         if "pan_file" in request.FILES:
             pan_file = request.FILES["pan_file"]
             pan_file_path = fs.save(f"api/food/{id}/pan_file/{pan_file.name}", pan_file)
-            pan_file_paths = fs.url(pan_file_path)
+            pan_file_paths = all_image_url+fs.url(pan_file_path)
         else:
             pan_file_paths = food_datas["pan_file"]
 
         if "profile" in request.FILES:
             profile = request.FILES["profile"]
             profile_path = fs.save(f"api/food/{id}/profile/{profile.name}", profile)
-            profile_paths = fs.url(profile_path)
+            profile_paths = all_image_url+fs.url(profile_path)
         else:
             profile_paths = food_datas["profile"]
 
         if "bank_passbook" in request.FILES:
             bank_passbook = request.FILES["bank_passbook"]
             bank_passbook_path = fs.save(f"api/food/{id}/bank_passbook/{bank_passbook.name}", bank_passbook)
-            bank_passbook_paths = fs.url(bank_passbook_path)
+            bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
         else:
             bank_passbook_paths = food_datas["bank_passbook"]
 
         if "gst_file" in request.FILES:
             gst_file = request.FILES["gst_file"]
             gst_file_path = fs.save(f"api/food/{id}/gst_file/{gst_file.name}", gst_file)
-            gst_file_paths = fs.url(gst_file_path)
+            gst_file_paths = all_image_url+fs.url(gst_file_path)
         else:
             gst_file_paths = food_datas["gst_file"]
         
@@ -1319,14 +1594,16 @@ def food_update(request,id,food_id):
         food_data.area = request.data.get('area', food_data.area)
         food_data.fssa = request.data.get('fssa', food_data.fssa)
         food_data.region = request.data.get('region', food_data.region)
-        food_data.pin_number = request.data.get('pin_number', food_data.pin_number)
+        food_data.pincode = request.data.get('pincode', food_data.pincode)
         food_data.aadhar_number = request.data.get('aadhar_number', food_data.aadhar_number)
-        food_data.pin_your_location = request.data.get('pin_your_location', food_data.pin_your_location)
+        # food_data.pin_your_location = request.data.get('pin_your_location', food_data.pin_your_location)
         food_data.name = request.data.get('name', food_data.name)
         food_data.account_number = request.data.get('account_number', food_data.account_number)
         food_data.ifsc_code = request.data.get('ifsc_code', food_data.ifsc_code)
         food_data.upi_id = request.data.get('upi_id', food_data.upi_id)
         food_data.gpay_number = request.data.get('gpay_number', food_data.gpay_number)
+        food_data.latitude = request.data.get('latitude', food_data.latitude)
+        food_data.longitude = request.data.get('longitude', food_data.longitude)
         # Update other fields similarly
 
         # Save changes
@@ -1341,75 +1618,94 @@ def food_update(request,id,food_id):
     except:
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
 
-# food products    
+
+# food products
 @api_view(['POST'])
 def food_products(request,id):
+    # Generate a unique product ID
     product_id = business_extension.product_id_generate()
+    
     while True:
         if id == product_id:
             product_id = business_extension.product_id_generate()
         else:
             break
-    
-    #add
+        
+    # Save primary image
     fs = FileSystemStorage()
-
     primary_image = str(request.FILES['primary_image']).replace(" ", "_")
     primary_image_path = fs.save(f"api/food_products/{id}/primary_image/"+primary_image, request.FILES['primary_image'])
     primary_image_paths = all_image_url+fs.url(primary_image_path)
-    print(primary_image_paths)
+    
+    # Save other images
     other_image = []
     other_imagelist = []
     for sav in request.FILES.getlist('other_images'):
         ot = fs.save(f"api/food_products/{id}/other_images/"+sav.name, sav) 
         other_image.append(str(ot).replace(" ","_"))
-            
-        print(other_image)
         for iname in other_image:
             other_images_path = iname
             other_imagelist.append(all_image_url+fs.url(other_images_path))
-
-    
+ 
+    # Retrieve commission and GST from admin data
     admin_data = business_commision.objects.get(id=1)  
     commission = float(admin_data.commission)  
-    gst = float(admin_data.gst)  
+    gst =   int(request.POST["gst"])
     
+    # Calculate selling price
     actualprice = int(request.POST["actual_price"])
     discountprice = int(request.POST["discount_price"])
-
     sellingprice = actualprice - discountprice
     commission_amount = sellingprice + ((commission / 100) * sellingprice)
-
     selling_price = commission_amount + ((gst / 100) * commission_amount)
    
+    # Prepare food product data
     food_products = dict(request.POST)
     food_products['food_id'] = id
     food_products['product_id'] = product_id
     food_products['primary_image'] = primary_image_paths
-    food_products['other_images'] = other_imagelist
+    # food_products['other_images'] = other_imagelist
     food_products['selling_price'] = selling_price
     print(food_products)
+    # Clean data and prepare for serialization
+    cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in food_products.items()}
+    print(cleaned_data_dict)
+    cleaned_data_dict ['other_imagelist'] = other_imagelist
 
-    data= {
+    global food_products_data
+    food_products_data= {
         'food_id' : id,
         'product_id' : product_id,
         'status':False,
         'category':request.POST['category'],
         'subcategory':request.POST['subcategory'],
-        'product':food_products
-        
+        'product':cleaned_data_dict,
     }
-    print(data)
 
-    new_food_product = models.food_productsmodel(**data)
+    # Save data to the database
+    # new_food_product = models.food_productsmodel(**food_products_data)
     try:
-        # new_food_product.full_clean()  # Validate model fields if needed
-        new_food_product.save()
+        # new_food_product.save()
         print("Data saved successfully")
-        return Response(id, status=status.HTTP_200_OK)
+        return Response({'discount': cleaned_data_dict['discount'], 'selling_price': selling_price},
+                        status=status.HTTP_200_OK)
     except Exception as e:
         print("Error while saving data:", e)
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+@api_view(['POST'])
+def food_product_save(request, id):
+    food_products(request,id)
+    print(type(food_products_data["food_id"]))
+    print(type(id))
+    print(food_products_data["food_id"])
+    if food_products_data["food_id"] == id:
+        print("is working")
+        new_food_product = models.food_productsmodel(**food_products_data)
+        new_food_product.save()
+        return Response({"Data saved successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Data saved unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -1498,7 +1794,7 @@ def food_update_product(request,id,product_id):
             food_product_instance.save()
         
         return Response(id, status=status.HTTP_200_OK)
-    except models.shop_productsmodel.DoesNotExist:
+    except models.food_productsmodel.DoesNotExist:
         return Response({"error": "Shop product not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -1579,74 +1875,94 @@ def fresh_orderstatus(request,id):
 
 @api_view(['POST'])
 def freshcuts(request,id):
-    # print(request.data)
-    # print(request.FILES)
-    fs = FileSystemStorage()
-    aadhar = str(request.FILES['aadhar']).replace(" ", "_")
-    aadhar_path = fs.save(f"api/freshcuts/{id}/aahar/"+aadhar, request.FILES['aadhar'])
-    pan_file = str(request.FILES['pan_file']).replace(" ", "_")
-    pan_file_path = fs.save(f"api/freshcuts/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
-    profile = str(request.FILES['profile']).replace(" ", "_")
-    profile_path = fs.save(f"api/freshcuts/{id}/profile/"+profile, request.FILES['profile'])
-    bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
-    bank_passbook_path = fs.save(f"api/freshcuts/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
-    gst_file = str(request.FILES['gst_file']).replace(" ", "_")
-    gst_file_path = fs.save(f"api/freshcuts/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+    if request.method == "POST":
+        print(request.POST)
+        pincode = request.POST['pincode']
 
-    aadhar_paths = all_image_url+fs.url(aadhar_path)
-    pan_file_paths = all_image_url+fs.url(pan_file_path)
-    profile_paths = all_image_url+fs.url(profile_path)
-    bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
-    gst_file_paths = all_image_url+fs.url(gst_file_path)
-    x = datetime.datetime.now()
-    freshcuts_id=business_extension.fresh_id_generate()
-    while True:
-        if id == freshcuts_id:
-            freshcuts_id=business_extension.fresh_id_generate()
+        data1 = zone.objects.all()
+        print(data1)
+        get_zone = None  # Initialize get_zone variable
+
+        for x in data1:
+            print(x)
+            if x.pincode is not None and pincode in x.pincode:
+                get_zone = x.zone
+                print(get_zone)
+                break  # Once the zone is found, exit the loop
+
+        print(get_zone)  # Check if zone is retrieved correctly
+        # print(request.data)
+        # print(request.FILES)
+        fs = FileSystemStorage()
+        aadhar = str(request.FILES['aadhar']).replace(" ", "_")
+        aadhar_path = fs.save(f"api/freshcuts/{id}/aahar/"+aadhar, request.FILES['aadhar'])
+        pan_file = str(request.FILES['pan_file']).replace(" ", "_")
+        pan_file_path = fs.save(f"api/freshcuts/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
+        profile = str(request.FILES['profile']).replace(" ", "_")
+        profile_path = fs.save(f"api/freshcuts/{id}/profile/"+profile, request.FILES['profile'])
+        bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
+        bank_passbook_path = fs.save(f"api/freshcuts/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
+        gst_file = str(request.FILES['gst_file']).replace(" ", "_")
+        gst_file_path = fs.save(f"api/freshcuts/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+
+        aadhar_paths = all_image_url+fs.url(aadhar_path)
+        pan_file_paths = all_image_url+fs.url(pan_file_path)
+        profile_paths = all_image_url+fs.url(profile_path)
+        bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
+        gst_file_paths = all_image_url+fs.url(gst_file_path)
+        x = datetime.datetime.now()
+        freshcuts_id=business_extension.fresh_id_generate()
+        while True:
+            if id == freshcuts_id:
+                freshcuts_id=business_extension.fresh_id_generate()
+            else:
+                break
+
+        data = {
+            'Business_id': id,
+            'fresh_id': freshcuts_id,
+            'seller_name': request.POST['seller_name'],
+            'business_name': request.POST['business_name'],
+            'pan_number': request.POST['pan_number'],
+            'gst': request.POST['gst'],
+            'contact': request.POST['contact'],
+            'alternate_contact': request.POST['alternate_contact'],
+            'pincode': request.POST['pincode'],
+            'aadhar_number' : request.POST['aadhar_number'],
+            'door_number' : request.POST['door_number'],
+            'street_name' : request.POST['street_name'],
+            'area' : request.POST['area'],        
+            'fssa':request.POST['fssa'],
+            'region':get_zone,
+            # 'pin_your_location': request.POST['pin_your_location'],           
+            'name': request.POST['name'],           
+            'account_number':request.POST['account_number'],
+            'ifsc_code':request.POST['ifsc_code'],
+            'upi_id':request.POST['upi_id'],
+            'gpay_number':request.POST['gpay_number'],
+            'aadhar':aadhar_paths,
+            'pan_file': pan_file_paths,
+            'profile': profile_paths,
+            'bank_passbook': bank_passbook_paths,
+            'gst_file': gst_file_paths,
+            'category':"fresh_cuts",
+            'latitude':request.POST['latitude'],
+            'longitude':request.POST['longitude'],
+
+            }
+
+        print(data)
+        basicdetailsserializer = business_serializers.freshcuts_serializer(data=data)
+        
+        if basicdetailsserializer.is_valid():
+            basicdetailsserializer.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
         else:
-            break
-
-    data = {
-        'Business_id': id,
-        'fresh_id': freshcuts_id,
-        'seller_name': request.POST['seller_name'],
-        'business_name': request.POST['business_name'],
-        'pan_number': request.POST['pan_number'],
-        'gst': request.POST['gst'],
-        'contact': request.POST['contact'],
-        'alternate_contact': request.POST['alternate_contact'],
-        'pin_number': request.POST['pin_number'],
-        'aadhar_number' : request.POST['aadhar_number'],
-        'door_number' : request.POST['door_number'],
-        'street_name' : request.POST['street_name'],
-        'area' : request.POST['area'],        
-        'fssa':request.POST['fssa'],
-        'region':request.POST['region'],
-        'pin_your_location': request.POST['pin_your_location'],           
-        'name': request.POST['name'],           
-        'account_number':request.POST['account_number'],
-        'ifsc_code':request.POST['ifsc_code'],
-        'upi_id':request.POST['upi_id'],
-        'gpay_number':request.POST['gpay_number'],
-        'aadhar':aadhar_paths,
-        'pan_file': pan_file_paths,
-        'profile': profile_paths,
-        'bank_passbook': bank_passbook_paths,
-        'gst_file': gst_file_paths,
-        'category':"fresh_cuts",
-
-        }
-
-    print(data)
-    basicdetailsserializer = business_serializers.freshcuts_serializer(data=data)
-    
-    if basicdetailsserializer.is_valid():
-        basicdetailsserializer.save()
-        print("Valid Data")
-        return Response(id, status=status.HTTP_200_OK)
+            print("serializer prblm")
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
     else:
-        print("serializer prblm")
-        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def freshcuts_alldata(request):
@@ -1732,14 +2048,16 @@ def freshcuts_update(request,id,fresh_id):
         freshcuts_data.area = request.data.get('area', freshcuts_data.area)
         freshcuts_data.fssa = request.data.get('fssa', freshcuts_data.fssa)
         freshcuts_data.region = request.data.get('region', freshcuts_data.region)
-        freshcuts_data.pin_number = request.data.get('pin_number', freshcuts_data.pin_number)
+        freshcuts_data.pincode = request.data.get('pincode', freshcuts_data.pincode)
         freshcuts_data.aadhar_number = request.data.get('aadhar_number', freshcuts_data.aadhar_number)
-        freshcuts_data.pin_your_location = request.data.get('pin_your_location', freshcuts_data.pin_your_location)
+        # freshcuts_data.pin_your_location = request.data.get('pin_your_location', freshcuts_data.pin_your_location)
         freshcuts_data.name = request.data.get('name', freshcuts_data.name)
         freshcuts_data.account_number = request.data.get('account_number', freshcuts_data.account_number)
         freshcuts_data.ifsc_code = request.data.get('ifsc_code', freshcuts_data.ifsc_code)
         freshcuts_data.upi_id = request.data.get('upi_id', freshcuts_data.upi_id)
         freshcuts_data.gpay_number = request.data.get('gpay_number', freshcuts_data.gpay_number)
+        freshcuts_data.latitude = request.data.get('latitude', freshcuts_data.latitude)
+        freshcuts_data.longitude = request.data.get('longitude', freshcuts_data.longitude)
         # Update other fields similarly
 
         # Save changes
@@ -1756,7 +2074,7 @@ def freshcuts_update(request,id,fresh_id):
     
 # fresh products    
 @api_view(['POST'])
-def fresh_products(request,id):
+def fresh_products(request, id):
     product_id = business_extension.product_id_generate()
     while True:
         if id == product_id:
@@ -1785,7 +2103,7 @@ def fresh_products(request,id):
     
     admin_data = business_commision.objects.get(id=1)  
     commission = float(admin_data.commission)  
-    gst = float(admin_data.gst)  
+    gst =   int(request.POST["gst"])
     
     actualprice = int(request.POST["actual_price"])
     discountprice = int(request.POST["discount_price"])
@@ -1799,30 +2117,47 @@ def fresh_products(request,id):
     fresh_products['fresh_id'] = id
     fresh_products['product_id'] = product_id
     fresh_products['primary_image'] = primary_image_paths
-    fresh_products['other_images'] = other_imagelist
+    # fresh_products['other_images'] = other_imagelist
     fresh_products['selling_price'] = selling_price
     print(fresh_products)
-
+    cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in fresh_products.items()}
+    cleaned_data_dict ['other_imagelist'] = other_imagelist
+   
+    global data
     data= {
         'fresh_id' : id,
         'product_id' : product_id,
         'status':False,
         'category':request.POST['category'],
         'subcategory':request.POST['subcategory'],
-        'product':fresh_products
+        'product':cleaned_data_dict
         
     }
     print(data)
-
-    new_fresh_product = models.fresh_productsmodel(**data)
     try:
-        # new_fresh_product.full_clean()  # Validate model fields if needed
-        new_fresh_product.save()
+        # shopping_product.save()
         print("Data saved successfully")
-        return Response(id, status=status.HTTP_200_OK)
+        return Response({'discount': cleaned_data_dict['discount'], 'selling_price': selling_price},
+                        status=status.HTTP_200_OK)
     except Exception as e:
         print("Error while saving data:", e)
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['POST'])
+def fresh_product_save(request, id):
+    print(type(data["fresh_id"]))
+    print(type(id))
+    print(data["fresh_id"])
+    if data["fresh_id"] == id:
+        print("is working")
+        new_shop_product = models.fresh_productsmodel(**data)
+        new_shop_product.save()
+        return Response({"Data saved successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Data saved unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
@@ -1993,74 +2328,95 @@ def dmio_orderstatus(request,id):
 
 @api_view(['POST'])
 def dailymio(request,id):
-    # print(request.data)
-    # print(request.FILES)
-    fs = FileSystemStorage()
-    aadhar = str(request.FILES['aadhar']).replace(" ", "_")
-    aadhar_path = fs.save(f"api/dailymio/{id}/aahar/"+aadhar, request.FILES['aadhar'])
-    pan_file = str(request.FILES['pan_file']).replace(" ", "_")
-    pan_file_path = fs.save(f"api/dailymio/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
-    profile = str(request.FILES['profile']).replace(" ", "_")
-    profile_path = fs.save(f"api/dailymio/{id}/profile/"+profile, request.FILES['profile'])
-    bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
-    bank_passbook_path = fs.save(f"api/dailymio/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
-    gst_file = str(request.FILES['gst_file']).replace(" ", "_")
-    gst_file_path = fs.save(f"api/dailymio/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+    if request.method == "POST":
+        print(request.POST)
+        pincode = request.POST['pincode']
 
-    aadhar_paths = all_image_url+fs.url(aadhar_path)
-    pan_file_paths = all_image_url+fs.url(pan_file_path)
-    profile_paths = all_image_url+fs.url(profile_path)
-    bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
-    gst_file_paths = all_image_url+fs.url(gst_file_path)
-    x = datetime.datetime.now()
-    dmio_id=business_extension.dmio_id_generate()
-    while True:
-        if id == dmio_id:
-            dmio_id=business_extension.dmio_id_generate()
+        data1 = zone.objects.all()
+        print(data1)
+        get_zone = None  # Initialize get_zone variable
+
+        for x in data1:
+            print(x)
+            if x.pincode is not None and pincode in x.pincode:
+                get_zone = x.zone
+                print(get_zone)
+                break  # Once the zone is found, exit the loop
+
+        print(get_zone)  # Check if zone is retrieved correctly
+        
+        # print(request.data)
+        # print(request.FILES)
+        fs = FileSystemStorage()
+        aadhar = str(request.FILES['aadhar']).replace(" ", "_")
+        aadhar_path = fs.save(f"api/dailymio/{id}/aahar/"+aadhar, request.FILES['aadhar'])
+        pan_file = str(request.FILES['pan_file']).replace(" ", "_")
+        pan_file_path = fs.save(f"api/dailymio/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
+        profile = str(request.FILES['profile']).replace(" ", "_")
+        profile_path = fs.save(f"api/dailymio/{id}/profile/"+profile, request.FILES['profile'])
+        bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
+        bank_passbook_path = fs.save(f"api/dailymio/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
+        gst_file = str(request.FILES['gst_file']).replace(" ", "_")
+        gst_file_path = fs.save(f"api/dailymio/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+
+        aadhar_paths = all_image_url+fs.url(aadhar_path)
+        pan_file_paths = all_image_url+fs.url(pan_file_path)
+        profile_paths = all_image_url+fs.url(profile_path)
+        bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
+        gst_file_paths = all_image_url+fs.url(gst_file_path)
+        x = datetime.datetime.now()
+        dmio_id=business_extension.dmio_id_generate()
+        while True:
+            if id == dmio_id:
+                dmio_id=business_extension.dmio_id_generate()
+            else:
+                break
+
+        data = {
+            'Business_id': id,
+            'dmio_id':dmio_id,
+            'seller_name': request.POST['seller_name'],
+            'business_name': request.POST['business_name'],
+            'pan_number': request.POST['pan_number'],
+            'gst': request.POST['gst'],
+            'contact': request.POST['contact'],
+            'alternate_contact': request.POST['alternate_contact'],
+            'pincode': request.POST['pincode'],
+            'aadhar_number' : request.POST['aadhar_number'],
+            'door_number' : request.POST['door_number'],
+            'street_name' : request.POST['street_name'],
+            'area' : request.POST['area'],        
+            'fssa':request.POST['fssa'],
+            'region':get_zone,
+            # 'pin_your_location': request.POST['pin_your_location'],           
+            'name': request.POST['name'],           
+            'account_number':request.POST['account_number'],
+            'ifsc_code':request.POST['ifsc_code'],
+            'upi_id':request.POST['upi_id'],
+            'gpay_number':request.POST['gpay_number'],
+            'aadhar':aadhar_paths,
+            'pan_file': pan_file_paths,
+            'profile': profile_paths,
+            'bank_passbook': bank_passbook_paths,
+            'gst_file': gst_file_paths,
+            'category':"daily_mio",
+            'latitude':request.POST['latitude'],
+            'longitude':request.POST['longitude'],
+            }
+
+        print(data)
+        basicdetailsserializer = business_serializers.dailymio_serializer(data=data)
+        
+        if basicdetailsserializer.is_valid():
+            basicdetailsserializer.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
         else:
-            break
+            print("serializer prblm")
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
 
-    data = {
-        'Business_id': id,
-        'dmio_id':dmio_id,
-        'seller_name': request.POST['seller_name'],
-        'business_name': request.POST['business_name'],
-        'pan_number': request.POST['pan_number'],
-        'gst': request.POST['gst'],
-        'contact': request.POST['contact'],
-        'alternate_contact': request.POST['alternate_contact'],
-        'pin_number': request.POST['pin_number'],
-        'aadhar_number' : request.POST['aadhar_number'],
-        'door_number' : request.POST['door_number'],
-        'street_name' : request.POST['street_name'],
-        'area' : request.POST['area'],        
-        'fssa':request.POST['fssa'],
-        'region':request.POST['region'],
-        'pin_your_location': request.POST['pin_your_location'],           
-        'name': request.POST['name'],           
-        'account_number':request.POST['account_number'],
-        'ifsc_code':request.POST['ifsc_code'],
-        'upi_id':request.POST['upi_id'],
-        'gpay_number':request.POST['gpay_number'],
-        'aadhar':aadhar_paths,
-        'pan_file': pan_file_paths,
-        'profile': profile_paths,
-        'bank_passbook': bank_passbook_paths,
-        'gst_file': gst_file_paths,
-        'category':"daily_mio",
-
-        }
-
-    print(data)
-    basicdetailsserializer = business_serializers.dailymio_serializer(data=data)
-    
-    if basicdetailsserializer.is_valid():
-        basicdetailsserializer.save()
-        print("Valid Data")
-        return Response(id, status=status.HTTP_200_OK)
     else:
-        print("serializer prblm")
-        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def dailymio_alldata(request):
@@ -2099,35 +2455,35 @@ def dailymio_update(request,id,dmio_id):
         if "aadhar" in request.FILES:
             aadhar = request.FILES['aadhar']
             aadhar_path = fs.save(f"api/dailymio/{id}/aadhar/{aadhar.name}", aadhar)
-            aadhar_paths = fs.url(aadhar_path)
+            aadhar_paths = all_image_url+fs.url(aadhar_path)
         else:
             aadhar_paths = dailymio_datas["aadhar"]
 
         if "pan_file" in request.FILES:
             pan_file = request.FILES["pan_file"]
             pan_file_path = fs.save(f"api/dailymio/{id}/pan_file/{pan_file.name}", pan_file)
-            pan_file_paths = fs.url(pan_file_path)
+            pan_file_paths = all_image_url+fs.url(pan_file_path)
         else:
             pan_file_paths = dailymio_datas["pan_file"]
 
         if "profile" in request.FILES:
             profile = request.FILES["profile"]
             profile_path = fs.save(f"api/dailymio/{id}/profile/{profile.name}", profile)
-            profile_paths = fs.url(profile_path)
+            profile_paths = all_image_url+fs.url(profile_path)
         else:
             profile_paths = dailymio_datas["profile"]
 
         if "bank_passbook" in request.FILES:
             bank_passbook = request.FILES["bank_passbook"]
             bank_passbook_path = fs.save(f"api/dailymio/{id}/bank_passbook/{bank_passbook.name}", bank_passbook)
-            bank_passbook_paths = fs.url(bank_passbook_path)
+            bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
         else:
             bank_passbook_paths = dailymio_datas["bank_passbook"]
 
         if "gst_file" in request.FILES:
             gst_file = request.FILES["gst_file"]
             gst_file_path = fs.save(f"api/dailymio/{id}/gst_file/{gst_file.name}", gst_file)
-            gst_file_paths = fs.url(gst_file_path)
+            gst_file_paths = all_image_url+fs.url(gst_file_path)
         else:
             gst_file_paths = dailymio_datas["gst_file"]
         
@@ -2145,14 +2501,16 @@ def dailymio_update(request,id,dmio_id):
         dailymio_data.area = request.data.get('area', dailymio_data.area)
         dailymio_data.fssa = request.data.get('fssa', dailymio_data.fssa)
         dailymio_data.region = request.data.get('region', dailymio_data.region)
-        dailymio_data.pin_number = request.data.get('pin_number', dailymio_data.pin_number)
+        dailymio_data.pincode = request.data.get('pincode', dailymio_data.pincode)
         dailymio_data.aadhar_number = request.data.get('aadhar_number', dailymio_data.aadhar_number)
-        dailymio_data.pin_your_location = request.data.get('pin_your_location', dailymio_data.pin_your_location)
+        # dailymio_data.pin_your_location = request.data.get('pin_your_location', dailymio_data.pin_your_location)
         dailymio_data.name = request.data.get('name', dailymio_data.name)
         dailymio_data.account_number = request.data.get('account_number', dailymio_data.account_number)
         dailymio_data.ifsc_code = request.data.get('ifsc_code', dailymio_data.ifsc_code)
         dailymio_data.upi_id = request.data.get('upi_id', dailymio_data.upi_id)
         dailymio_data.gpay_number = request.data.get('gpay_number', dailymio_data.gpay_number)
+        dailymio_data.latitude = request.data.get('latitude', dailymio_data.latitude)
+        dailymio_data.longitude = request.data.get('longitude', dailymio_data.longitude)
         # Update other fields similarly
 
         # Save changes
@@ -2200,7 +2558,8 @@ def dmio_products(request,id):
     
     admin_data = business_commision.objects.get(id=1)  
     commission = float(admin_data.commission)  
-    gst = float(admin_data.gst)  
+    gst =   int(request.POST["gst"])
+ 
     
     actualprice = int(request.POST["actual_price"])
     discountprice = int(request.POST["discount_price"])
@@ -2214,31 +2573,45 @@ def dmio_products(request,id):
     dmio_products['dmio_id'] = id
     dmio_products['product_id'] = product_id
     dmio_products['primary_image'] = primary_image_paths
-    dmio_products['other_images'] = other_imagelist
+    # dmio_products['other_images'] = other_imagelist
     dmio_products['selling_price'] = selling_price
     print(dmio_products)
+    cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in dmio_products.items()}
+    cleaned_data_dict ['other_imagelist'] = other_imagelist
 
-
+    global data
     data= {
         'dmio_id' : id,
         'product_id' : product_id,
         'status':False,
         'category':request.POST['category'],
         'subcategory':request.POST['subcategory'],
-        'product':dmio_products
+        'product':cleaned_data_dict
         
     }
-    print(data)
-
-    new_dmio_product = models.dmio_productsmodel(**data)
+    # shopping_product = models.shop_productsmodel(**shop_product_data)
     try:
-        # new_dmio_product.full_clean()  # Validate model fields if needed
-        new_dmio_product.save()
+        # shopping_product.save()
         print("Data saved successfully")
-        return Response(id, status=status.HTTP_200_OK)
+        return Response({'discount': cleaned_data_dict['discount'], 'selling_price': selling_price},
+                        status=status.HTTP_200_OK)
     except Exception as e:
         print("Error while saving data:", e)
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['POST'])
+def dmio_product_save(request, id):
+    print(type(data["dmio_id"]))
+    print(type(id))
+    print(data["dmio_id"])
+    if data["dmio_id"] == id:
+        print("is working")
+        new_shop_product = models.dmio_productsmodel(**data)
+        new_shop_product.save()
+        return Response({"Data saved successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Data saved unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -2409,74 +2782,92 @@ def pharm_orderstatus(request,id):
 # pharmacy_model
 @api_view(['POST'])
 def pharmacy(request,id):
-    # print(request.data)
-    # print(request.FILES)
-    fs = FileSystemStorage()
-    aadhar = str(request.FILES['aadhar']).replace(" ", "_")
-    aadhar_path = fs.save(f"api/pharmacy/{id}/aahar/"+aadhar, request.FILES['aadhar'])
-    pan_file = str(request.FILES['pan_file']).replace(" ", "_")
-    pan_file_path = fs.save(f"api/pharmacy/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
-    profile = str(request.FILES['profile']).replace(" ", "_")
-    profile_path = fs.save(f"api/pharmacy/{id}/profile/"+profile, request.FILES['profile'])
-    bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
-    bank_passbook_path = fs.save(f"api/pharmacy/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
-    gst_file = str(request.FILES['gst_file']).replace(" ", "_")
-    gst_file_path = fs.save(f"api/pharmacy/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+    if request.method == "POST":
+        print(request.POST)
+        pincode = request.POST['pincode']
 
-    aadhar_paths = all_image_url+fs.url(aadhar_path)
-    pan_file_paths = all_image_url+fs.url(pan_file_path)
-    profile_paths = all_image_url+fs.url(profile_path)
-    bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
-    gst_file_paths = all_image_url+fs.url(gst_file_path)
-    x = datetime.datetime.now()
-    pharms_id=business_extension.pharm_id_generate()
-    while True:
-        if id == pharms_id:
-            pharms_id=business_extension.pharm_id_generate()
+        data1 = zone.objects.all()
+        print(data1)
+        get_zone = None  # Initialize get_zone variable
+
+        for x in data1:
+            print(x)
+            if x.pincode is not None and pincode in x.pincode:
+                get_zone = x.zone
+                print(get_zone)
+                break  # Once the zone is found, exit the loop
+
+        print(get_zone)  # Check if zone is retrieved correctly
+        # print(request.data)
+        # print(request.FILES)
+        fs = FileSystemStorage()
+        aadhar = str(request.FILES['aadhar']).replace(" ", "_")
+        aadhar_path = fs.save(f"api/pharmacy/{id}/aahar/"+aadhar, request.FILES['aadhar'])
+        pan_file = str(request.FILES['pan_file']).replace(" ", "_")
+        pan_file_path = fs.save(f"api/pharmacy/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
+        profile = str(request.FILES['profile']).replace(" ", "_")
+        profile_path = fs.save(f"api/pharmacy/{id}/profile/"+profile, request.FILES['profile'])
+        bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
+        bank_passbook_path = fs.save(f"api/pharmacy/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
+        gst_file = str(request.FILES['gst_file']).replace(" ", "_")
+        gst_file_path = fs.save(f"api/pharmacy/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+
+        aadhar_paths = all_image_url+fs.url(aadhar_path)
+        pan_file_paths = all_image_url+fs.url(pan_file_path)
+        profile_paths = all_image_url+fs.url(profile_path)
+        bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
+        gst_file_paths = all_image_url+fs.url(gst_file_path)
+        x = datetime.datetime.now()
+        pharms_id=business_extension.pharm_id_generate()
+        while True:
+            if id == pharms_id:
+                pharms_id=business_extension.pharm_id_generate()
+            else:
+                break
+        data = {
+            'Business_id': id,
+            'pharm_id': pharms_id,
+            'seller_name': request.POST['seller_name'],
+            'business_name': request.POST['business_name'],
+            'pan_number': request.POST['pan_number'],
+            'gst': request.POST['gst'],
+            'contact': request.POST['contact'],
+            'alternate_contact': request.POST['alternate_contact'],
+            'pincode': request.POST['pincode'],
+            'aadhar_number' : request.POST['aadhar_number'],
+            'door_number' : request.POST['door_number'],
+            'street_name' : request.POST['street_name'],
+            'area' : request.POST['area'],        
+            'fssa':request.POST['fssa'],
+            'region':get_zone,
+            # 'pin_your_location': request.POST['pin_your_location'],           
+            'name': request.POST['name'],           
+            'account_number':request.POST['account_number'],
+            'ifsc_code':request.POST['ifsc_code'],
+            'upi_id':request.POST['upi_id'],
+            'gpay_number':request.POST['gpay_number'],
+            'aadhar':aadhar_paths,
+            'pan_file': pan_file_paths,
+            'profile': profile_paths,
+            'bank_passbook': bank_passbook_paths,
+            'gst_file': gst_file_paths,
+            'category':"pharmacy",
+            'latitude':request.POST['latitude'],
+            'longitude':request.POST['longitude'],
+            }
+
+        print(data)
+        basicdetailsserializer = business_serializers.pharmacy_serializer(data=data)
+        
+        if basicdetailsserializer.is_valid():
+            basicdetailsserializer.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
         else:
-            break
-    data = {
-        'Business_id': id,
-        'pharm_id': pharms_id,
-        'seller_name': request.POST['seller_name'],
-        'business_name': request.POST['business_name'],
-        'pan_number': request.POST['pan_number'],
-        'gst': request.POST['gst'],
-        'contact': request.POST['contact'],
-        'alternate_contact': request.POST['alternate_contact'],
-        'pin_number': request.POST['pin_number'],
-        'aadhar_number' : request.POST['aadhar_number'],
-        'door_number' : request.POST['door_number'],
-        'street_name' : request.POST['street_name'],
-        'area' : request.POST['area'],        
-        'fssa':request.POST['fssa'],
-        'region':request.POST['region'],
-        'pin_your_location': request.POST['pin_your_location'],           
-        'name': request.POST['name'],           
-        'account_number':request.POST['account_number'],
-        'ifsc_code':request.POST['ifsc_code'],
-        'upi_id':request.POST['upi_id'],
-        'gpay_number':request.POST['gpay_number'],
-        'aadhar':aadhar_paths,
-        'pan_file': pan_file_paths,
-        'profile': profile_paths,
-        'bank_passbook': bank_passbook_paths,
-        'gst_file': gst_file_paths,
-        'category':"pharmacy",
-
-        }
-
-    print(data)
-    basicdetailsserializer = business_serializers.pharmacy_serializer(data=data)
-    
-    if basicdetailsserializer.is_valid():
-        basicdetailsserializer.save()
-        print("Valid Data")
-        return Response(id, status=status.HTTP_200_OK)
+            print("serializer prblm")
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
     else:
-        print("serializer prblm")
-        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
-
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['GET'])
 def pharmacy_alldata(request):
     if request.method == "GET":
@@ -2516,35 +2907,35 @@ def pharmacy_update(request,id,pharm_id):
         if "aadhar" in request.FILES:
             aadhar = request.FILES['aadhar']
             aadhar_path = fs.save(f"api/pharmacy/{id}/aadhar/{aadhar.name}", aadhar)
-            aadhar_paths = fs.url(aadhar_path)
+            aadhar_paths = all_image_url+fs.url(aadhar_path)
         else:
             aadhar_paths = pharmacy_datas["aadhar"]
 
         if "pan_file" in request.FILES:
             pan_file = request.FILES["pan_file"]
             pan_file_path = fs.save(f"api/pharmacy/{id}/pan_file/{pan_file.name}", pan_file)
-            pan_file_paths = fs.url(pan_file_path)
+            pan_file_paths = all_image_url+fs.url(pan_file_path)
         else:
             pan_file_paths = pharmacy_datas["pan_file"]
 
         if "profile" in request.FILES:
             profile = request.FILES["profile"]
             profile_path = fs.save(f"api/pharmacy/{id}/profile/{profile.name}", profile)
-            profile_paths = fs.url(profile_path)
+            profile_paths = all_image_url+fs.url(profile_path)
         else:
             profile_paths = pharmacy_datas["profile"]
 
         if "bank_passbook" in request.FILES:
             bank_passbook = request.FILES["bank_passbook"]
             bank_passbook_path = fs.save(f"api/pharmacy/{id}/bank_passbook/{bank_passbook.name}", bank_passbook)
-            bank_passbook_paths = fs.url(bank_passbook_path)
+            bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
         else:
             bank_passbook_paths = pharmacy_datas["bank_passbook"]
 
         if "gst_file" in request.FILES:
             gst_file = request.FILES["gst_file"]
             gst_file_path = fs.save(f"api/pharmacy/{id}/gst_file/{gst_file.name}", gst_file)
-            gst_file_paths = fs.url(gst_file_path)
+            gst_file_paths = all_image_url+fs.url(gst_file_path)
         else:
             gst_file_paths = pharmacy_datas["gst_file"]
         
@@ -2562,14 +2953,16 @@ def pharmacy_update(request,id,pharm_id):
         pharmacy_data.area = request.data.get('area', pharmacy_data.area)
         pharmacy_data.fssa = request.data.get('fssa', pharmacy_data.fssa)
         pharmacy_data.region = request.data.get('region', pharmacy_data.region)
-        pharmacy_data.pin_number = request.data.get('pin_number', pharmacy_data.pin_number)
+        pharmacy_data.pincode = request.data.get('pincode', pharmacy_data.pincode)
         pharmacy_data.aadhar_number = request.data.get('aadhar_number', pharmacy_data.aadhar_number)
-        pharmacy_data.pin_your_location = request.data.get('pin_your_location', pharmacy_data.pin_your_location)
+        # pharmacy_data.pin_your_location = request.data.get('pin_your_location', pharmacy_data.pin_your_location)
         pharmacy_data.name = request.data.get('name', pharmacy_data.name)
         pharmacy_data.account_number = request.data.get('account_number', pharmacy_data.account_number)
         pharmacy_data.ifsc_code = request.data.get('ifsc_code', pharmacy_data.ifsc_code)
         pharmacy_data.upi_id = request.data.get('upi_id', pharmacy_data.upi_id)
         pharmacy_data.gpay_number = request.data.get('gpay_number', pharmacy_data.gpay_number)
+        pharmacy_data.latitude = request.data.get('latitude', pharmacy_data.latitude)
+        pharmacy_data.longitude = request.data.get('longitude', pharmacy_data.longitude)
         # Update other fields similarly
 
         # Save changes
@@ -2617,7 +3010,7 @@ def pharmacy_products(request,id):
     
     admin_data = business_commision.objects.get(id=1)  
     commission = float(admin_data.commission)  
-    gst = float(admin_data.gst)  
+    gst =   int(request.POST["gst"])
     
     actualprice = int(request.POST["actual_price"])
     discountprice = int(request.POST["discount_price"])
@@ -2631,30 +3024,44 @@ def pharmacy_products(request,id):
     pharmacy_products['pharm_id'] = id
     pharmacy_products['product_id'] = product_id
     pharmacy_products['primary_image'] = primary_image_paths
-    pharmacy_products['other_images'] = other_imagelist
+    # pharmacy_products['other_images'] = other_imagelist
     pharmacy_products['selling_price'] = selling_price
     print(pharmacy_products)
-
+    cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in pharmacy_products.items()}
+    cleaned_data_dict ['other_imagelist'] = other_imagelist
+   
+    global data
     data= {
         'pharm_id' : id,
         'product_id' : product_id,
         'status':False,
         'category':request.POST['category'],
         'subcategory':request.POST['subcategory'],
-        'product':pharmacy_products
+        'product':cleaned_data_dict
         
     }
-    print(data)
-
-    new_pharmacy_product = models.pharmacy_productsmodel(**data)
     try:
-        # new_pharmacy_product.full_clean()  # Validate model fields if needed
-        new_pharmacy_product.save()
+  
         print("Data saved successfully")
-        return Response(id, status=status.HTTP_200_OK)
+        return Response({'discount': cleaned_data_dict['discount'], 'selling_price': selling_price},
+                        status=status.HTTP_200_OK)
     except Exception as e:
         print("Error while saving data:", e)
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['POST'])
+def pharmacy_product_save(request, id):
+    print(type(data["pharm_id"]))
+    print(type(id))
+    print(data["pharm_id"])
+    if data["pharm_id"] == id:
+        print("is working")
+        new_shop_product = models.pharmacy_productsmodel(**data)
+        new_shop_product.save()
+        return Response({"Data saved successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Data saved unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -2822,74 +3229,95 @@ def d_origin_orderstatus(request,id):
 # d_original
 @api_view(['POST'])
 def d_original(request,id):
-    # print(request.data)
-    # print(request.FILES)
-    fs = FileSystemStorage()
-    aadhar = str(request.FILES['aadhar']).replace(" ", "_")
-    aadhar_path = fs.save(f"api/d_original/{id}/aahar/"+aadhar, request.FILES['aadhar'])
-    pan_file = str(request.FILES['pan_file']).replace(" ", "_")
-    pan_file_path = fs.save(f"api/d_original/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
-    profile = str(request.FILES['profile']).replace(" ", "_")
-    profile_path = fs.save(f"api/d_original/{id}/profile/"+profile, request.FILES['profile'])
-    bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
-    bank_passbook_path = fs.save(f"api/d_original/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
-    gst_file = str(request.FILES['gst_file']).replace(" ", "_")
-    gst_file_path = fs.save(f"api/d_original/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+    if request.method == "POST":
+        print(request.POST)
+        pincode = request.POST['pincode']
 
-    aadhar_paths = all_image_url+fs.url(aadhar_path)
-    pan_file_paths = all_image_url+fs.url(pan_file_path)
-    profile_paths = all_image_url+fs.url(profile_path)
-    bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
-    gst_file_paths = all_image_url+fs.url(gst_file_path)
-    x = datetime.datetime.now()
-    ds_id=business_extension.d_id_generate()
-    while True:
-        if id == ds_id:
-            ds_id=business_extension.d_id_generate()
+        data1 = zone.objects.all()
+        print(data1)
+        get_zone = None  # Initialize get_zone variable
+
+        for x in data1:
+            print(x)
+            if x.pincode is not None and pincode in x.pincode:
+                get_zone = x.zone
+                print(get_zone)
+                break  # Once the zone is found, exit the loop
+
+        print(get_zone)  # Check if zone is retrieved correctly
+
+        # print(request.data)
+        # print(request.FILES)
+        fs = FileSystemStorage()
+        aadhar = str(request.FILES['aadhar']).replace(" ", "_")
+        aadhar_path = fs.save(f"api/d_original/{id}/aahar/"+aadhar, request.FILES['aadhar'])
+        pan_file = str(request.FILES['pan_file']).replace(" ", "_")
+        pan_file_path = fs.save(f"api/d_original/{id}/pan_file/"+pan_file, request.FILES['pan_file'])
+        profile = str(request.FILES['profile']).replace(" ", "_")
+        profile_path = fs.save(f"api/d_original/{id}/profile/"+profile, request.FILES['profile'])
+        bank_passbook = str(request.FILES['bank_passbook']).replace(" ", "_")
+        bank_passbook_path = fs.save(f"api/d_original/{id}/bank_passbook/"+bank_passbook, request.FILES['bank_passbook'])
+        gst_file = str(request.FILES['gst_file']).replace(" ", "_")
+        gst_file_path = fs.save(f"api/d_original/{id}/gst_file/"+gst_file, request.FILES['gst_file'])
+
+        aadhar_paths = all_image_url+fs.url(aadhar_path)
+        pan_file_paths = all_image_url+fs.url(pan_file_path)
+        profile_paths = all_image_url+fs.url(profile_path)
+        bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
+        gst_file_paths = all_image_url+fs.url(gst_file_path)
+        x = datetime.datetime.now()
+        ds_id=business_extension.d_id_generate()
+        while True:
+            if id == ds_id:
+                ds_id=business_extension.d_id_generate()
+            else:
+                break
+
+        data = {
+            'Business_id': id,
+            'd_id':ds_id,
+            'seller_name': request.POST['seller_name'],
+            'business_name': request.POST['business_name'],
+            'pan_number': request.POST['pan_number'],
+            'gst': request.POST['gst'],
+            'contact': request.POST['contact'],
+            'alternate_contact': request.POST['alternate_contact'],
+            'pincode': request.POST['pincode'],
+            'aadhar_number' : request.POST['aadhar_number'],
+            'door_number' : request.POST['door_number'],
+            'street_name' : request.POST['street_name'],
+            'area' : request.POST['area'],        
+            'fssa':request.POST['fssa'],
+            'region':get_zone,
+            # 'pin_your_location': request.POST['pin_your_location'],           
+            'name': request.POST['name'],           
+            'account_number':request.POST['account_number'],
+            'ifsc_code':request.POST['ifsc_code'],
+            'upi_id':request.POST['upi_id'],
+            'gpay_number':request.POST['gpay_number'],
+            'aadhar':aadhar_paths,
+            'pan_file': pan_file_paths,
+            'profile': profile_paths,
+            'bank_passbook': bank_passbook_paths,
+            'gst_file': gst_file_paths,
+            'category':"d_original",
+            'latitude':request.POST['latitude'],
+            'longitude':request.POST['longitude'],
+            }
+
+        print(data)
+        basicdetailsserializer = business_serializers.d_original_serializer(data=data)
+        
+        if basicdetailsserializer.is_valid():
+            basicdetailsserializer.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
         else:
-            break
-
-    data = {
-        'Business_id': id,
-        'd_id':ds_id,
-        'seller_name': request.POST['seller_name'],
-        'business_name': request.POST['business_name'],
-        'pan_number': request.POST['pan_number'],
-        'gst': request.POST['gst'],
-        'contact': request.POST['contact'],
-        'alternate_contact': request.POST['alternate_contact'],
-        'pin_number': request.POST['pin_number'],
-        'aadhar_number' : request.POST['aadhar_number'],
-        'door_number' : request.POST['door_number'],
-        'street_name' : request.POST['street_name'],
-        'area' : request.POST['area'],        
-        'fssa':request.POST['fssa'],
-        'region':request.POST['region'],
-        'pin_your_location': request.POST['pin_your_location'],           
-        'name': request.POST['name'],           
-        'account_number':request.POST['account_number'],
-        'ifsc_code':request.POST['ifsc_code'],
-        'upi_id':request.POST['upi_id'],
-        'gpay_number':request.POST['gpay_number'],
-        'aadhar':aadhar_paths,
-        'pan_file': pan_file_paths,
-        'profile': profile_paths,
-        'bank_passbook': bank_passbook_paths,
-        'gst_file': gst_file_paths,
-        'category':"d_original",
-        }
-
-    print(data)
-    basicdetailsserializer = business_serializers.d_original_serializer(data=data)
-    
-    if basicdetailsserializer.is_valid():
-        basicdetailsserializer.save()
-        print("Valid Data")
-        return Response(id, status=status.HTTP_200_OK)
+            print("serializer prblm")
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
     else:
-        print("serializer prblm")
-        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
-
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+    
 @api_view(['GET'])
 def d_original_alldata(request):
     if request.method == "GET":
@@ -2927,35 +3355,35 @@ def d_original_update(request,id,d_id):
         if "aadhar" in request.FILES:
             aadhar = request.FILES['aadhar']
             aadhar_path = fs.save(f"api/d_original/{id}/aadhar/{aadhar.name}", aadhar)
-            aadhar_paths = fs.url(aadhar_path)
+            aadhar_paths = all_image_url+fs.url(aadhar_path)
         else:
             aadhar_paths = d_original_datas["aadhar"]
 
         if "pan_file" in request.FILES:
             pan_file = request.FILES["pan_file"]
             pan_file_path = fs.save(f"api/d_original/{id}/pan_file/{pan_file.name}", pan_file)
-            pan_file_paths = fs.url(pan_file_path)
+            pan_file_paths = all_image_url+fs.url(pan_file_path)
         else:
             pan_file_paths = d_original_datas["pan_file"]
 
         if "profile" in request.FILES:
             profile = request.FILES["profile"]
             profile_path = fs.save(f"api/d_original/{id}/profile/{profile.name}", profile)
-            profile_paths = fs.url(profile_path)
+            profile_paths = all_image_url+fs.url(profile_path)
         else:
             profile_paths = d_original_datas["profile"]
 
         if "bank_passbook" in request.FILES:
             bank_passbook = request.FILES["bank_passbook"]
             bank_passbook_path = fs.save(f"api/d_original/{id}/bank_passbook/{bank_passbook.name}", bank_passbook)
-            bank_passbook_paths = fs.url(bank_passbook_path)
+            bank_passbook_paths = all_image_url+fs.url(bank_passbook_path)
         else:
             bank_passbook_paths = d_original_datas["bank_passbook"]
 
         if "gst_file" in request.FILES:
             gst_file = request.FILES["gst_file"]
             gst_file_path = fs.save(f"api/d_original/{id}/gst_file/{gst_file.name}", gst_file)
-            gst_file_paths = fs.url(gst_file_path)
+            gst_file_paths = all_image_url+fs.url(gst_file_path)
         else:
             gst_file_paths = d_original_datas["gst_file"]
         
@@ -2972,14 +3400,16 @@ def d_original_update(request,id,d_id):
         d_original_data.street_name = request.data.get('street_name', d_original_data.street_name)
         d_original_data.area = request.data.get('area', d_original_data.area)
         d_original_data.region = request.data.get('region', d_original_data.region)
-        d_original_data.pin_number = request.data.get('pin_number', d_original_data.pin_number)
+        d_original_data.pincode = request.data.get('pincode', d_original_data.pincode)
         d_original_data.aadhar_number = request.data.get('aadhar_number', d_original_data.aadhar_number)
-        d_original_data.pin_your_location = request.data.get('pin_your_location', d_original_data.pin_your_location)
+        # d_original_data.pin_your_location = request.data.get('pin_your_location', d_original_data.pin_your_location)
         d_original_data.name = request.data.get('name', d_original_data.name)
         d_original_data.account_number = request.data.get('account_number', d_original_data.account_number)
         d_original_data.ifsc_code = request.data.get('ifsc_code', d_original_data.ifsc_code)
         d_original_data.upi_id = request.data.get('upi_id', d_original_data.upi_id)
         d_original_data.gpay_number = request.data.get('gpay_number', d_original_data.gpay_number)
+        d_original_data.latitude = request.data.get('latitude', d_original_data.latitude)
+        d_original_data.longitude = request.data.get('longitude', d_original_data.longitude)
         # Update other fields similarly
 
         # Save changes
@@ -3027,7 +3457,7 @@ def d_original_products(request,id):
     
     admin_data = business_commision.objects.get(id=1)  
     commission = float(admin_data.commission)  
-    gst = float(admin_data.gst)  
+    gst =   int(request.POST["gst"])
     
     actualprice = int(request.POST["actual_price"])
     discountprice = int(request.POST["discount_price"])
@@ -3041,31 +3471,46 @@ def d_original_products(request,id):
     d_original_products['d_id'] = id
     d_original_products['product_id'] = product_id
     d_original_products['primary_image'] = primary_image_paths
-    d_original_products['other_images'] = other_imagelist
+    # d_original_products['other_images'] = other_imagelist
     d_original_products['selling_price'] = selling_price
     print(d_original_products)
-
+    cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in d_original_products.items()}
+    cleaned_data_dict ['other_imagelist'] = other_imagelist
+   
+    global data
     data= {
         'd_id' : id,
         'product_id' : product_id,
         'status':False,
         'category':request.POST['category'],
         'subcategory':request.POST['subcategory'],
-        'product':d_original_products,
+        'product':cleaned_data_dict,
         'district':request.POST['district'],
         
     }
-    print(data)
-
-    new_d_original_product = models.d_original_productsmodel(**data)
     try:
-        # new_d_original_product.full_clean()  # Validate model fields if needed
-        new_d_original_product.save()
+        # shopping_product.save()
         print("Data saved successfully")
-        return Response(id, status=status.HTTP_200_OK)
+        return Response({'discount': cleaned_data_dict['discount'], 'selling_price': selling_price},
+                        status=status.HTTP_200_OK)
     except Exception as e:
         print("Error while saving data:", e)
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['POST'])
+def d_original_product_save(request, id):
+    print(type(data["d_id"]))
+    print(type(id))
+    print(data["d_id"])
+    if data["d_id"] == id:
+        print("is working")
+        new_shop_product = models.d_original_productsmodel(**data)
+        new_shop_product.save()
+        return Response({"Data saved successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Data saved unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -3279,4 +3724,26 @@ def get_quickproduct_order(request,id):
     else:
         return Response("Business not found", status=status.HTTP_404_NOT_FOUND)
 
+
+
+@api_view(["POST"])
+def businessnotify_status_true(request,id):
+    try:
+        user=get_object_or_404(models.Businessmodel,uid=id)
+        user.notification_status=True
+        user.save()
+        return Response("success",status=status.HTTP_200_OK)
+    except:
+        return Response("nostatus",status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["POST"])
+def business_notify_status_false(request,id):
+    try:
+        user=get_object_or_404(models.Businessmodel,uid=id)
+        user.notification_status=False
+        user.save()
+        return Response("success",status=status.HTTP_200_OK)
+    except:
+        return Response("nostatus",status=status.HTTP_400_BAD_REQUEST)
+    
 

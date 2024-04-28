@@ -1,0 +1,60 @@
+ 
+
+    form {
+        width: 100%; /* Adjust width as needed */
+        margin: 0 auto; /* Center the form horizontally */
+    }
+
+    label {
+        display: inline-block;
+        width: 120px; /* Adjust width as needed */
+       
+        margin-right: 10px; /* Add some space between label and input */
+        margin-top: 10px;
+        color: blueviolet;
+        padding-bottom:10px;    
+    }
+
+    input {
+        width: 100%; /* Adjust width as needed */
+        margin-bottom: 10px; /* Add some space between input fields */
+        border-color: rgb(183, 109, 253);
+border-style:groove;
+border-radius: 10px;
+       padding: 10px;
+   
+    }
+
+    button[type="submit"] {
+        color: aliceblue;
+        background-color: blueviolet;
+        width: 50%;
+        height: 40px;
+        border: 1px white;
+        border-radius: 8px;
+    }
+    .styled-textarea {
+width: 100%; /* Adjust the width to fit your layout */
+height: 50px; /* Set the height */
+padding: 10px; /* Add some padding inside the textarea */
+margin: 10px 0; /* Add some margin for spacing */
+box-sizing: border-box;
+border-color: rgb(183, 109, 253);
+border-radius: 10px;
+border-style:groove;
+border-width: 2px;
+}
+
+.sidebar .nav {
+    position: fixed;
+    width: inherit;
+    max-height: 90vh; /* Adjust based on your layout */
+    overflow-y: auto; /* Enables vertical scrolling */
+}
+.btn-check {
+    position: absolute;
+    clip: auto;
+    pointer-events: all;
+}
+
+

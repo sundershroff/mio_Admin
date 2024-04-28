@@ -210,22 +210,6 @@
                 </ul>
               </nav> -->
           </div>
-          <div class="row">
-            <!-- Delivery live trackibg -->
-            <div class="dropdown">
-              <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                REGION
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">KANAYAKUMARI</a></li>
-                <li><a class="dropdown-item" href="#">NAGERCOVIL</a></li>
-                <li><a class="dropdown-item" href="#">MARTHANDAM</a></li>
-                <li><a class="dropdown-item" href="#">THUCKALAY</a></li>
-                <li><a class="dropdown-item" href="#">NITHRAVILAI</a></li>
-                <li><a class="dropdown-item" href="#">KARUNGAL</a></li>
-              </ul>
-            </div>
-          </div>
 
 
           </div>
@@ -239,56 +223,71 @@
                           <div class="card-body">
                             <h4 class="card-title text-white">Todo</h4>
                             <div class="list-wrapper">
+                              <div class="row">
+                                <!-- Delivery live trackibg -->
+                                <div class="dropdown">
+                                  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                    REGION
+                                  </button>
+                                  <form method="POST" class="dropdown-menu">
+                                    {% csrf_token %}
+                                  <select name="region_select" style="
+                                  width: 100%;
+                                  height: 100%;
+                                  border: 0px;
+                              " onchange="this.form.submit()">
+                              <option value="">Select</option>
+                                    <option value="nagercoil">Nagercoil</option>
+                                    <option value="kanniyakumari">Kanyakumari</option>
+                                    <option value="thuckalay">Tuckalay</option>
+                                    <option value="marthandam">Marthandam</option>
+                                    <option value="karungal">Karungal</option>
+                                    <option value="nithiravilai">Nithiravilai</option>
+                                  </select>
+                                  <script>
+
+                                  </script>
+                                </form>
+                                </div>
+                              </div>
+                    
                 <div class="col-md-12 grid-margin stretch-card">
+                  
                   <div class="card">
                     <div class="card-body px-0">
                       <h4 class="card-title text-white">Todo</h4>
                       <div class="add-items px-2" style="margin-bottom: 0;">
-                        <h2 id="orderlist">Order List</h2>
+                        
+                        <h2 id="orderlist">Product Approval List</h2>
                       </div>
                       <div class="list-wrapper">
                         <div class="container mt-0">
                                 <!-- Nav pills -->
                                 <ul class="nav nav-pills" role="tablist">
                                   <li class="nav-item">
-                                    <a class="nav-link active" data-bs-toggle="pill" href="#SHOPPING">
-                                      <div style="position: relative;">SHOPPING</div>
-                                    </a>
+                                    <a class="nav-link active" data-bs-toggle="pill" href="#SHOPPING"><div style="position: relative;">SHOPPING<span class="count_order" style="left: 90px;">{{shop_product_length|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="pill" href="#FOOD">
-                                      <div style="position: relative;">FOOD</div>
-                                    </a>
+                                    <a class="nav-link" data-bs-toggle="pill" href="#FOOD"><div style="position: relative;">FOOD<span class="count_order" style="left: 60px;">{{food_product_length|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link " data-bs-toggle="pill" href="#FRESH">
-                                      <div style="position: relative;">FRESH CUTS</div>
-                                    </a>
+                                    <a class="nav-link " data-bs-toggle="pill" href="#FRESH"><div style="position: relative;">FRESH CUTS<span class="count_order" style="left: 110px;">{{fresh_cuts_length|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="pill" href="#DAILY">
-                                      <div style="position: relative;">DAILY MIO</div>
-                                    </a>
+                                    <a class="nav-link" data-bs-toggle="pill" href="#DAILY"><div style="position: relative;">DAILY MIO<span class="count_order" style="left: 90px;">{{daily_mio_length|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link " data-bs-toggle="pill" href="#PHARMACY">
-                                      <div style="position: relative;">PHARMACY</div>
-                                    </a>
+                                    <a class="nav-link " data-bs-toggle="pill" href="#PHARMACY"><div style="position: relative;">PHARMACY<span class="count_order" style="left: 100px;">{{pharmacy_length|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="pill" href="#dORIGINAL">
-                                      <div style="position: relative;">D-ORIGINAL</div>
-                                    </a>
+                                    <a class="nav-link" data-bs-toggle="pill" href="#dORIGINAL"><div style="position: relative;">D-ORIGINAL<span class="count_order" style="left: 103px;">{{d_original_length|length}}</span></div></a>
                                   </li>
                                   <li class="nav-item">
-                                    <a class="nav-link " data-bs-toggle="pill" href="#JEWELLERY">
-                                      <div style="position: relative;">JEWELLERY</div>
-                                    </a>
+                                    <a class="nav-link " data-bs-toggle="pill" href="#JEWELLERY"><div style="position: relative;">JEWELLERY<span class="count_order" style="left: 103px;">{{jwellery_length|length}}</span></div></a>
                                   </li>
-                                  
-
+                  
                                 </ul>
-                            
+                                              
                                 <!-- Tab panes -->
                                 <div class="tab-content">
                                   <div id="SHOPPING" class="container tab-pane active"><br>
@@ -316,18 +315,56 @@
                                               {{i.shop_id}}
                                             </td>
                                             <td> {{i.product_id}} </td>
-                                            <td style="width: 15%;white-space: normal;"> {{i.Model_name}}</td>
+                                            <td style="width: 15%;white-space: normal;"> {{i.product.name.0}}</td>
                                             <td>{{i.created_date}}</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
+                                            <td> <a href="/admin/edit_product/{{i.product_id}}/{{i.category}}"><i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></a></td>
                                             <td>
-                                              {% if i.status  %}
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                              {% else %}
+                                              {% if i.status == "False"  %}
+                                              <form method="POST">
+                                                {% csrf_token %}
+                                              <button type="submit" value="True" name="status" class="action_a">Accept</button>
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Reject</button>
+                                              <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+                                              <input type="hidden" name="category" value="{{i.category}}" id="">
+                                            </form>
+                                              {% elif i.status == "True" %}
                                               <button class="action_a">Accepted</button>
+                                              {% elif i.status == "Reject" %}
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Rejected</button>
                                               {% endif %}
                                               
                                           </tr>
+                                          <!-- The Modal -->
+<div class="modal" id="mymodel{{i.product_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Reason</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          <textarea name="reason" id="" cols="30" rows="10" style="width: 100%;">{{i.product.reason}}</textarea>
+        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" name="status" value="Reject" class="btn btn-danger" data-bs-dismiss="modal">Submit</button>
+        <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+        <input type="hidden" name="category" value="{{i.category}}" id="">
+        
+
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
                                           {% endfor %}
                                         </tbody>
                                       </table>
@@ -339,7 +376,6 @@
                                         <thead>
                                           <tr>
                                             <th> No </th>
-                                            <th> Business Id </th>
                                             <th> Shop Id </th>
                                             <th> Product Id </th>
                                             <th> Product Name </th>
@@ -347,43 +383,70 @@
                                             <th> Edit </th>
                                             <th> Action </th>
                                           </tr>
+
                                         </thead>
                                         <tbody>
+                                      
+                                          {% for i in food_product %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
                                             <td>
-                                              A.remya
+                                              {{i.food_id}}
                                             </td>
-                                            <td> #12345 </td>
-                                            <td> Idly</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
+                                            <td> {{i.product_id}} </td>
+                                            <td style="width: 15%;white-space: normal;"> {{i.product.name.0}}</td>
+                                            <td>{{i.created_date}}</td>
+                                            <td> <a href="/admin/edit_product/{{i.product_id}}/{{i.category}}"><i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></a></td>
                                             <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              2
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              A.Anu
-                                            </td>
-                                            <td> #12345 </td>
-                                            <td> Dosa</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
-                                            <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
+                                              {% if i.status == "False"  %}
+                                              <form method="POST">
+                                                {% csrf_token %}
+                                              <button type="submit" value="True" name="status" class="action_a">Accept</button>
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Reject</button>
+                                              <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+                                              <input type="hidden" name="category" value="{{i.category}}" id="">
 
+                                            </form>
+                                              {% elif i.status == "True" %}
+                                              <button class="action_a">Accepted</button>
+                                              {% elif i.status == "Reject" %}
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Rejected</button>
+                                              {% endif %}
+                                              
+                                          </tr>
+                                          <!-- The Modal -->
+<div class="modal" id="mymodel{{i.product_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Reason</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          <textarea name="reason" id="" cols="30" rows="10" style="width: 100%;">{{i.product.reason}}</textarea>
+        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" name="status" value="Reject" class="btn btn-danger" data-bs-dismiss="modal">Submit</button>
+        <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+        <input type="hidden" name="category" value="{{i.category}}" id="">
+
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+                                          {% endfor %}
                                         </tbody>
                                       </table><br>
 
@@ -398,9 +461,7 @@
                                       <table class="table">
                                         <thead>
                                           <tr>
-                                          <tr>
                                             <th> No </th>
-                                            <th> Business Id </th>
                                             <th> Shop Id </th>
                                             <th> Product Id </th>
                                             <th> Product Name </th>
@@ -408,44 +469,70 @@
                                             <th> Edit </th>
                                             <th> Action </th>
                                           </tr>
-                                          </tr>
+
                                         </thead>
                                         <tbody>
+                                      
+                                          {% for i in fresh_cuts %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
                                             <td>
-                                              #Shop1234
+                                              {{i.fresh_id}}
                                             </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
+                                            <td> {{i.product_id}} </td>
+                                            <td style="width: 15%;white-space: normal;"> {{i.product.name.0}}</td>
+                                            <td>{{i.created_date}}</td>
+                                            <td> <a href="/admin/edit_product/{{i.product_id}}/{{i.category}}"><i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></a></td>
                                             <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              1
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              #Shop1234
-                                            </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
-                                            <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
+                                              {% if i.status == "False"  %}
+                                              <form method="POST">
+                                                {% csrf_token %}
+                                              <button type="submit" value="True" name="status" class="action_a">Accept</button>
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Reject</button>
+                                              <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+                                              <input type="hidden" name="category" value="{{i.category}}" id="">
 
+                                            </form>
+                                              {% elif i.status == "True" %}
+                                              <button class="action_a">Accepted</button>
+                                              {% elif i.status == "Reject" %}
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Rejected</button>
+                                              {% endif %}
+                                              
+                                          </tr>
+                                          <!-- The Modal -->
+<div class="modal" id="mymodel{{i.product_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Reason</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          <textarea name="reason" id="" cols="30" rows="10" style="width: 100%;">{{i.product.reason}}</textarea>
+        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" name="status" value="Reject" class="btn btn-danger" data-bs-dismiss="modal">Submit</button>
+        <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+        <input type="hidden" name="category" value="{{i.category}}" id="">
+
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+                                          {% endfor %}
                                         </tbody>
                                       </table><br>
 
@@ -459,9 +546,7 @@
                                       <table class="table">
                                         <thead>
                                           <tr>
-                                          <tr>
                                             <th> No </th>
-                                            <th> Business Id </th>
                                             <th> Shop Id </th>
                                             <th> Product Id </th>
                                             <th> Product Name </th>
@@ -469,49 +554,72 @@
                                             <th> Edit </th>
                                             <th> Action </th>
                                           </tr>
-                                          </tr>
+
                                         </thead>
                                         <tbody>
+                                      
+                                          {% for i in daily_mio %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
                                             <td>
-                                              #Shop1234
+                                              {{i.dmio_id}}
                                             </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
+                                            <td> {{i.product_id}} </td>
+                                            <td style="width: 15%;white-space: normal;"> {{i.product.name.0}}</td>
+                                            <td>{{i.created_date}}</td>
+                                            <td> <a href="/admin/edit_product/{{i.product_id}}/{{i.category}}"><i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></a></td>
                                             <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              1
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              #Shop1234
-                                            </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
-                                            <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
+                                              {% if i.status == "False"  %}
+                                              <form method="POST">
+                                                {% csrf_token %}
+                                              <button type="submit" value="True" name="status" class="action_a">Accept</button>
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Reject</button>
+                                              <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+                                              <input type="hidden" name="category" value="{{i.category}}" id="">
 
-                                        </tbody>
-                                   
+                                            </form>
+                                              {% elif i.status == "True" %}
+                                              <button class="action_a">Accepted</button>
+                                              {% elif i.status == "Reject" %}
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Rejected</button>
+                                              {% endif %}
+                                              
+                                          </tr>
+                                          <!-- The Modal -->
+<div class="modal" id="mymodel{{i.product_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Reason</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          <textarea name="reason" id="" cols="30" rows="10" style="width: 100%;">{{i.product.reason}}</textarea>
+        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" name="status" value="Reject" class="btn btn-danger" data-bs-dismiss="modal">Submit</button>
+        <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+        <input type="hidden" name="category" value="{{i.category}}" id="">
+
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+                                          {% endfor %}
                                         </tbody>
-                                      </table>
+                                      </table><br>
 
 
 
@@ -523,9 +631,7 @@
                                       <table class="table">
                                         <thead>
                                           <tr>
-                                          <tr>
                                             <th> No </th>
-                                            <th> Business Id </th>
                                             <th> Shop Id </th>
                                             <th> Product Id </th>
                                             <th> Product Name </th>
@@ -533,46 +639,72 @@
                                             <th> Edit </th>
                                             <th> Action </th>
                                           </tr>
-                                          </tr>
+
                                         </thead>
                                         <tbody>
+                                      
+                                          {% for i in pharmacy %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
                                             <td>
-                                              #Shop1234
+                                              {{i.pharm_id}}
                                             </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
+                                            <td> {{i.product_id}} </td>
+                                            <td style="width: 15%;white-space: normal;"> {{i.product.name.0}}</td>
+                                            <td>{{i.created_date}}</td>
+                                            <td> <a href="/admin/edit_product/{{i.product_id}}/{{i.category}}"><i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></a></td>
                                             <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              1
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              #Shop1234
-                                            </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
-                                            <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
+                                              {% if i.status == "False"  %}
+                                              <form method="POST">
+                                                {% csrf_token %}
+                                              <button type="submit" value="True" name="status" class="action_a">Accept</button>
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Reject</button>
+                                              <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+                                              <input type="hidden" name="category" value="{{i.category}}" id="">
 
+                                            </form>
+                                              {% elif i.status == "True" %}
+                                              <button class="action_a">Accepted</button>
+                                              {% elif i.status == "Reject" %}
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Rejected</button>
+                                              {% endif %}
+                                              
+                                          </tr>
+                                          <!-- The Modal -->
+<div class="modal" id="mymodel{{i.product_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Reason</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          <textarea name="reason" id="" cols="30" rows="10" style="width: 100%;">{{i.product.reason}}</textarea>
+        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" name="status" value="Reject" class="btn btn-danger" data-bs-dismiss="modal">Submit</button>
+        <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+        <input type="hidden" name="category" value="{{i.category}}" id="">
+
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+                                          {% endfor %}
                                         </tbody>
-                                      </table><br><br>
+                                      </table><br>
 
 
                                         </tbody>
@@ -585,9 +717,7 @@
                                       <table class="table">
                                         <thead>
                                           <tr>
-                                          <tr>
                                             <th> No </th>
-                                            <th> Business Id </th>
                                             <th> Shop Id </th>
                                             <th> Product Id </th>
                                             <th> Product Name </th>
@@ -595,44 +725,70 @@
                                             <th> Edit </th>
                                             <th> Action </th>
                                           </tr>
-                                          </tr>
+
                                         </thead>
                                         <tbody>
+                                      
+                                          {% for i in d_original %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
                                             <td>
-                                              #Shop1234
+                                              {{i.d_id}}
                                             </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
+                                            <td> {{i.product_id}} </td>
+                                            <td style="width: 15%;white-space: normal;"> {{i.product.name.0}}</td>
+                                            <td>{{i.created_date}}</td>
+                                            <td> <a href="/admin/edit_product/{{i.product_id}}/{{i.category}}"><i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></a></td>
                                             <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              1
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              #Shop1234
-                                            </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
-                                            <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
+                                              {% if i.status == "False"  %}
+                                              <form method="POST">
+                                                {% csrf_token %}
+                                              <button type="submit" value="True" name="status" class="action_a">Accept</button>
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Reject</button>
+                                              <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+                                              <input type="hidden" name="category" value="{{i.category}}" id="">
 
+                                            </form>
+                                              {% elif i.status == "True" %}
+                                              <button class="action_a">Accepted</button>
+                                              {% elif i.status == "Reject" %}
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Rejected</button>
+                                              {% endif %}
+                                              
+                                          </tr>
+                                          <!-- The Modal -->
+<div class="modal" id="mymodel{{i.product_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Reason</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          <textarea name="reason" id="" cols="30" rows="10" style="width: 100%;">{{i.product.reason}}</textarea>
+        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" name="status" value="Reject" class="btn btn-danger" data-bs-dismiss="modal">Submit</button>
+        <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+        <input type="hidden" name="category" value="{{i.category}}" id="">
+
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+                                          {% endfor %}
                                         </tbody>
                                       </table><br>
 
@@ -649,9 +805,7 @@
                                       <table class="table">
                                         <thead>
                                           <tr>
-                                          <tr>
                                             <th> No </th>
-                                            <th> Business Id </th>
                                             <th> Shop Id </th>
                                             <th> Product Id </th>
                                             <th> Product Name </th>
@@ -659,44 +813,70 @@
                                             <th> Edit </th>
                                             <th> Action </th>
                                           </tr>
-                                          </tr>
+
                                         </thead>
                                         <tbody>
+                                      
+                                          {% for i in jwellery %}
                                           <tr>
                                             <td>
-                                              1
+                                              {{forloop.counter}}
                                             </td>
-                                            <td> #12AWSE </td>
                                             <td>
-                                              #Shop1234
+                                              {{i.jewel_id}}
                                             </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
+                                            <td> {{i.product_id}} </td>
+                                            <td style="width: 15%;white-space: normal;"> {{i.product.name.0}}</td>
+                                            <td>{{i.created_date}}</td>
+                                            <td> <a href="/admin/edit_product/{{i.product_id}}/{{i.category}}"><i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></a></td>
                                             <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td>
-                                              1
-                                            </td>
-                                            <td> #12AWSE </td>
-                                            <td>
-                                              #Shop1234
-                                            </td>
-                                            <td> #12345 </td>
-                                            <td style="width: 15%;white-space: normal;"> Redmi Note 9</td>
-                                            <td>Feb,25,2024</td>
-                                            <td> <i class='fa fa-edit' style="font-size: 20px;color: #8B1874;"></i></td>
-                                            <td>
-                                              <button class="action_a">Accept</button>
-                                              <button class="action_r">Reject</button>
-                                            </td>
-                                          </tr>
+                                              {% if i.status == "False"  %}
+                                              <form method="POST">
+                                                {% csrf_token %}
+                                              <button type="submit" value="True" name="status" class="action_a">Accept</button>
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Reject</button>
+                                              <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+                                              <input type="hidden" name="category" value="{{i.category}}" id="">
 
+                                            </form>
+                                              {% elif i.status == "True" %}
+                                              <button class="action_a">Accepted</button>
+                                              {% elif i.status == "Reject" %}
+                                              <button type="button" class="action_a" data-bs-toggle="modal" data-bs-target="#mymodel{{i.product_id}}" style="background-color: red;">Rejected</button>
+                                              {% endif %}
+                                              
+                                          </tr>
+                                          <!-- The Modal -->
+<div class="modal" id="mymodel{{i.product_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Reason</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          <textarea name="reason" id="" cols="30" rows="10" style="width: 100%;">{{i.product.reason}}</textarea>
+        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" name="status" value="Reject" class="btn btn-danger" data-bs-dismiss="modal">Submit</button>
+        <input type="hidden" name="product_id" value="{{i.product_id}}" id="">
+        <input type="hidden" name="category" value="{{i.category}}" id="">
+
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+                                          {% endfor %}
                                         </tbody>
                                       </table><br>
 
@@ -713,6 +893,7 @@
                             </div>
                           </div>
                         </div>
+
 
                       </div>
                       </div>
@@ -763,7 +944,8 @@
   </div>
   </div>
 
-  {% include "script.html" %}</body>
+  {% include "script.html" %}
+</body>
 
 <!-- Mirrored from demo.bootstrapdash.com/purple/jquery/template/demo_1/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 05 Feb 2024 12:21:10 GMT -->
 

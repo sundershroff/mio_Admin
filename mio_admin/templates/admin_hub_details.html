@@ -1,52 +1,6 @@
 {% include "admin_header.html" %}
 
 
-    <style>
- 
-
-      form {
-          width: 300px; /* Adjust width as needed */
-          margin: 0 auto; /* Center the form horizontally */
-      }
-
-      label {
-          display: inline-block;
-          width: 120px; /* Adjust width as needed */
-         
-          margin-right: 10px; /* Add some space between label and input */
-          margin-top: 10px;
-          color: blueviolet;
-      }
-
-      input {
-          width: 100%; /* Adjust width as needed */
-          margin-bottom: 10px; /* Add some space between input fields */
-          border-color: rgb(183, 109, 253);
-  border-style:groove;
-  border-radius: 10px;
-         
-     
-      }
-
-      button[type="submit"] {
-          margin-left: 130px; /* Adjust left margin to align the button with the inputs */
-         color: aliceblue;
-          background-color: blueviolet;
-          width: 50%;
-          height: 40px;
-          border: 1px white;
-      }
-      .styled-textarea {
-  width: 100%; /* Adjust the width to fit your layout */
-  height: 80px; /* Set the height */
-  padding: 10px; /* Add some padding inside the textarea */
-  margin: 10px 0; /* Add some margin for spacing */
-  box-sizing: border-box;
-  border-color: rgb(183, 109, 253);
-  border-radius: 10px;
-  border-style:groove;
-}
-</style>
 
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
@@ -270,32 +224,43 @@
 
 
           <div class="form">
-            <form action="#" onclick="return calculateGrades()">
-                <h1 style="text-align: center;">Form</h1>
+            <form method="POST" onclick="return calculateGrades()">
+
+              {% csrf_token %}
+                <h1 style="text-align: left;">Add Hub Form</h1>
                 <div class="formcontainer">
                     <hr/>
                     <div class="container">
-                        <label for="number1"><strong>USER ID:</strong></label>
-                        <input type="text" placeholder="Enter Username" name="number1" id="number1" required><br>
+                        <label for="number1"><strong>USER NAME:</strong></label>
+                        <input type="text" placeholder="Enter Username" name="username" id="number1" required><br>
                         <label for="number2"><strong>PASSWORD:</strong></label>
-                        <input type="text" placeholder="Enter Password" name="number2" id="number2" required><br>
-                        <label for="number3"><strong>HUB:</strong></label>
-                        <input type="text" placeholder="Enter Hub" name="number3" id="number3" required><br>
-                        <label for="number4"><strong>LOCATION:</strong></label>
-                        <input type="text" placeholder="Enter Location" name="number4" id="number4" required><br>
-                        <label for="number5"><strong>ADDRESS:</strong></label>
-                        <textarea class="styled-textarea" type="text" placeholder="Enter Address" name="number5" id="number5" required></textarea><br>
-                        <label for="number6"><strong>CONTACT:</strong></label>
-                        <input type="number" placeholder="Enter Contact" name="number6" id="number6" required><br>
+                        <input type="text" placeholder="Enter Password" name="password" id="number2" required><br>
+                        <label for="number7"><strong>NAME:</strong></label>
+                        <input type="text" placeholder="Enter E-mail" name="name" id="number7" required><br>
                         <label for="number7"><strong>E-MAIL:</strong></label>
-                        <input type="email" placeholder="Enter E-mail" name="number7" id="number7" required><br>
-                        <label for="number8"><strong>ALTER NUMBER:</strong></label>
-                        <input type="number" placeholder="Enter number" name="number8" id="number8" required>
-                    </div>
+                        <input type="email" placeholder="Enter E-mail" name="email" id="number7" required><br>
+
+                        <label for="number3"><strong>HUB:</strong></label>
+                        <input type="text" placeholder="Enter Hub" name="hub" id="number3" required><br>
+                        <label for="number5"><strong>DOOR NO:</strong></label>
+                        <textarea class="styled-textarea" type="text" placeholder="Enter Door No" name="door_no" id="number5" required></textarea><br>
+                        <label for="number5"><strong>STREET:</strong></label>
+                        <textarea class="styled-textarea" type="text" placeholder="Enter Street" name="street" id="number5" required></textarea><br>
+                        <label for="number5"><strong>CITY:</strong></label>
+                        <textarea class="styled-textarea" type="text" placeholder="Enter City" name="city" id="number5" required></textarea><br>
+                        <label for="number5"><strong>STATE:</strong></label>
+                        <textarea class="styled-textarea" type="text" placeholder="Enter State" name="state" id="number5" required></textarea><br>
+                        <label for="number5"><strong>COUNTRY:</strong></label>
+                        <textarea class="styled-textarea" type="text" placeholder="Enter Country" name="country" id="number5" required></textarea><br>
+
+                        <label for="number6"><strong>CONTACT:</strong></label>
+                        <input type="number" placeholder="Enter Contact" name="phonenumber" id="number6" required><br>
+                        <button type="submit" >Submit</button><br><br>
+                      </div>
                     <br>
                     <div>
-                        <button type="submit" href="hub_menu1.html">Submit</button><br><br>
-                        <span class="psw"><a href="#"> Forgot password?</a></span>
+                        
+                        <!-- <span class="psw"><a href="#"> Forgot password?</a></span> -->
                     </div>
                 </div>
             </form>

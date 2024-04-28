@@ -12,6 +12,11 @@ import datetime
 from bson.json_util import dumps,loads
 from pymongo import MongoClient
 import math
+from mio_admin.models import business_commision,zone
+from django.db import transaction
+
+from django.http import JsonResponse
+from .models import Reviews
 
 client = MongoClient('localhost', 27017)
 all_image_url = "http://127.0.0.1:3000/"
@@ -32,7 +37,8 @@ def end_user_signup(request):
                     'email': request.data["email"],
                     'phone_number': request.data['phone_number'],
                     'password': request.data["password"],
-                    'created_date':str(x.strftime("%d"))+" "+str(x.strftime("%B"))+","+str(x.year)
+                    'created_date':str(x.strftime("%d"))+" "+str(x.strftime("%B"))+","+str(x.year),
+             
                 }
                 print(datas)
                 dataserializer = end_user_serializers.SignupSerializer(data=datas)
@@ -199,11 +205,9 @@ def end_user_address(request,id):
                 'district' : request.data["district"],
                 'state' : request.data["state"],
                 'pincode' : request.data["pincode"],
-                
-               }
             
-            # userdata.address_data = data
-            # userdata.save()
+               }
+
             addressSerializer = end_user_serializers.AddressSerializer(instance=userdata, data=data, partial=True)
             if addressSerializer.is_valid():
                 addressSerializer.save()
@@ -213,34 +217,51 @@ def end_user_address(request,id):
                 return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
     except:
         return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
-    
+
 @api_view(['POST'])
-def end_user_tempaddress(request,id):
+def update_end_user_address(request, id):
     try:
-        if request.method == "POST":
-            print(request.POST)
-            userdata = models.End_Usermodel.objects.get(uid=id)
-            data={
-                'doorno' : request.data["doorno"],
-                'area' : request.data["area"],
-                'landmark': request.data["landmark"],
-                'place' : request.data["place"],
-                'district' : request.data["district"],
-                'state' : request.data["state"],
-                'pincode' : request.data["pincode"],
-               }
-            
-            # userdata.address_data = data
-            # userdata.save()
-            addressSerializer = end_user_serializers.TempAddressSerializer(instance=userdata, data=data, partial=True)
-            if addressSerializer.is_valid():
-                addressSerializer.save()
-                print("Valid Data")
-                return Response(id, status=status.HTTP_200_OK)
-            else:
-                return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
-    except:
-        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+        end_user = models.End_Usermodel.objects.get(uid=id)
+        existing_address_data = end_user.address_data
+        
+        address_index_str = request.POST.get('address_index')
+        if address_index_str is None:
+            return Response({"error": "Address index is missing"}, status=status.HTTP_400_BAD_REQUEST)
+
+        address_index = int(address_index_str)
+
+        if address_index < 0 or address_index >= len(existing_address_data):
+            return Response({"error": "Invalid address index"}, status=status.HTTP_400_BAD_REQUEST)
+        new_address_data = {
+            "doorno": request.POST.get("doorno"),
+            "area": request.POST.get("area"),
+            "landmark": request.POST.get("landmark"),
+            "place": request.POST.get("place"),
+            "district": request.POST.get("district"),
+            "state": request.POST.get("state"),
+            "pincode": request.POST.get("pincode"),
+
+        }
+        print(new_address_data)
+        existing_address = existing_address_data[address_index]
+        for key, value in new_address_data.items():
+            if value is not None:
+                existing_address[key] = value  
+        # Save the changes to the database
+        end_user.address_data = existing_address_data
+        end_user.save()
+        
+        return Response({"message": "Address updated successfully"}, status=status.HTTP_200_OK)
+
+    except models.End_Usermodel.DoesNotExist:
+        return Response({"error": "End user not found"}, status=status.HTTP_404_NOT_FOUND)
+    except ValueError:
+        return Response({"error": "Invalid address index format"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
     
 @api_view(['POST'])
 def enduser_profile_update(request,id):
@@ -275,6 +296,31 @@ def enduser_profile_update(request,id):
         return Response(id, status=status.HTTP_200_OK)
     else:
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+@api_view(['POST'])
+def locationupdate(request,id):
+    try:
+       
+        userdata = models.End_Usermodel.objects.get(uid=id)
+
+        print(request.POST)
+   
+        data={
+            'latitude' : request.data["latitude"],
+            'longitude' : request.data["longitude"],
+            }
+        
+       
+        Serializer = end_user_serializers.locationSerializer(instance=userdata, data=data, partial=True)
+        if Serializer.is_valid():
+            Serializer.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        else:
+            return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+    except:
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(["GET"])
 def single_users_data(request,id):
@@ -690,7 +736,7 @@ def user_d_original_district_products(request, id,user_id, district):
 def enduser_order_create(request,id,product_id,category):
     if request.method == "POST":
         user_data= models.End_Usermodel.objects.get(uid=id)
-       
+        
         order_id = end_user_extension.order_id_generate()
         while True:
             if id == order_id:
@@ -698,13 +744,32 @@ def enduser_order_create(request,id,product_id,category):
             else:
                 break
         # shopping
-        if category == "shopping" or category == "Shopping":
+
+        if category.lower() == "shopping":
             
             products= models.shop_productsmodel.objects.get(product_id = product_id)
             shopping = models.shoppingmodel.objects.get(shop_id=products.shop_id)
             print(shopping.Business_id)
             business = models.Businessmodel.objects.get(uid=shopping.Business_id) 
-            print(business) 
+            print(business)
+            pincode = request.POST['pincode']
+            print(pincode)
+
+            data1 = zone.objects.all()
+            print(data1)
+            get_zone = None  # Initialize get_zone variable
+            Zonepincode=None
+            for x in data1:
+                print(x)
+                if x.pincode is not None and pincode in x.pincode:
+                    Zonepincode=x.pincode
+                    get_zone = x.zone
+                    print(get_zone)
+
+                    break  # Once the zone is found, exit the loop
+
+            print(get_zone)
+            print(Zonepincode)
             if products:
                 # selling_price = product_data.get("selling_price", 0)
                 selling_price = products.product.get("selling_price") 
@@ -729,24 +794,56 @@ def enduser_order_create(request,id,product_id,category):
                 'business':business,
                 # 'payment_status' : request.POST['payment_status'],
                 'delivery_type' : "Normal",
+                'delivery_address':request.POST["delivery_address"],
+                'payment_type':request.POST["payment_type"],
+                'pincode':request.POST["pincode"],
+                'region':get_zone,
             }
             print(data)
-            productorder = models.Product_Ordermodel(**data)
-    
-            # if basicdetailsserializer.is_valid():
-            productorder.save()
-            print("Valid Data")
-            return Response(id, status=status.HTTP_200_OK)
+            if Zonepincode is None:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+            for i in Zonepincode:
+                print(i)
+                if i == request.POST["pincode"]:
+                    pincode_found = True
+                    break  
+
+            if pincode_found:
+                productorder = models.Product_Ordermodel(**data)
+                productorder.save()
+                print("Valid Data")
+                return Response(id, status=status.HTTP_200_OK)
+            else:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+
             # else:
             #     print("serializer prblm")
             #     return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
         # Food
-        elif category == "Food" or category == "food":
+        elif category.lower() == "food":
             products= models.food_productsmodel.objects.get(product_id = product_id)
             food = models.foodmodel.objects.get(food_id=products.food_id)
             print(food.Business_id)
             business = models.Businessmodel.objects.get(uid=food.Business_id) 
-            print(business) 
+            print(business)
+            pincode = request.POST['pincode']
+            print(pincode)
+
+            data1 = zone.objects.all()
+            print(data1)
+            get_zone = None  # Initialize get_zone variable
+            Zonepincode=None
+            for x in data1:
+                print(x)
+                if x.pincode is not None and pincode in x.pincode:
+                    Zonepincode=x.pincode
+                    get_zone = x.zone
+                    print(get_zone)
+
+                    break  # Once the zone is found, exit the loop
+
+            print(get_zone)
+            print(Zonepincode)
             if products:
                 # selling_price = product_data.get("selling_price", 0) 
                 selling_price = products.product.get("selling_price") 
@@ -772,21 +869,53 @@ def enduser_order_create(request,id,product_id,category):
                 
                 # 'payment_status' : request.POST['payment_status'],
                 'delivery_type' : "Quick",
+                'delivery_address':request.POST["delivery_address"],
+                'payment_type':request.POST["payment_type"],
+                'pincode':request.POST["pincode"],
+                'region':get_zone,
             }
-            productorder = models.Product_Ordermodel(**data)
-    
-            # if basicdetailsserializer.is_valid():
-            productorder.save()
-            print("Valid Data")
-            return Response(id, status=status.HTTP_200_OK)
+            if Zonepincode is None:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+            for i in Zonepincode:
+                print(i)
+                if i == request.POST["pincode"]:
+                    pincode_found = True
+                    break  
+
+            if pincode_found:
+                productorder = models.Product_Ordermodel(**data)
+                productorder.save()
+                print("Valid Data")
+                return Response(id, status=status.HTTP_200_OK)
+            else:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
             
         # FreshCut
-        elif category == "Fresh_cuts" or category == "fresh_cuts":
+        elif category.lower() == "fresh_cuts":
             products= models.fresh_productsmodel.objects.get(product_id = product_id)
             freshcut = models.freshcutsmodel.objects.get(fresh_id=products.fresh_id)
             print(freshcut.Business_id)
             business = models.Businessmodel.objects.get(uid=freshcut.Business_id) 
-            print(business) 
+            print(business)
+            pincode = request.POST['pincode']
+            print(pincode)
+
+            data1 = zone.objects.all()
+            print(data1)
+            get_zone = None  # Initialize get_zone variable
+
+            Zonepincode=None
+            for x in data1:
+                print(x)
+                if x.pincode is not None and pincode in x.pincode:
+                    Zonepincode=x.pincode
+                    get_zone = x.zone
+                    print(get_zone)
+
+                    break  # Once the zone is found, exit the loop
+
+            print(get_zone)
+            print(Zonepincode)
             if products:
                 # selling_price = product_data.get("selling_price", 0) 
                 selling_price = products.product.get("selling_price") 
@@ -811,20 +940,53 @@ def enduser_order_create(request,id,product_id,category):
                 'business':business,
                 # 'payment_status' : request.POST['payment_status'],
                 'delivery_type' : "Quick",
+                'delivery_address':request.POST["delivery_address"],
+                'payment_type':request.POST["payment_type"],
+                'pincode':request.POST["pincode"],
+                'region':get_zone,
             }
-            productorder = models.Product_Ordermodel(**data)
-    
-            # if basicdetailsserializer.is_valid():
-            productorder.save()
-            print("Valid Data")
-            return Response(id, status=status.HTTP_200_OK)
+            if Zonepincode is None:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+            for i in Zonepincode:
+                print(i)
+                if i == request.POST["pincode"]:
+                    pincode_found = True
+                    break  
+
+            if pincode_found:
+                productorder = models.Product_Ordermodel(**data)
+                productorder.save()
+                print("Valid Data")
+                return Response(id, status=status.HTTP_200_OK)
+            else:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+
+
         # Pharmacy
-        elif category == "Pharmacy"  or category == "pharmacy":
+        elif category.lower() == "pharmacy":
             products= models.pharmacy_productsmodel.objects.get(product_id = product_id)
             pharmacy = models.pharmacy_model.objects.get(pharm_id=products.pharm_id)
             print(pharmacy.Business_id)
             business = models.Businessmodel.objects.get(uid=pharmacy.Business_id) 
-            print(business) 
+            print(business)
+            pincode = request.POST['pincode']
+            print(pincode)
+
+            data1 = zone.objects.all()
+            print(data1)
+            get_zone = None  # Initialize get_zone variable
+            Zonepincode=None
+            for x in data1:
+                print(x)
+                if x.pincode is not None and pincode in x.pincode:
+                    Zonepincode=x.pincode
+                    get_zone = x.zone
+                    print(get_zone)
+
+                    break  # Once the zone is found, exit the loop
+
+            print(get_zone)
+            print(Zonepincode)
             if products:
                 # selling_price = product_data.get("selling_price", 0) 
                 selling_price = products.product.get("selling_price") 
@@ -848,23 +1010,54 @@ def enduser_order_create(request,id,product_id,category):
                 'product_id':products.product_id,
                 'business':business,
                 # 'payment_status' : request.POST['payment_status'],
-                'delivery_type' : "Quick",
+                'delivery_type' :"Quick",
+                'delivery_address':request.POST["delivery_address"],
+                'payment_type':request.POST["payment_type"],
+                'pincode':request.POST["pincode"],
+                'region':get_zone,
             }
-            productorder = models.Product_Ordermodel(**data)
-    
-            # if basicdetailsserializer.is_valid():
-            productorder.save()
-            print("Valid Data")
-            return Response(id, status=status.HTTP_200_OK)
+            if Zonepincode is None:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+            for i in Zonepincode:
+                print(i)
+                if i == request.POST["pincode"]:
+                    pincode_found = True
+                    break  
+
+            if pincode_found:
+                productorder = models.Product_Ordermodel(**data)
+                productorder.save()
+                print("Valid Data")
+                return Response(id, status=status.HTTP_200_OK)
+            else:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
 
            
         # D-Original
-        elif category == "d_original"  or category == "d_original": 
+        elif category.lower() == "d_original": 
             products= models.d_original_productsmodel.objects.get(product_id = product_id)
             d_origin = models.d_originalmodel.objects.get(d_id=products.d_id)
             print(d_origin.Business_id)
             business = models.Businessmodel.objects.get(uid=d_origin.Business_id) 
-            print(business) 
+            print(business)
+            pincode = request.POST['pincode']
+            print(pincode)
+
+            data1 = zone.objects.all()
+            print(data1)
+            get_zone = None  # Initialize get_zone variable
+            Zonepincode=None
+            for x in data1:
+                print(x)
+                if x.pincode is not None and pincode in x.pincode:
+                    Zonepincode=x.pincode
+                    get_zone = x.zone
+                    print(get_zone)
+
+                    break  # Once the zone is found, exit the loop
+
+            print(get_zone)
+            print(Zonepincode)
             if products:
                 # selling_price = product_data.get("selling_price", 0) 
                 selling_price = products.product.get("selling_price") 
@@ -889,20 +1082,51 @@ def enduser_order_create(request,id,product_id,category):
                 'business':business,
                 # 'payment_status' : request.POST['payment_status'],
                 'delivery_type' : "Normal",
-            }
-            productorder = models.Product_Ordermodel(**data)
-    
-            # if basicdetailsserializer.is_valid():
-            productorder.save()
-            print("Valid Data")
-            return Response(id, status=status.HTTP_200_OK)
+                'delivery_address':request.POST["delivery_address"],
+                'payment_type':request.POST["payment_type"],
+                'pincode':request.POST["pincode"],
+                'region':get_zone,            
+                }
+            if Zonepincode is None:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+            for i in Zonepincode:
+                print(i)
+                if i == request.POST["pincode"]:
+                    pincode_found = True
+                    break  
+
+            if pincode_found:
+                productorder = models.Product_Ordermodel(**data)
+                productorder.save()
+                print("Valid Data")
+                return Response(id, status=status.HTTP_200_OK)
+            else:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
         # Daily_MIO
-        elif category == "daily_mio"  or category == "Daily_mio": 
+        elif category.lower() == "daily_mio":
             products= models.dmio_productsmodel.objects.get(product_id = product_id)
             daily_mio = models.dailymio_model.objects.get(dmio_id=products.dmio_id)
             print(daily_mio.Business_id)
             business = models.Businessmodel.objects.get(uid=daily_mio.Business_id) 
-            print(business) 
+            print(business)
+            pincode = request.POST['pincode']
+            print(pincode)
+
+            data1 = zone.objects.all()
+            print(data1)
+            get_zone = None  # Initialize get_zone variable
+            Zonepincode=None
+            for x in data1:
+                print(x)
+                if x.pincode is not None and pincode in x.pincode:
+                    Zonepincode=x.pincode
+                    get_zone = x.zone
+                    print(get_zone)
+
+                    break  # Once the zone is found, exit the loop
+
+            print(get_zone)
+            print(Zonepincode) 
             if products:
                 # selling_price = product_data.get("selling_price", 0) 
                 selling_price = products.product.get("selling_price") 
@@ -927,21 +1151,52 @@ def enduser_order_create(request,id,product_id,category):
                 'business':business,
                 # 'payment_status' : request.POST['payment_status'],
                 'delivery_type' : "Quick",
+                'delivery_address':request.POST["delivery_address"],
+                'payment_type':request.POST["payment_type"],
+                'pincode':request.POST["pincode"],
+                'region':get_zone,
             }
-            productorder = models.Product_Ordermodel(**data)
-    
-            # if basicdetailsserializer.is_valid():
-            productorder.save()
-            print("Valid Data")
-            return Response(id, status=status.HTTP_200_OK)
+            if Zonepincode is None:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+            for i in Zonepincode:
+                print(i)
+                if i == request.POST["pincode"]:
+                    pincode_found = True
+                    break  
+
+            if pincode_found:
+                productorder = models.Product_Ordermodel(**data)
+                productorder.save()
+                print("Valid Data")
+                return Response(id, status=status.HTTP_200_OK)
+            else:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
         
         # Jewellery
-        elif category == "jewellery"  or category == "Jewellery": 
+        elif category.lower() == "jewellery": 
             products= models.jewel_productsmodel.objects.get(product_id = product_id)
             jewellery = models.jewellerymodel.objects.get(jewel_id=products.jewel_id)
             print(jewellery.Business_id)
             business = models.Businessmodel.objects.get(uid=jewellery.Business_id) 
-            print(business)          
+            print(business)
+            pincode = request.POST['pincode']
+            print(pincode)
+
+            data1 = zone.objects.all()
+            print(data1)
+            get_zone = None  # Initialize get_zone variable
+            Zonepincode=None
+            for x in data1:
+                print(x)
+                if x.pincode is not None and pincode in x.pincode:
+                    Zonepincode=x.pincode
+                    get_zone = x.zone
+                    print(get_zone)
+
+                    break  # Once the zone is found, exit the loop
+
+            print(get_zone)
+            print(Zonepincode)         
             if products:
                 # selling_price = product_data.get("selling_price", 0) 
                 selling_price = products.product.get("selling_price") 
@@ -959,19 +1214,53 @@ def enduser_order_create(request,id,product_id,category):
                 'track_id': end_user_extension.track_id_generate(),
                 'quantity': request.POST["quantity"],
                 'total_amount': total_amount,              
-                'status': "pending",
+                'status': "pending", 
                 'jewel_product':products,
                 'jewel_id' : jewellery,
                 'product_id':products.product_id,
                 'business':business,
                 # 'payment_status' : request.POST['payment_status'],
                 'delivery_type' : "Normal",
+                'delivery_address':request.POST["delivery_address"],
+                'payment_type':request.POST["payment_type"],
+                'pincode':request.POST["pincode"],
+                'region':get_zone,
             }
-            productorder = models.Product_Ordermodel(**data)
+            if Zonepincode is None:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+            for i in Zonepincode:
+                print(i)
+                if i == request.POST["pincode"]:
+                    pincode_found = True
+                    break  
+
+            if pincode_found:
+                productorder = models.Product_Ordermodel(**data)
+                productorder.save()
+                print("Valid Data")
+                return Response(id, status=status.HTTP_200_OK)
+            else:
+                return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(["GET"])
+def enduser_order_list(request, id):
     
-            productorder.save()
-            print("Valid Data")
-            return Response(id, status=status.HTTP_200_OK)
+    user = models.End_Usermodel.objects.get(uid=id)
+    orderdata = models.Product_Ordermodel.objects.filter(end_user=user)
+    serializer = end_user_serializers.product_orderlistSerializer(orderdata, many=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def enduser_single_order_list(request, id,order_id):
+    
+    user = models.End_Usermodel.objects.get(uid=id)
+    orderdata = models.Product_Ordermodel.objects.filter(end_user=user,order_id=order_id)
+    serializer = end_user_serializers.product_orderlistSerializer(orderdata, many=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(["POST"])
 def enduser_order_cancel(request,id,order_id):
@@ -994,3 +1283,597 @@ def enduser_order_cancel(request,id,order_id):
         return Response({"no data"},status=status.HTTP_400_BAD_REQUEST)
 
 
+
+# Carts add the product
+@api_view(["POST"])
+def cart_product(request, id, product_id, category):
+    if request.method == "POST":
+    
+        user = models.End_Usermodel.objects.get(uid=id)
+        if category.lower() == "shopping": 
+            products = models.shop_productsmodel.objects.get(product_id=product_id)
+
+            if products:
+                quantity = int(request.data.get("quantity", 0))
+                if quantity <= 0:
+                    return Response("Quantity should be a positive integer", status=status.HTTP_400_BAD_REQUEST)
+                total = products.product.get("selling_price")* quantity
+                total = math.floor(total)
+
+            else:
+                pass            
+            data ={
+                "cart_id": end_user_extension.cart_id_generate(),
+                "user": user,
+                "quantity": quantity,
+                "category": category,
+                "total": total,
+                "shop_product":products,
+                "status":"in-cart"
+
+            }
+            carts = models.Carts(**data)
+            carts.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "jewellery": 
+            products = models.jewel_productsmodel.objects.get(product_id=product_id)
+
+            if products:
+                quantity = int(request.data.get("quantity", 0))
+                if quantity <= 0:
+                    return Response("Quantity should be a positive integer", status=status.HTTP_400_BAD_REQUEST)
+                total = products.product.get("selling_price")* quantity
+                total = math.floor(total)
+
+            else:
+                pass            
+            data ={
+                "cart_id": end_user_extension.cart_id_generate(),
+                "user": user,
+                "quantity": quantity,
+                "category": category,
+                "total": total,
+                "jewel_product":products,
+                "status":"in-cart"
+
+            }
+            carts = models.Carts(**data)
+            carts.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "food": 
+            products = models.food_productsmodel.objects.get(product_id=product_id)
+
+            if products:
+                quantity = int(request.data.get("quantity", 0))
+                if quantity <= 0:
+                    return Response("Quantity should be a positive integer", status=status.HTTP_400_BAD_REQUEST)
+                total = products.product.get("selling_price")* quantity
+                total = math.floor(total)
+
+            else:
+                pass            
+            data ={
+                
+                "cart_id": end_user_extension.cart_id_generate(),
+                "user": user,
+                "quantity": quantity,
+                "category": category,
+                "total": total,
+                "food_product":products,
+                "status":"in-cart"
+
+            }
+            carts = models.Carts(**data)
+            carts.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "d_original": 
+            products = models.d_original_productsmodel.objects.get(product_id=product_id)
+
+            if products:
+                quantity = int(request.data.get("quantity", 0))
+                if quantity <= 0:
+                    return Response("Quantity should be a positive integer", status=status.HTTP_400_BAD_REQUEST)
+                total = products.product.get("selling_price")* quantity
+                total = math.floor(total)
+
+            else:
+                pass            
+            data ={
+                "cart_id": end_user_extension.cart_id_generate(),
+                "user": user,
+                "quantity": quantity,
+                "category": category,
+                "total": total,
+                "d_origin_product":products,
+                "status":"in-cart"
+
+            }
+            carts = models.Carts(**data)
+            carts.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "fresh_cuts": 
+            products = models.fresh_productsmodel.objects.get(product_id=product_id)
+
+            if products:
+                quantity = int(request.data.get("quantity", 0))
+                if quantity <= 0:
+                    return Response("Quantity should be a positive integer", status=status.HTTP_400_BAD_REQUEST)
+                total = products.product.get("selling_price")* quantity
+                total = math.floor(total)
+
+            else:
+                pass            
+            data ={
+                
+                "cart_id": end_user_extension.cart_id_generate(),
+                "user": user,
+                "quantity": quantity,
+                "category": category,
+                "total": total,
+                "freshcut_product":products,
+                "status":"in-cart"
+
+               
+            }
+            carts = models.Carts(**data)
+            carts.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "daily_mio": 
+            products = models.dmio_productsmodel.objects.get(product_id=product_id)
+
+            if products:
+                quantity = int(request.data.get("quantity", 0))
+                if quantity <= 0:
+                    return Response("Quantity should be a positive integer", status=status.HTTP_400_BAD_REQUEST)
+                total = products.product.get("selling_price")* quantity
+                total = math.floor(total)
+
+            else:
+                pass            
+            data ={
+
+                "cart_id": end_user_extension.cart_id_generate(),
+                "user": user,
+                "quantity": quantity,
+                "category": category,
+                "total": total,
+                "dailymio_product":products,
+                "status":"in-cart"
+   
+            }
+            carts = models.Carts(**data)
+            carts.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "pharmacy": 
+            products = models.pharmacy_productsmodel.objects.get(product_id=product_id)
+
+            if products:
+                quantity = int(request.data.get("quantity", 0))
+                if quantity <= 0:
+                    return Response("Quantity should be a positive integer", status=status.HTTP_400_BAD_REQUEST)
+                total = products.product.get("selling_price")* quantity
+                total = math.floor(total)
+
+            else:
+                pass            
+            data ={
+
+                "cart_id": end_user_extension.cart_id_generate(),
+                "user": user,
+                "quantity": quantity,
+                "category": category,
+                "total": total,
+                "pharmacy_product":products,
+                "status":"in-cart"
+               
+            }
+            carts = models.Carts(**data)
+            carts.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        
+
+@api_view(["POST"])
+def cartupdate(request, id):
+    if request.method == "POST":
+        try:
+            userdata = models.Carts.objects.get(cart_id=id)
+        except models.Carts.DoesNotExist:
+            return Response({"error": "Cart item not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+        print(userdata.total)
+        print(userdata.quantity)
+        totalvalue=(int(userdata.total)/int(userdata.quantity))
+        print(totalvalue)
+        total=totalvalue*int(request.POST.get("quantity"))
+        data = {
+            'quantity': request.POST.get("quantity"),
+            'total':total
+        }
+        print(data)
+        
+        basicdetailsserializer = end_user_serializers.Cartupdateserializer(instance=userdata, data=data, partial=True)
+        if basicdetailsserializer.is_valid():
+            basicdetailsserializer.save()
+            print("valid data")
+            return Response(id, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Serializer issue", "details": basicdetailsserializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+   
+    else:
+        return Response({"Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+
+        
+
+
+@api_view(["GET"])
+def cartlist(request,id):
+    if request.method == "GET":
+        user=models.End_Usermodel.objects.get(uid=id)
+        qs=models.Carts.objects.filter(user=user,status="in-cart")
+        serializer = end_user_serializers.Cartserializer(qs,many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def cartremove(request,id,cart_id):
+    if request.method =="POST":
+        user = models.End_Usermodel.objects.get(uid=id)
+        cart_entry = models.Carts.objects.get(cart_id=cart_id)
+        cart_entry.delete()
+        return Response(id, status=status.HTTP_200_OK)
+
+
+# whishlist create
+
+@api_view(["POST"])
+def whishlist_product(request, id, product_id, category):
+    if request.method == "POST":
+        user = models.End_Usermodel.objects.get(uid=id)
+        if category.lower() == "shopping": 
+            products = models.shop_productsmodel.objects.get(product_id=product_id)           
+            data ={
+                "user": user,
+                "category": category,
+                "shop_product":products,
+              
+            }
+            wishlist = models.whishlistmodel(**data)
+            wishlist.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "jewellery": 
+            products = models.jewel_productsmodel.objects.get(product_id=product_id)
+
+            data ={
+                "user": user,
+                "category": category,
+                "jewel_product":products,
+              
+            }
+            wishlist = models.whishlistmodel(**data)
+            wishlist.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "food": 
+            products = models.food_productsmodel.objects.get(product_id=product_id)                
+
+            data ={
+                "user": user,
+                "category": category,
+                "food_product":products,
+              
+            }
+            wishlist = models.whishlistmodel(**data)
+            wishlist.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "d_original": 
+            products = models.d_original_productsmodel.objects.get(product_id=product_id)                
+
+
+            data ={
+                "user": user,
+                "category": category,
+                "d_origin_product":products,
+              
+            }
+            wishlist = models.whishlistmodel(**data)
+            wishlist.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "fresh_cuts": 
+            products = models.fresh_productsmodel.objects.get(product_id=product_id)                
+
+            data ={
+                "user": user,
+                "category": category,
+                "freshcut_product":products,
+              
+            }
+            wishlist = models.whishlistmodel(**data)
+            wishlist.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "daily_mio": 
+            products = models.dmio_productsmodel.objects.get(product_id=product_id)                
+            data ={
+                "user": user,
+                "category": category,
+                "dailymio_product":products,
+              
+            }
+            wishlist = models.whishlistmodel(**data)
+            wishlist.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        if category.lower() == "pharmacy": 
+            products = models.pharmacy_productsmodel.objects.get(product_id=product_id)               
+
+            data ={
+                "user": user,
+                "category": category,
+                "pharmacy_product":products,
+              
+            }
+            wishlist = models.whishlistmodel(**data)
+            wishlist.save()
+            print("Valid Data")
+            return Response(id, status=status.HTTP_200_OK)
+        
+
+@api_view(["GET"])
+def all_wishlist(request, id):
+    if request.method == "GET":
+        wishlist = models.whishlistmodel.objects.filter(user__uid=id)
+        serializer = end_user_serializers.wishlistSerializer(wishlist,many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+  
+
+
+@api_view(["POST"])
+def remove_wish(request,id,product_id):
+    user = models.End_Usermodel.objects.get(uid=id)
+    print(user)
+    shopcart_item=models.whishlistmodel.objects.filter(user=user,shop_product__product_id=product_id)
+    jewelcart_item =models.whishlistmodel.objects.filter(user=user,jewel_product__product_id=product_id)
+    foodcart_item =models.whishlistmodel.objects.filter(user=user,food_product__product_id=product_id)
+    freshcart_item=models.whishlistmodel.objects.filter(user=user,freshcut_product__product_id=product_id)
+    dailymiocart_item=models.whishlistmodel.objects.filter(user=user,dailymio_product__product_id=product_id)
+    doriginalcart_item=models.whishlistmodel.objects.filter(user=user,d_origin_product__product_id=product_id)
+    pharmacycart_item=models.whishlistmodel.objects.filter(user=user,pharmacy_product__product_id=product_id)
+    cart_items = shopcart_item | jewelcart_item | foodcart_item | freshcart_item | dailymiocart_item | doriginalcart_item | pharmacycart_item
+    cart_items.delete()
+    return Response(id, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+@api_view(["POST"])
+def create_reviews_for_delivered_products(request, id, product_id):
+    if request.method == "POST":
+        try:
+            print(request.POST)
+            user = models.End_Usermodel.objects.get(uid=id)
+            delivered_orders = models.Product_Ordermodel.objects.filter(product_id=product_id, status='delivered')
+            print(delivered_orders)
+            for order in delivered_orders:
+                # Assuming you need to determine which product type this order belongs to
+                if order.shop_product:
+                    product = order.shop_product
+                elif order.jewel_product:
+                    product = order.jewel_product
+                elif order.d_original_product:
+                    product = order.d_original_product
+                elif order.dmio_product:
+                    product = order.dmio_product
+                elif order.pharmacy_product:
+                    product = order.pharmacy_product
+                elif order.food_product:
+                    product = order.food_product
+                elif order.freshcut_product:
+                    product = order.freshcut_product
+                else:
+                    continue  # Skip if no matching product
+                
+                # Creating a review for the product
+                review = Reviews.objects.create(
+                    user=user,
+                    shop_product=order.shop_product,
+                    jewel_product=order.jewel_product,
+                    d_origin_product=order.d_original_product,
+                    dailymio_product=order.dmio_product,
+                    pharmacy_product=order.pharmacy_product,
+                    food_product=order.food_product,
+                    freshcut_product=order.freshcut_product,
+                    comment=request.data.get('comment'),
+                    rating=request.data.get('rating')
+                )
+                print(review)
+                # You might want to do something else here like sending notifications, etc.
+            
+            return JsonResponse({'message': 'Reviews created successfully'}, status=201)
+        except models.End_Usermodel.DoesNotExist:
+            return JsonResponse({'error': 'User does not exist'}, status=404)
+
+
+@api_view(["GET"])
+def get_all_reviews(request):
+    if request.method == "GET":
+        data = models.Reviews.objects.all()
+        serializers = end_user_serializers.review_serializer(data,many=True)
+        return Response(data=serializers.data,status=status.HTTP_200_OK)
+
+
+            
+
+    # used products
+@api_view(['POST'])
+def used_products(request,id):
+    product_id = end_user_extension.product_id_generate()
+    while True:
+        if id == product_id:
+            product_id = end_user_extension.product_id_generate()
+        else:
+            break
+   
+    #add
+    fs = FileSystemStorage()
+
+    primary_image = str(request.FILES['primary_image']).replace(" ", "_")
+    primary_image_path = fs.save(f"api/used_products/{id}/primary_image/"+primary_image, request.FILES['primary_image'])
+    primary_image_paths = all_image_url+fs.url(primary_image_path)
+    print(primary_image_paths)
+    other_image = []
+    other_imagelist = []
+    for sav in request.FILES.getlist('other_images'):
+        ot = fs.save(f"api/used_products/{id}/other_images/"+sav.name, sav) 
+        other_image.append(str(ot).replace(" ","_"))
+            
+        print(other_image)
+        for iname in other_image:
+            other_images_path = iname
+            other_imagelist.append(all_image_url+fs.url(other_images_path))
+
+    
+   
+   
+    used_products = dict(request.POST)
+  
+    used_products['product_id'] = product_id
+    used_products['primary_image'] = primary_image_paths
+    used_products['other_images'] = other_imagelist
+ 
+    print(used_products)
+    cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in used_products.items()}
+
+    data= {
+        'user':id,
+        'product_id' : product_id,
+        'status':False,
+        'category':request.POST['category'],
+        'subcategory':request.POST['subcategory'],
+        'product':cleaned_data_dict,
+       
+        
+    }
+    print(data)
+
+    new_uesd_product = models.used_productsmodel(**data)
+    try:
+        # new_shop_product.full_clean()  # Validate model fields if needed
+        new_uesd_product.save()
+        print("Data saved successfully")
+        return Response(id, status=status.HTTP_200_OK)
+    except Exception as e:
+        print("Error while saving data:", e)
+        return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['GET'])
+def get_allused_products(request):
+
+    if request.method == "GET":
+        data = models.used_productsmodel.objects.all()
+        print(data)
+        serializers = end_user_serializers.used_productlistserializer(data,many =True) 
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+def get_used_products(request,id):
+
+    if request.method == "GET":
+        data = models.used_productsmodel.objects.filter(user=id)
+        print(data)
+        serializers = end_user_serializers.used_productlistserializer(data,many =True) 
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_single_used_products(request,product_id):
+
+    if request.method == "GET":
+        data = models.used_productsmodel.objects.filter(product_id =product_id)
+        print(data)
+        serializers = end_user_serializers.used_productlistserializer(data,many =True) 
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_used_products_category(request,subcategory):
+    if request.method == "GET":
+
+        data = models.used_productsmodel.objects.filter(subcategory=subcategory,status=True)
+        alldataserializer = end_user_serializers.used_productlistserializer(data,many =True)
+        return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+@api_view(['POST'])
+def used_update_product(request,id,product_id):
+
+    used_products = dict(request.POST)
+    print(used_products)
+
+    fs = FileSystemStorage()
+    try:
+        primary_image = str(request.FILES['primary_image']).replace(" ", "_")
+        primary_image_path = fs.save(f"api/used_products/{id}/primary_image/"+primary_image, request.FILES['primary_image'])
+        primary_image_paths = all_image_url+fs.url(primary_image_path)
+        print(primary_image_paths)
+        used_products['primary_image'] = primary_image_paths
+    except:
+        # used_pro=collection.find_one({"used_id": id,"product_id":product_id})
+        # primary_image_paths=used_pro.get("primary_image")
+        # used_products['primary_image'] = primary_image_paths
+        pass
+        
+    
+    try:
+        other_image = []
+        other_imagelist = []
+        for sav in request.FILES.getlist('other_images'):
+            ot = fs.save(f"api/used_products/{id}/other_images/"+sav.name, sav)
+            other_image.append(str(ot).replace(" ","_"))
+                
+            print(other_image)
+            for iname in other_image:
+                other_images_path = iname
+                other_imagelist.append(all_image_url+fs.url(other_images_path))
+        used_products['other_images'] = other_imagelist
+
+    except:
+        pass
+        
+    try:
+        used_product_instance = models.used_productsmodel.objects.get(user=id, product_id=product_id)
+        print(used_product_instance)
+        
+        existing_product_data = used_product_instance.product
+        
+        # Updating product field with new data
+        new_product_data = dict(request.POST)
+        existing_product_data.update(new_product_data)
+        
+        # Saving changes to the SQLite table
+        with transaction.atomic():
+            # Updating only the product field
+            used_product_instance.product = existing_product_data
+            used_product_instance.save()
+        
+        return Response(id, status=status.HTTP_200_OK)
+    except models.used_productsmodel.DoesNotExist:
+        return Response({"error": "used product not found"}, status=status.HTTP_404_NOT_FOUND)

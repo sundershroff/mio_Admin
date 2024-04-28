@@ -221,22 +221,40 @@
                                 <table class="table" id="dataTable">
                                     <thead>
                                         <tr>
-                                            <th>User ID</th>
+                                          <th>S.no</th>
+                                            <th>User Name</th>
                                             <th>Password</th>
                                             <th>NAME</th>
                                             <th>Contact</th>
-                                            <th>Alter Number</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody ><tr>
-                                      <td>1245566</td>
-                                      <td>ryuhbdc</td>
-                                      <td>ajith</td>
-                                      <td>9876543210</td>
-                                      <td>8976543211</td>
-                                      
+                                    <tbody >
+                                      {% for i in data %}
+                                      <tr>
+                                        <td>{{forloop.counter}}</td>
+                                      <td>{{i.username}}</td>
+                                      <td>{{i.password}}</td>
+                                      <td>{{i.name}}</td>
+                                      <td>{{i.phonenumber}}</td>
+                                    
+                                      <td>
+                                        <a href="/admin_user_update/{{i.id}}"><i class="fa fa-edit" style="font-size:24px;color: #8B1874 !important;"></i></a>
+                                        <form method="POST" style="
+                                        display: contents;
+                                    ">
+                                          {% csrf_token %}
+                                        <button type="submit" name="delete" value="{{i.id}}" style="
+                                        background-color: white;
+                                        border: 0px;
+                                        color: red;
+                                    "><i class="fa fa-trash" style="font-size:24px"></i></button>
+                                    </form>
+                                      </td>
 
-                                    </tr></tbody>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
                                 </table>
                             </div>
                         </div>

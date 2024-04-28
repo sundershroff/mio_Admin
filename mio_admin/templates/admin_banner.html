@@ -248,106 +248,127 @@
               <div class="tab-content">
                 <div id="SHOPPING" class="container tab-pane active"><br>
                   <div class="table-responsive" style="">
-                    <form method="POST" class="py-2">
+                    <form method="POST" enctype="multipart/form-data" class="py-2">
+                      {% csrf_token %}
                     <div class="row">
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                         <div class="input-group" style="justify-content: center;align-items: center;">
                             <div class="banner"></div>
                             <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                             <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                            <input type="file" class="imagebanner" name="" id="imageInput" onchange="previewImage()">
-                            <img class="py-1 px-1" id="imagePreview" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                            <input type="file" class="imagebanner" name="banner1" id="imageInput" onchange="previewImage()" >
+                            <img src="{{shopping.banner1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
+                            <img src="{{shopping.banner1.url}}" class="py-1 px-1" id="imagePreview" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                         </div>
                     </div>
-                    <div class="col-md-4" style="padding-bottom: 15px;">
+                    <div class="col-md-6" style="padding-bottom: 15px;">
                         <div class="input-group" style="justify-content: center;align-items: center;">
                             <div class="banner"></div>
                             <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                             <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                            <input type="file" class="imagebanner" name="" id="imageInput1" onchange="previewImage1()">
+                            <input type="file" class="imagebanner" name="banner2" id="imageInput1" onchange="previewImage1()" >
+                            <img src="{{shopping.banner2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                             <img class="py-1 px-1" id="imagePreview1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                         </div>
                     </div>
-                    <div class="col-md-4" style="padding-bottom: 15px;">
-                        <div class="input-group" style="justify-content: center;align-items: center;">
-                            <div class="banner"></div>
-                            <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                            <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                            <input type="file" class="imagebanner" name="" id="imageInput2" onchange="previewImage2()">
-                            <img class="py-1 px-1" id="imagePreview2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                        </div>
+                    </form>
+                    <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                    <input type="hidden" value="1" name="banner">
+                  
                     </div>
-                    <div class="col-md-4" style="padding-bottom: 15px;">
+                    
+                      <form method="POST" enctype="multipart/form-data" class="py-2">
+                        {% csrf_token %}
+                    <h1>ADS</h1>
+                    <div class="row">
+                    <div class="col-md-6" style="padding-bottom: 15px;">
                         <div class="input-group" style="justify-content: center;align-items: center;">
                             <div class="banner"></div>
                             <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                             <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                            <input type="file" class="imagebanner" name="" id="imageInput3" onchange="previewImage3()">
+                            <input type="file" class="imagebanner" name="ad1" id="imageInput3" onchange="previewImage3()" >
+                            <img src="{{shopping.ad1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                             <img class="py-1 px-1" id="imagePreview3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                         </div>
                     </div>
-                    <div class="col-md-4" style="padding-bottom: 15px;">
+                    <div class="col-md-6" style="padding-bottom: 15px;">
                         <div class="input-group" style="justify-content: center;align-items: center;">
                             <div class="banner"></div>
                             <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                             <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                            <input type="file" class="imagebanner" name="" id="imageInput4" onchange="previewImage4()">
+                            <input type="file" class="imagebanner" name="ad2" id="imageInput4" onchange="previewImage4()" >
+                            <img src="{{shopping.ad2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                             <img class="py-1 px-1" id="imagePreview4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                         </div>
                     </div>
 
                       
                   </div>
-                  <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                  <input type="submit" value="submit" name="1" id="" class="bannersubmit">
+                  <input type="hidden" value="1" name="ad">
                 </form>
                 </div>
               </div>
                 <div id="FOOD" class="container tab-pane fade"><br>
                   <div class="table-responsive">
-                    <form method="POST" class="py-2">
+                    <form method="POST" enctype="multipart/form-data" class="py-2">
+                      {% csrf_token %}
                         <div class="row">
-                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfood" onchange="previewImagefood()">
+                                <input type="file" class="imagebanner" name="banner1" id="imageInputfood" onchange="previewImagefood()">
+                                <img src="{{food.banner1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewfood" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfood1" onchange="previewImagefood1()">
+                                <input type="file" class="imagebanner" name="banner2" id="imageInputfood1" onchange="previewImagefood1()">
+                                <img src="{{food.banner2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewfood1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="2" name="banner">
+
+                      </form>
+                      
+                      </div>
+                      <form method="POST" enctype="multipart/form-data" class="py-2">
+                        {% csrf_token %}
+                        <h1>ADS</h1>
+                        <div class="row">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfood2" onchange="previewImagefood2()">
-                                <img class="py-1 px-1" id="imagePreviewfood2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfood3" onchange="previewImagefood3()">
+                                <input type="file" class="imagebanner" name="ad1" id="imageInputfood3" onchange="previewImagefood3()">
+                                <img src="{{food.ad1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewfood3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfood4" onchange="previewImagefood4()">
+                                <input type="file" class="imagebanner" name="ad2" id="imageInputfood4" onchange="previewImagefood4()">
+                                <img src="{{food.ad2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewfood4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
@@ -355,227 +376,272 @@
                           
                       </div>
                       <input type="submit" value="submit" name="" id="" class="bannersubmit">
-                    </form>
-                      </div>
+                      <input type="hidden" value="2" name="ad">
 
-                </div>
+                    </form>
+                    </div>
+                  </div>
+                      
+                    
                 <div id="FRESH" class="container tab-pane fade"><br>
                   <div class="table-responsive">
-                    <form method="POST" class="py-2">
+                    <form method="POST" enctype="multipart/form-data" class="py-2">
+                      {% csrf_token %}
                         <div class="row">
-                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfresh" onchange="previewImagefresh()">
+                                <input type="file" class="imagebanner" name="banner1" id="imageInputfresh" onchange="previewImagefresh()">
+                                <img src="{{fresh_cuts.banner1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewfresh" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfresh1" onchange="previewImagefresh1()">
+                                <input type="file" class="imagebanner" name="banner2" id="imageInputfresh1" onchange="previewImagefresh1()">
+                                <img src="{{fresh_cuts.banner2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewfresh1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfresh2" onchange="previewImagefresh2()">
-                                <img class="py-1 px-1" id="imagePreviewfresh2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="3" name="banner">
+
+                        </form>
+                        <form method="POST" enctype="multipart/form-data" class="py-2">
+                          {% csrf_token %}
+                          <h1>ADS</h1>
+                          <div class="row">
+                          <div class="col-md-6" style="padding-bottom: 15px;">
+                              <div class="input-group" style="justify-content: center;align-items: center;">
+                                  <div class="banner"></div>
+                                  <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                  <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                  <input type="file" class="imagebanner" name="ad1" id="imageInputfresh3" onchange="previewImagefresh3()">
+                                  <img src="{{fresh_cuts.ad1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
+                                  <img class="py-1 px-1" id="imagePreviewfresh3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                              </div>
+                          </div>
+                          <div class="col-md-6" style="padding-bottom: 15px;">
+                              <div class="input-group" style="justify-content: center;align-items: center;">
+                                  <div class="banner"></div>
+                                  <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                  <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                  <input type="file" class="imagebanner" name="ad2" id="imageInputfresh4" onchange="previewImagefresh4()">
+                                  <img src="{{fresh_cuts.ad2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
+                                  <img class="py-1 px-1" id="imagePreviewfresh4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                              </div>
+                          </div>
+      
+                            
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfresh3" onchange="previewImagefresh3()">
-                                <img class="py-1 px-1" id="imagePreviewfresh3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputfresh4" onchange="previewImagefresh4()">
-                                <img class="py-1 px-1" id="imagePreviewfresh4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-    
-                          
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="3" name="ad">
+
+                      </form>
                       </div>
-                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
-                    </form>
-                      </div>
+                    </div>
 
                 </div>
                 <div id="DAILY" class="container tab-pane fade"><br>
                   <div class="table-responsive">
-                    <form method="POST" class="py-2">
+                    <form method="POST" enctype="multipart/form-data" class="py-2">
+                      {% csrf_token %}
                         <div class="row">
-                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputdaily" onchange="previewImagedaily()">
+                                <input type="file" class="imagebanner" name="banner1" id="imageInputdaily" onchange="previewImagedaily()">
+                                <img src="{{daily_mio.banner1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewdaily" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputdaily1" onchange="previewImagedaily1()">
+                                <input type="file" class="imagebanner" name="banner2" id="imageInputdaily1" onchange="previewImagedaily1()">
+                                <img src="{{daily_mio.banner2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewdaily1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputdaily2" onchange="previewImagedaily2()">
-                                <img class="py-1 px-1" id="imagePreviewdaily2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="4" name="banner">
+
+                        </form>
+                        <form method="POST" enctype="multipart/form-data" class="py-2">
+                          {% csrf_token %}
+                          <h1>ADS</h1>
+                          <div class="row">
+                          <div class="col-md-6" style="padding-bottom: 15px;">
+                              <div class="input-group" style="justify-content: center;align-items: center;">
+                                  <div class="banner"></div>
+                                  <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                  <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                  <input type="file" class="imagebanner" name="ad1" id="imageInputdaily3" onchange="previewImagedaily3()">
+                                  <img src="{{daily_mio.ad1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+ 
+                                  <img class="py-1 px-1" id="imagePreviewdaily3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                              </div>
+                          </div>
+                          <div class="col-md-6" style="padding-bottom: 15px;">
+                              <div class="input-group" style="justify-content: center;align-items: center;">
+                                  <div class="banner"></div>
+                                  <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                  <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                  <input type="file" class="imagebanner" name="ad2" id="imageInputdaily4" onchange="previewImagedaily4()">
+                                  <img src="{{daily_mio.ad2.url}}" class="py-1 px-1" id="ad2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                                 
+                                  <img class="py-1 px-1" id="imagePreviewdaily4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                              </div>
+                          </div>
+      
+                            
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputdaily3" onchange="previewImagedaily3()">
-                                <img class="py-1 px-1" id="imagePreviewdaily3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputdaily4" onchange="previewImagedaily4()">
-                                <img class="py-1 px-1" id="imagePreviewdaily4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-    
-                          
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="4" name="ad">
+
+                      </form>
                       </div>
-                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
-                    </form>
-                      </div>
+                    </div>
 
                 </div>
                 <div id="PHARMACY" class="container tab-pane fade"><br>
                   <div class="table-responsive">
-                    <form method="POST" class="py-2">
+                    <form method="POST" enctype="multipart/form-data" class="py-2">
+                      {% csrf_token %}
                         <div class="row">
-                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy" onchange="previewImagepharmacy()">
+                                <input type="file" class="imagebanner" name="banner1" id="imageInputpharmacy" onchange="previewImagepharmacy()">
+                                <img src="{{pharmacy.banner1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewpharmacy" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy1" onchange="previewImagepharmacy1()">
+                                <input type="file" class="imagebanner" name="banner2" id="imageInputpharmacy1" onchange="previewImagepharmacy1()">
+                                <img src="{{pharmacy.banner2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewpharmacy1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy2" onchange="previewImagepharmacy2()">
-                                <img class="py-1 px-1" id="imagePreviewpharmacy2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="5" name="banner">
+
+                        </form>
+                        <form method="POST" enctype="multipart/form-data" class="py-2">
+                          {% csrf_token %}
+                          <h1>ADS</h1>
+                          <div class="row">
+                          <div class="col-md-6" style="padding-bottom: 15px;">
+                              <div class="input-group" style="justify-content: center;align-items: center;">
+                                  <div class="banner"></div>
+                                  <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                  <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                  <input type="file" class="imagebanner" name="ad1" id="imageInputpharmacy3" onchange="previewImagepharmacy3()">
+                                  <img src="{{pharmacy.ad1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
+                                  <img class="py-1 px-1" id="imagePreviewpharmacy3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                              </div>
+                          </div>
+                          <div class="col-md-6" style="padding-bottom: 15px;">
+                              <div class="input-group" style="justify-content: center;align-items: center;">
+                                  <div class="banner"></div>
+                                  <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
+                                  <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
+                                  <input type="file" class="imagebanner" name="ad2" id="imageInputpharmacy4" onchange="previewImagepharmacy4()">
+                                  <img src="{{pharmacy.ad2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
+                                  <img class="py-1 px-1" id="imagePreviewpharmacy4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+                              </div>
+                          </div>
+      
+                            
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy3" onchange="previewImagepharmacy3()">
-                                <img class="py-1 px-1" id="imagePreviewpharmacy3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputpharmacy4" onchange="previewImagepharmacy4()">
-                                <img class="py-1 px-1" id="imagePreviewpharmacy4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-    
-                          
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="5" name="ad">
+
+                      </form>
                       </div>
-                      <input type="submit" value="submit" name="" id="" class="bannersubmit">
-                    </form>
-                      </div>
+                    </div>
 
                 </div>
                 <div id="dORIGINAL" class="container tab-pane fade"><br>
                   <div class="table-responsive">
-                    <form method="POST" class="py-2">
+                    <form method="POST" enctype="multipart/form-data" class="py-2">
+                      {% csrf_token %}
+
                         <div class="row">
-                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputoriginal" onchange="previewImageoriginal()">
+                                <input type="file" class="imagebanner" name="banner1" id="imageInputoriginal" onchange="previewImageoriginal()">
+                                <img src="{{d_original.banner1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePrevieworiginal" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputoriginal1" onchange="previewImageoriginal1()">
+                                <input type="file" class="imagebanner" name="banner2" id="imageInputoriginal1" onchange="previewImageoriginal1()">
+                                <img src="{{d_original.banner2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePrevieworiginal1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="6" name="banner">
+                        </form>
+                        <form method="POST" enctype="multipart/form-data" class="py-2">
+                          {% csrf_token %}
+
+                        <h1>ADS</h1>
+                        <div class="row">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputoriginal2" onchange="previewImageoriginal2()">
-                                <img class="py-1 px-1" id="imagePrevieworiginal2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputoriginal3" onchange="previewImageoriginal3()">
+                                <input type="file" class="imagebanner" name="ad1" id="imageInputoriginal3" onchange="previewImageoriginal3()">
+                                <img src="{{d_original.ad1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePrevieworiginal3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputoriginal4" onchange="previewImageoriginal4()">
+                                <input type="file" class="imagebanner" name="ad2" id="imageInputoriginal4" onchange="previewImageoriginal4()">
+                                <img src="{{d_original.ad2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePrevieworiginal4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
@@ -583,47 +649,55 @@
                           
                       </div>
                       <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                      <input type="hidden" value="6" name="ad">
+
                     </form>
                       </div>
 
                 </div>
+                
                 <div id="JEWELLERY" class="container tab-pane fade"><br>
                   <div class="table-responsive">
-                    <form method="POST" class="py-2">
+                    <form method="POST" enctype="multipart/form-data" class="py-2">
+                      {% csrf_token %}
                         <div class="row">
-                            <div class="col-md-4" style="padding-bottom: 15px;">
+                            <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputjwellery" onchange="previewImagejwellery()">
+                                <input type="file" class="imagebanner" name="banner1" id="imageInputjwellery" onchange="previewImagejwellery()">
+                                <img src="{{jewellery.banner1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewjwellery" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
+                        <div class="col-md-6" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputjwellery1" onchange="previewImagejwellery1()">
+                                <input type="file" class="imagebanner" name="banner2" id="imageInputjwellery1" onchange="previewImagejwellery1()">
+                                <img src="{{jewellery.banner2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewjwellery1" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
+                        <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                        <input type="hidden" value="7" name="banner">
+                        </form>
+                        <form method="POST" enctype="multipart/form-data" class="py-2">
+                          {% csrf_token %}
+                       <h1>ADS</h1>
+                       <div class="row">
                         <div class="col-md-4" style="padding-bottom: 15px;">
                             <div class="input-group" style="justify-content: center;align-items: center;">
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputjwellery2" onchange="previewImagejwellery2()">
-                                <img class="py-1 px-1" id="imagePreviewjwellery2" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
-                            </div>
-                        </div>
-                        <div class="col-md-4" style="padding-bottom: 15px;">
-                            <div class="input-group" style="justify-content: center;align-items: center;">
-                                <div class="banner"></div>
-                                <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
-                                <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputjwellery3" onchange="previewImagejwellery3()">
+                                <input type="file" class="imagebanner" name="ad1" id="imageInputjwellery3" onchange="previewImagejwellery3()">
+                                <img src="{{jewellery.ad1.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewjwellery3" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
@@ -632,7 +706,9 @@
                                 <div class="banner"></div>
                                 <p style="font-size: 50px;position: absolute;opacity: 80%;color: #8B1874;"><i class="fa fa-upload" ></i></p>
                                 <p style="font-size: 20px;position:absolute;opacity: 80%;color: #8B1874;bottom: 40px;">Upload Image</p>
-                                <input type="file" class="imagebanner" name="" id="imageInputjwellery4" onchange="previewImagejwellery4()">
+                                <input type="file" class="imagebanner" name="ad2" id="imageInputjwellery4" onchange="previewImagejwellery4()">
+                                <img src="{{jewellery.ad2.url}}" class="py-1 px-1" id="" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
+
                                 <img class="py-1 px-1" id="imagePreviewjwellery4" style="position:absolute;width: 100%;height: 100%;border-radius: 10px;object-fit: contain;"  alt="">
                             </div>
                         </div>
@@ -640,7 +716,10 @@
                           
                       </div>
                       <input type="submit" value="submit" name="" id="" class="bannersubmit">
+                      <input type="hidden" value="7" name="ad">
+
                     </form>
+                      </div>
                       </div>
 
                 </div>
@@ -672,7 +751,9 @@
       </div>
     </div>
     
-    {% include "script.html" %}    <!-- shopping -->
+    <!-- container-scroller -->
+    {% include "script.html" %}   
+    <!-- shopping -->
     <script>
         // Function to preview the selected image
         function previewImage() {

@@ -1,43 +1,5 @@
 {% include "admin_header.html" %}
 
-    <style>
- 
-
-      form {
-          width: 300px; /* Adjust width as needed */
-          margin: 0 auto; /* Center the form horizontally */
-      }
-  
-      label {
-          display: inline-block;
-          width: 120px; /* Adjust width as needed */
-         
-          margin-right: 10px; /* Add some space between label and input */
-          margin-top: 10px;
-          color: blueviolet;
-          
-      }
-  
-      input {
-          width: 80%; /* Adjust width as needed */
-          margin-bottom: 10px; /* Add some space between input fields */
-      border-radius: 10px;
-      border-color: blueviolet;
-      border-style:groove;   
-     
-      }
-  
-      button[type="submit"] {
-          margin-left: 130px; /* Adjust left margin to align the button with the inputs */
-         color: aliceblue;
-          background-color: blueviolet;
-          width: 50%;
-          height: 40px;
-          border: 1px white;
-      }
-  
-  
-  </style>
   
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
@@ -254,33 +216,67 @@
             <!-- Delivery live trackibg -->
 
             <div class="form">
-              <form action="#" onclick="return calculateGrades()">
-                  <h1>Form</h1>
+              <form method = "POST" onclick="return calculateGrades()">
+                {% csrf_token %}
+                  <h1>Add User Form</h1>
                   <div class="formcontainer">
                       <hr/>
                       <div class="container">
-                          <label for="number1"><strong>USER ID:</strong></label>
-                          <input type="text" placeholder="Enter Username" name="number1" id="number1" required><br>
+                          <label for="number1"><strong>USER NAME:</strong></label>
+                          <input type="text" placeholder="Enter Username" name="username" id="number1" required><br>
                           <label for="number2"><strong>PASSWORD:</strong></label>
-                          <input type="text" placeholder="Enter Password" name="number2" id="number2" required><br>
+                          <input type="text" placeholder="Enter Password" name="password" id="number2" required><br>
                           <label for="number6"><strong>NAME:</strong></label>
-                          <input type="text" placeholder="Enter Contact" name="number6" id="number6" required><br>
+                          <input type="text" placeholder="Enter Name" name="name" id="number6" required><br>
+                          <label for="number6"><strong>EMAIL:</strong></label>
+                          <input type="text" placeholder="Enter E-mail" name="email" id="number6" required><br>
+
                           <label for="number7"><strong>PHONE NO:</strong></label>
-                          <input type="number" placeholder="Enter E-mail" name="number7" id="number7" required><br>
-                          <label for="number8"><strong>ALTER NUMBER:</strong></label>
-                          <input type="number" placeholder="Enter number" name="number8" id="number8" required>
-                      </div>
+                          <input type="number" placeholder="Enter PhoneNo" name="phonenumber" id="number7" required><br>
+                          
+                          <label for="number7"><strong>ACCESS PRIVELEGES:</strong></label><br>
+                          <input type="checkbox" value="All" name="access_priveleges" id="checkAll" style="width: 2%;">&nbsp;&nbsp;ALL<br>
+                          <input type="checkbox" value="Home" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Home<br>
+                          <input type="checkbox" value="Dashboard" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Dashboard<br>
+                          <input type="checkbox" value="Store_Details" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Store Details<br>
+                          <input type="checkbox" value="Order_Details" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Order Details<br>
+                          <input type="checkbox" value="Banner" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Banner<br>
+                          <input type="checkbox" value="Custom_Service" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Custom Service<br>
+                          <input type="checkbox" value="Product_Approval" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Product Approval<br>
+                          <input type="checkbox" value="Hub" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Hub<br>
+                          <input type="checkbox" value="User" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;User<br>
+                          <input type="checkbox" value="Customer" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Customer<br>
+                          <input type="checkbox" value="Delivery_Boy" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Delivery Boy<br>
+                          <input type="checkbox" value="Delivery_Commision" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Delivery Commision<br>
+                          <input type="checkbox" value="Shut_Down" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Shut Down<br>
+                          <input type="checkbox" value="Zone" name="access_priveleges" class="checkbox" style="width: 2%;">&nbsp;&nbsp;Zone<br>
+
+
+                          <button type="submit">Submit</button><br><br>
+
+                        </div>
                       <br>
                       <div>
-                          <button type="submit" href="hub_menu1.html">Submit</button><br><br>
-                          <span class="psw"><a href="#"> Forgot password?</a></span>
+                          <!-- <span class="psw"><a href="#"> Forgot password?</a></span> -->
                       </div>
                   </div>
               </form>
               </div>
 
           </div>
-
+          <script>
+            // Get the "check all" checkbox and all individual checkboxes
+            const checkAll = document.getElementById('checkAll');
+            const checkboxes = document.querySelectorAll('.checkbox');
+            
+            // Add event listener to the "check all" checkbox
+            checkAll.addEventListener('click', function() {
+                // Loop through all checkboxes and set their checked property
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = checkAll.checked;
+                });
+            });
+            </script>
 
 
 

@@ -78,3 +78,12 @@ def order_id_generate():
 def track_id_generate():
     id = str("".join(random.choices(string.ascii_uppercase+string.digits,k=11)))
     return id
+
+def cart_id_generate():
+    cart_id= str("".join(random.choices(string.ascii_uppercase+string.digits,k=11)))
+    return cart_id
+
+
+def product_id_generate():
+    id = str("".join(random.choices(string.ascii_uppercase+string.digits,k=11)))
+    return id

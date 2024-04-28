@@ -8,6 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Miogra Admin</title>
+    
     <!-- plugins:css -->
     <!-- Using CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
@@ -22,11 +23,23 @@
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="{% static '/assets/css/demo_1/style.css' %}">
+
+    <link rel="stylesheet" href="{% static '/assets/css/demo_1/form.css' %}">
+
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{% static '/assets/images/favicon.png' %}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  </head>
   <body>
+    <style>
+      .sidebar .nav {
+          position: fixed;
+          width: inherit;
+          max-height: 90vh; /* Adjust based on your layout */
+          overflow-y: auto; /* Enables vertical scrolling */
+      }
+  </style>
     <div class="container-scroller">
       <!-- partial:partials/_navbar.html -->
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
