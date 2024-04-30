@@ -448,7 +448,8 @@ def product_status_delivered(request,id,order_id):
             balance_amount = float(payable_amount_of_seller.total_amount) - (float(payable_amount_of_seller.total_amount) / int(payable_amount_of_seller.admin_commission_amount))
             seller_payable_data = admin_to_business_payment.objects.create(
                 balance_amount = balance_amount,
-                seller = seller_id
+                seller = seller_id,
+                order = payable_amount_of_seller,
             )
             seller_payable_data.save()
                     

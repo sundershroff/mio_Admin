@@ -63,3 +63,4 @@ class admin_to_business_payment(models.Model):
     balance_amount = models.FloatField(default=0)
     paid_amount = models.FloatField(default=0)
     seller = models.TextField(null=True)
+    order = models.ForeignKey(Product_Ordermodel, on_delete=models.CASCADE,null=True)

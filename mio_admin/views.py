@@ -36,6 +36,8 @@ def decimal(amount):
         # Get the decimal value with the last two digits
         decimal_last_two_digits = decimal_string[:decimal_point_index + 3]
         return decimal_last_two_digits
+    else:
+        return amount
 
 def login_hub(request):
     error = ""
@@ -166,7 +168,9 @@ def dashboard(request,access_priveleges):
     except:
         authenticate = admin_CustomUser.objects.get(username = access_priveleges)
     #shopping
-    order_data_shopping = Product_Ordermodel.objects.filter(category_data = "shopping")
+    order_data_shopping = Product_Ordermodel.objects.filter(category_data = "shopping",payment_type="cod")
+    shop_data_payment = admin_to_business_payment.objects.filter(order__shop_id__category = "shopping")
+    #delivery payment
     shopping_delivery_total = 0
     shopping_delivery_received = 0
     for x in order_data_shopping:
@@ -174,16 +178,230 @@ def dashboard(request,access_priveleges):
         shopping_delivery_received += float(x.float_cash)
     shopping_total = decimal(shopping_delivery_total)
     shopping_to_be_received = decimal(shopping_delivery_received)
-    received = float(shopping_total)-float(shopping_to_be_received)
-    shopping_received = decimal(received)
-    #food
-    order_data_food = Product_Ordermodel.objects.filter(category_data = "food")
+    received_shopping = float(shopping_total)-float(shopping_to_be_received)
+    shopping_received = decimal(received_shopping)
+    #seller payment
+    shopping_calc_total = 0
+    shopping_calc_balance = 0
+    shopping_calc_paid = 0
+    for y in shop_data_payment:
+        shopping_calc_total += float(y.balance_amount) + float(y.paid_amount)
+        shopping_calc_balance += float(y.balance_amount)
+        shopping_calc_paid += float(y.paid_amount)
+    shopping_total = decimal(shopping_calc_total)
+    shopping_balance = decimal(shopping_calc_balance)
+    shopping_paid = decimal(shopping_calc_paid)
+#food
+    order_data_food = Product_Ordermodel.objects.filter(category_data = "food",payment_type="cod")
+    food_data_payment = admin_to_business_payment.objects.filter(order__food_id__category = "food")
+    #delivery payment
+    food_delivery_total = 0
+    food_delivery_received = 0
+    for x in order_data_food:
+        food_delivery_total += float(x.total_amount)
+        food_delivery_received += float(x.float_cash)
+    food_total = decimal(food_delivery_total)
+    print(food_total)
+    food_to_be_received = decimal(food_delivery_received)
+    received_food = float(food_total)-float(food_to_be_received)
+    food_received = decimal(received_food)
+    print(f"food received",{food_received})
+    #seller payment
+    food_calc_total = 0
+    food_calc_balance = 0
+    food_calc_paid = 0
+    for y in food_data_payment:
+        food_calc_total += float(y.balance_amount) + float(y.paid_amount)
+        food_calc_balance += float(y.balance_amount)
+        food_calc_paid += float(y.paid_amount)
+    food_total = decimal(food_calc_total)
+    food_balance = decimal(food_calc_balance)
+    food_paid = decimal(food_calc_paid)
+#fresh cuts
+    order_data_fresh = Product_Ordermodel.objects.filter(category_data = "fresh_cuts",payment_type="cod")
+    fresh_data_payment = admin_to_business_payment.objects.filter(order__fresh_id__category = "fresh_cuts")
+    #delivery payment
+    fresh_delivery_total = 0
+    fresh_delivery_received = 0
+    for x in order_data_fresh:
+        fresh_delivery_total += float(x.total_amount)
+        fresh_delivery_received += float(x.float_cash)
+    fresh_total = decimal(fresh_delivery_total)
+    print(fresh_total)
+    fresh_to_be_received = decimal(fresh_delivery_received)
+    received_fresh = float(fresh_total)-float(fresh_to_be_received)
+    fresh_received = decimal(received_fresh)
+    print(f"fresh received",{fresh_received})
+    #seller payment
+    fresh_calc_total = 0
+    fresh_calc_balance = 0
+    fresh_calc_paid = 0
+    for y in fresh_data_payment:
+        fresh_calc_total += float(y.balance_amount) + float(y.paid_amount)
+        fresh_calc_balance += float(y.balance_amount)
+        fresh_calc_paid += float(y.paid_amount)
+    fresh_total = decimal(fresh_calc_total)
+    fresh_balance = decimal(fresh_calc_balance)
+    fresh_paid = decimal(fresh_calc_paid)
+#daily mio
+    order_data_dailymio = Product_Ordermodel.objects.filter(category_data = "daily_mio",payment_type="cod")
+    dailymio_data_payment = admin_to_business_payment.objects.filter(order__dmio_id__category = "daily_mio")
+    #delivery payment
+    dailymio_delivery_total = 0
+    dailymio_delivery_received = 0
+    for x in order_data_dailymio:
+        dailymio_delivery_total += float(x.total_amount)
+        dailymio_delivery_received += float(x.float_cash)
+    dailymio_total = decimal(dailymio_delivery_total)
+    print(dailymio_total)
+    dailymio_to_be_received = decimal(dailymio_delivery_received)
+    received_dailymio = float(dailymio_total)-float(dailymio_to_be_received)
+    dailymio_received = decimal(received_dailymio)
+    print(f"dailymio received",{dailymio_received})
+    #seller payment
+    dailymio_calc_total = 0
+    dailymio_calc_balance = 0
+    dailymio_calc_paid = 0
+    for y in dailymio_data_payment:
+        dailymio_calc_total += float(y.balance_amount) + float(y.paid_amount)
+        dailymio_calc_balance += float(y.balance_amount)
+        dailymio_calc_paid += float(y.paid_amount)
+    dailymio_total = decimal(dailymio_calc_total)
+    dailymio_balance = decimal(dailymio_calc_balance)
+    dailymio_paid = decimal(dailymio_calc_paid)
+#pharmacy
+    order_data_pharmacy = Product_Ordermodel.objects.filter(category_data = "pharmacy",payment_type="cod")
+    pharmacy_data_payment = admin_to_business_payment.objects.filter(order__pharm_id__category = "pharmacy")
+    #delivery payment
+    pharmacy_delivery_total = 0
+    pharmacy_delivery_received = 0
+    for x in order_data_pharmacy:
+        pharmacy_delivery_total += float(x.total_amount)
+        pharmacy_delivery_received += float(x.float_cash)
+    pharmacy_total = decimal(pharmacy_delivery_total)
+    print(pharmacy_total)
+    pharmacy_to_be_received = decimal(pharmacy_delivery_received)
+    received_pharmacy = float(pharmacy_total)-float(pharmacy_to_be_received)
+    pharmacy_received = decimal(received_pharmacy)
+    print(f"pharmacy received",{pharmacy_received})
+    #seller payment
+    pharmacy_calc_total = 0
+    pharmacy_calc_balance = 0
+    pharmacy_calc_paid = 0
+    for y in pharmacy_data_payment:
+        pharmacy_calc_total += float(y.balance_amount) + float(y.paid_amount)
+        pharmacy_calc_balance += float(y.balance_amount)
+        pharmacy_calc_paid += float(y.paid_amount)
+    pharmacy_total = decimal(pharmacy_calc_total)
+    pharmacy_balance = decimal(pharmacy_calc_balance)
+    pharmacy_paid = decimal(pharmacy_calc_paid)
+#d original
+    order_data_doriginal = Product_Ordermodel.objects.filter(category_data = "d_original",payment_type="cod")
+    doriginal_data_payment = admin_to_business_payment.objects.filter(order__d_id__category = "d_original")
+    #delivery payment
+    doriginal_delivery_total = 0
+    doriginal_delivery_received = 0
+    for x in order_data_doriginal:
+        doriginal_delivery_total += float(x.total_amount)
+        doriginal_delivery_received += float(x.float_cash)
+    doriginal_total = decimal(doriginal_delivery_total)
+    print(doriginal_total)
+    doriginal_to_be_received = decimal(doriginal_delivery_received)
+    received_doriginal = float(doriginal_total)-float(doriginal_to_be_received)
+    doriginal_received = decimal(received_doriginal)
+    print(f"doriginal received",{doriginal_received})
+    #seller payment
+    doriginal_calc_total = 0
+    doriginal_calc_balance = 0
+    doriginal_calc_paid = 0
+    for y in doriginal_data_payment:
+        doriginal_calc_total += float(y.balance_amount) + float(y.paid_amount)
+        doriginal_calc_balance += float(y.balance_amount)
+        doriginal_calc_paid += float(y.paid_amount)
+    doriginal_total = decimal(doriginal_calc_total)
+    doriginal_balance = decimal(doriginal_calc_balance)
+    doriginal_paid = decimal(doriginal_calc_paid)
+#jewellery
+    order_data_jewellery = Product_Ordermodel.objects.filter(category_data = "jewellery",payment_type="cod")
+    jewellery_data_payment = admin_to_business_payment.objects.filter(order__jewel_id__category = "jewellery")
+    #delivery payment
+    jewellery_delivery_total = 0
+    jewellery_delivery_received = 0
+    for x in order_data_jewellery:
+        jewellery_delivery_total += float(x.total_amount)
+        jewellery_delivery_received += float(x.float_cash)
+    jewellery_total = decimal(jewellery_delivery_total)
+    print(jewellery_total)
+    jewellery_to_be_received = decimal(jewellery_delivery_received)
+    received_jewellery = float(jewellery_total)-float(jewellery_to_be_received)
+    jewellery_received = decimal(received_jewellery)
+    print(f"jewellery received",{jewellery_received})
+    #seller payment
+    jewellery_calc_total = 0
+    jewellery_calc_balance = 0
+    jewellery_calc_paid = 0
+    for y in jewellery_data_payment:
+        jewellery_calc_total += float(y.balance_amount) + float(y.paid_amount)
+        jewellery_calc_balance += float(y.balance_amount)
+        jewellery_calc_paid += float(y.paid_amount)
+    jewellery_total = decimal(jewellery_calc_total)
+    jewellery_balance = decimal(jewellery_calc_balance)
+    jewellery_paid = decimal(jewellery_calc_paid)
+
+
+
     context = {
         'authenticate':authenticate,
         'access_priveleges':authenticate.access_priveleges,
+        #shopping
         'shopping_delivery_total':shopping_total,
         'shopping_to_be_received':shopping_to_be_received,
         'shopping_received':shopping_received,
+        'shopping_total':shopping_total,
+        'shopping_balance':shopping_balance,
+        'shopping_paid':shopping_paid,
+        #food
+        'food_delivery_total':food_total,
+        'food_to_be_received':food_to_be_received,
+        'food_received':food_received,
+        'food_total':food_total,
+        'food_balance':food_balance,
+        'food_paid':food_paid,
+        #fresh_cuts
+        'fresh_delivery_total':fresh_total,
+        'fresh_to_be_received':fresh_to_be_received,
+        'fresh_received':fresh_received,
+        'fresh_total':fresh_total,
+        'fresh_balance':fresh_balance,
+        'fresh_paid':fresh_paid,
+        #daily_mio
+        'dailymio_delivery_total':dailymio_total,
+        'dailymio_to_be_received':dailymio_to_be_received,
+        'dailymio_received':dailymio_received,
+        'dailymio_total':dailymio_total,
+        'dailymio_balance':dailymio_balance,
+        'dailymio_paid':dailymio_paid,
+        #pharmacy
+        'pharmacy_delivery_total':pharmacy_total,
+        'pharmacy_to_be_received':pharmacy_to_be_received,
+        'pharmacy_received':pharmacy_received,
+        'pharmacy_total':pharmacy_total,
+        'pharmacy_balance':pharmacy_balance,
+        'pharmacy_paid':pharmacy_paid,
+        #d original
+        'doriginal_delivery_total':doriginal_total,
+        'doriginal_to_be_received':doriginal_to_be_received,
+        'doriginal_received':doriginal_received,
+        'doriginal_total':doriginal_total,
+        'doriginal_balance':doriginal_balance,
+        'doriginal_paid':doriginal_paid,
+        #jewellery
+        'jewellery_delivery_total':jewellery_total,
+        'jewellery_to_be_received':jewellery_to_be_received,
+        'jewellery_received':jewellery_received,
+        'jewellery_total':jewellery_total,
+        'jewellery_balance':jewellery_balance,
+        'jewellery_paid':jewellery_paid,
     }
     return render(request,'admin_dashboard.html',context)
 
