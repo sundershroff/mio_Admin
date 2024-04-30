@@ -273,6 +273,7 @@ class review_serializer(serializers.Serializer):
     freshcut_product=fresh_productlistserializer()
     comment=serializers.CharField()
     rating=serializers.CharField()
+    product_id=serializers.CharField()
 
 class used_productserializer(serializers.Serializer):
     user = serializers.CharField()

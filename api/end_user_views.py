@@ -14,6 +14,7 @@ from pymongo import MongoClient
 import math
 from mio_admin.models import business_commision,zone
 from django.db import transaction
+from django.db.models import Avg
 
 from django.http import JsonResponse
 from .models import Reviews
@@ -691,9 +692,12 @@ def d_original_district_products(request, id, district):
         alldataserializer = business_serializers.d_original_productlistserializer(data, many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
 
-# .................after login...............
+
 
     
+# .................after login...............
+
+
 @api_view(['GET'])
 def user_get_all_d_originalproducts(request,id,user_id):
     if request.method == "GET":
@@ -748,6 +752,7 @@ def enduser_order_create(request,id,product_id,category):
         if category.lower() == "shopping":
             
             products= models.shop_productsmodel.objects.get(product_id = product_id)
+            print(products)
             shopping = models.shoppingmodel.objects.get(shop_id=products.shop_id)
             print(shopping.Business_id)
             business = models.Businessmodel.objects.get(uid=shopping.Business_id) 
@@ -771,6 +776,7 @@ def enduser_order_create(request,id,product_id,category):
             print(get_zone)
             print(Zonepincode)
             if products:
+
                 # selling_price = product_data.get("selling_price", 0)
                 selling_price = products.product.get("selling_price") 
                 total_amount = selling_price * int(request.POST['quantity'])
@@ -798,6 +804,7 @@ def enduser_order_create(request,id,product_id,category):
                 'payment_type':request.POST["payment_type"],
                 'pincode':request.POST["pincode"],
                 'region':get_zone,
+                'float_cash':selling_price,
             }
             print(data)
             if Zonepincode is None:
@@ -873,6 +880,7 @@ def enduser_order_create(request,id,product_id,category):
                 'payment_type':request.POST["payment_type"],
                 'pincode':request.POST["pincode"],
                 'region':get_zone,
+                'float_cash':selling_price,
             }
             if Zonepincode is None:
                 return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
@@ -944,6 +952,8 @@ def enduser_order_create(request,id,product_id,category):
                 'payment_type':request.POST["payment_type"],
                 'pincode':request.POST["pincode"],
                 'region':get_zone,
+                'float_cash':selling_price,
+
             }
             if Zonepincode is None:
                 return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
@@ -1015,6 +1025,8 @@ def enduser_order_create(request,id,product_id,category):
                 'payment_type':request.POST["payment_type"],
                 'pincode':request.POST["pincode"],
                 'region':get_zone,
+                'float_cash':selling_price,
+
             }
             if Zonepincode is None:
                 return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
@@ -1085,7 +1097,9 @@ def enduser_order_create(request,id,product_id,category):
                 'delivery_address':request.POST["delivery_address"],
                 'payment_type':request.POST["payment_type"],
                 'pincode':request.POST["pincode"],
-                'region':get_zone,            
+                'region':get_zone, 
+                'float_cash':selling_price,
+           
                 }
             if Zonepincode is None:
                 return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
@@ -1155,6 +1169,8 @@ def enduser_order_create(request,id,product_id,category):
                 'payment_type':request.POST["payment_type"],
                 'pincode':request.POST["pincode"],
                 'region':get_zone,
+                'float_cash':selling_price,
+
             }
             if Zonepincode is None:
                 return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
@@ -1225,6 +1241,8 @@ def enduser_order_create(request,id,product_id,category):
                 'payment_type':request.POST["payment_type"],
                 'pincode':request.POST["pincode"],
                 'region':get_zone,
+                'float_cash':selling_price,
+
             }
             if Zonepincode is None:
                 return Response({"You are out of region"}, status=status.HTTP_400_BAD_REQUEST)
@@ -1477,7 +1495,9 @@ def cart_product(request, id, product_id, category):
             carts.save()
             print("Valid Data")
             return Response(id, status=status.HTTP_200_OK)
-        
+
+
+
 
 @api_view(["POST"])
 def cartupdate(request, id):
@@ -1654,11 +1674,6 @@ def remove_wish(request,id,product_id):
     return Response(id, status=status.HTTP_200_OK)
 
 
-
-
-
-
-
 @api_view(["POST"])
 def create_reviews_for_delivered_products(request, id, product_id):
     if request.method == "POST":
@@ -1697,7 +1712,9 @@ def create_reviews_for_delivered_products(request, id, product_id):
                     food_product=order.food_product,
                     freshcut_product=order.freshcut_product,
                     comment=request.data.get('comment'),
-                    rating=request.data.get('rating')
+                    rating=request.data.get('rating'),
+                    product_id = product_id,
+
                 )
                 print(review)
                 # You might want to do something else here like sending notifications, etc.
@@ -1718,6 +1735,7 @@ def get_all_reviews(request):
             
 
     # used products
+# used products
 @api_view(['POST'])
 def used_products(request,id):
     product_id = end_user_extension.product_id_generate()
@@ -1729,7 +1747,7 @@ def used_products(request,id):
    
     #add
     fs = FileSystemStorage()
-
+    print(request.POST)
     primary_image = str(request.FILES['primary_image']).replace(" ", "_")
     primary_image_path = fs.save(f"api/used_products/{id}/primary_image/"+primary_image, request.FILES['primary_image'])
     primary_image_paths = all_image_url+fs.url(primary_image_path)
@@ -1753,7 +1771,7 @@ def used_products(request,id):
     used_products['product_id'] = product_id
     used_products['primary_image'] = primary_image_paths
     used_products['other_images'] = other_imagelist
- 
+    
     print(used_products)
     cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in used_products.items()}
 
@@ -1763,9 +1781,7 @@ def used_products(request,id):
         'status':False,
         'category':request.POST['category'],
         'subcategory':request.POST['subcategory'],
-        'product':cleaned_data_dict,
-       
-        
+        'product':cleaned_data_dict,  
     }
     print(data)
 
@@ -1788,8 +1804,25 @@ def get_allused_products(request):
         print(data)
         serializers = end_user_serializers.used_productlistserializer(data,many =True) 
         return Response(data=serializers.data, status=status.HTTP_200_OK)
+    
+@api_view(['GET'])
+def get_used_products_category(request,subcategory):
+    if request.method == "GET":
 
+        data = models.used_productsmodel.objects.filter(subcategory=subcategory,status=True)
+        alldataserializer = end_user_serializers.used_productlistserializer(data,many =True)
+        return Response(data=alldataserializer.data, status=status.HTTP_200_OK)   
+    
+    
+@api_view(['GET'])
+def get_single_used_products(request,product_id):
 
+    if request.method == "GET":
+        data = models.used_productsmodel.objects.filter(product_id =product_id)
+        print(data)
+        serializers = end_user_serializers.used_productlistserializer(data,many =True) 
+        return Response(data=serializers.data, status=status.HTTP_200_OK)
+    
 
 @api_view(['GET'])
 def get_used_products(request,id):
@@ -1801,24 +1834,12 @@ def get_used_products(request,id):
         return Response(data=serializers.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-def get_single_used_products(request,product_id):
-
+def user_single_used_products(request,id,product_id):
     if request.method == "GET":
-        data = models.used_productsmodel.objects.filter(product_id =product_id)
+        data = models.used_productsmodel.objects.filter(user=id,product_id =product_id)
         print(data)
         serializers = end_user_serializers.used_productlistserializer(data,many =True) 
         return Response(data=serializers.data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-def get_used_products_category(request,subcategory):
-    if request.method == "GET":
-
-        data = models.used_productsmodel.objects.filter(subcategory=subcategory,status=True)
-        alldataserializer = end_user_serializers.used_productlistserializer(data,many =True)
-        return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
-
-
 
 
 
@@ -1877,3 +1898,96 @@ def used_update_product(request,id,product_id):
         return Response(id, status=status.HTTP_200_OK)
     except models.used_productsmodel.DoesNotExist:
         return Response({"error": "used product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+
+@api_view(["POST"])
+def calculate_average_ratings(request,category):
+    ratings_by_product = {}
+    
+    if category == "jewellery":
+        products=models.jewel_productsmodel.objects.filter(category="jewellery")
+        for product in products:
+            print(products)
+            reviews = models.Reviews.objects.filter(jewel_product=product)
+            print(reviews)
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            ratings_by_product[product.id] = average_rating
+            single=models.jewel_productsmodel.objects.get(id=product.id)
+            single.rating=float(average_rating)
+            single.save()
+
+    elif category == "shopping":
+        products=models.shop_productsmodel.objects.filter(category="shopping")
+        for product in products:
+            reviews = models.Reviews.objects.filter(shop_product=product)
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            ratings_by_product[product.id] = average_rating
+            single=models.shop_productsmodel.objects.get(id=product.id)
+            single.rating=float(average_rating)
+            single.save()
+
+    elif category == "food":
+        products=models.food_productsmodel.objects.filter(category="food")
+        for product in products:
+            reviews = models.Reviews.objects.filter(food_product=product)
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            ratings_by_product[product.id] = average_rating
+            single=models.food_productsmodel.objects.get(id=product.id)
+            single.rating=float(average_rating)
+            single.save()
+
+    elif category == "d_original":
+        products=models.d_original_productsmodel.objects.filter(category="d_original")
+        for product in products:
+            reviews = models.Reviews.objects.filter(d_origin_product=product)
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            ratings_by_product[product.id] = average_rating
+            single=models.d_original_productsmodel.objects.get(id=product.id)
+            single.rating=float(average_rating)
+            single.save()
+
+    elif category == "dailymio":
+        products=models.dmio_productsmodel.objects.filter(category="dailymio")
+        for product in products:
+            reviews = models.Reviews.objects.filter(dailymio_product=product)
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            ratings_by_product[product.id] = average_rating
+            single=models.dmio_productsmodel.objects.get(id=product.id)
+            single.rating=float(average_rating)
+            single.save()
+
+    elif category == "freshcuts":
+        products=models.fresh_productsmodel.objects.filter(category="freshcuts")
+        for product in products:
+            reviews = models.Reviews.objects.filter(freshcut_product=product)
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            ratings_by_product[product.id] = average_rating
+            single=models.fresh_productsmodel.objects.get(id=product.id)
+            single.rating=float(average_rating)
+            single.save()
+
+    elif category == "pharmacy":
+        products=models.pharmacy_productsmodel.objects.filter(category="pharmacy")
+        for product in products:
+            reviews = models.Reviews.objects.filter(pharmacy_product=product)
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            ratings_by_product[product.id] = average_rating
+            single=models.pharmacy_productsmodel.objects.get(id=product.id)
+            single.rating=float(average_rating)
+            single.save()
+
+    return Response({'success'}, status=status.HTTP_200_OK)
+
+
+
+
+@api_view(['GET'])
+def user_product_timeline(request,id):
+    if request.method == "GET":
+        data = models.Product_Ordermodel.objects.get(order_id=id)
+        print(data)
+        serializers = end_user_serializers.product_orderlistSerializer(data,many =False) 
+        return Response(data=serializers.data, status=status.HTTP_200_OK)

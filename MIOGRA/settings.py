@@ -27,10 +27,17 @@ SECRET_KEY = 'django-insecure-+-m!x-ux_!1=34ha_np#@o#@vetsx93g*2n4nr4tsg89#w-fg)
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    # "192.168.28.154"
+    "192.168.1.12",
+    "10.0.2.2",
+    "127.0.0.1",
+    "192.168.189.129",
+    "192.168.1.10",
+    "192.168.112.129",
+    "192.168.1.5",
+    "192.168.1.2",
+    "192.168.1.29",
+    "192.168.1.26",
 ]
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'web',
     'mio_admin',
+    'hub',
     
     
 

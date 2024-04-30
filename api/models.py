@@ -272,7 +272,8 @@ class shop_productsmodel(models.Model):
     subcategory1 = models.TextField(null=True)
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
-   
+    rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)],default=0)
+
 
 # jewellery
 class jewel_productsmodel(models.Model):
@@ -284,6 +285,7 @@ class jewel_productsmodel(models.Model):
     product= models.JSONField(null=True)
     business_status=models.TextField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
+    rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)],default=0)
 
 # food
 class food_productsmodel(models.Model):
@@ -295,6 +297,7 @@ class food_productsmodel(models.Model):
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
     business_status=models.TextField(null=True)
+    rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)],default=0)
 
 #freshcutsproductmodel
 
@@ -307,6 +310,7 @@ class fresh_productsmodel(models.Model):
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
     business_status=models.TextField(null=True)
+    rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)],default=0)
 
 # dailymioproducts
 
@@ -319,6 +323,7 @@ class dmio_productsmodel(models.Model):
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
     business_status=models.TextField(null=True)
+    rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)],default=0)
 
 #pharmacy products
 
@@ -331,6 +336,7 @@ class pharmacy_productsmodel(models.Model):
     product= models.JSONField(null=True)
     created_date=models.DateField(auto_now_add=True,null=True)
     business_status=models.TextField(null=True)
+    rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)],default=0)
 
 # d_originalproducts
     
@@ -344,6 +350,7 @@ class d_original_productsmodel(models.Model):
     created_date=models.DateField(auto_now_add=True,null=True)
     district = models.TextField(null=True)
     business_status=models.TextField(null=True)
+    rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)],default=0)
 
 
 
@@ -400,7 +407,11 @@ class Delivery_model(models.Model):
     user_otp=models.IntegerField(null=True)
     total_order_amount=models.TextField(null=True)
     has_withdrawn = models.BooleanField(default=False)
+    floating_status=models.BooleanField(default=False)
+    float_amount=models.TextField(null=True)
     notification_status=models.BooleanField(default=False,null=True)
+    emergency = models.BooleanField(default=0)
+
 
 class deliverylogintable_model(models.Model):
     today_date=models.DateField(auto_now_add=True,null=True)
@@ -412,11 +423,6 @@ class deliverylogintable_model(models.Model):
     delivery_status = models.TextField(null=True)
     delivery_type = models.TextField(null=True)
     region = models.TextField(null=True)
-
-
-
-
-
 
 
 # order table
@@ -467,6 +473,9 @@ class Product_Ordermodel(models.Model):
     incentive =models.TextField(null=True)
     ready_to_pick_up = models.BooleanField(default=0)
     ship_to_other_region = models.TextField(null=True)
+    float_cash = models.TextField(null=True)
+    admin_commission_amount=models.TextField(null=True)
+
     
     def save(self, *args, **kwargs):
         if self.status == 'delivered' and not self.delivery_date:
@@ -517,6 +526,7 @@ class Reviews(models.Model):
     comment=models.TextField(null=True)
     rating=models.FloatField(validators=[MinValueValidator(1),MaxValueValidator(5)])
     created_date = models.DateField(auto_now_add=True,null=True)
+    product_id=models.TextField(null=True)
     def __str__(self):
         return self.comment
 
@@ -557,3 +567,7 @@ class Notification(models.Model):
     recever_id=models.TextField(null=True)
     is_read=models.BooleanField(default=False,null=True)
     notify_date=models.DateField(auto_now_add=True,null=True)
+
+
+
+

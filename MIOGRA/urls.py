@@ -59,6 +59,7 @@ urlpatterns = [
     path('shop_get_my_product/<id>/product/<product_id>',business_views.shop_get_my_product),
     path('shop_delete_product/<id>/product/<product_id>',business_views.shop_delete_product),
     path('shop_update_product/<id>/product/<product_id>',business_views.shop_update_product),
+    path('shop_imgupdate_product/<id>/<product_id>/<index_value>',business_views.shop_imgupdate_product),
     path('shop_productorder_date/<id>',business_views.shop_productorder_date),
     path('shop_get_subcategoryproducts/<id>/<str:subcategory>/',business_views.shop_get_subcategoryproducts),
     path('update_product_order_status_reject/<id>/<product_id>/<order_id>/',business_views.update_product_order_status_reject),
@@ -179,7 +180,7 @@ urlpatterns = [
     path('d_original_update_product/<id>/product/<product_id>',business_views.d_original_update_product),
     path('d_original_productorder_date/<id>',business_views.d_original_productorder_date),
     path('d_original_get_subcategoryproducts/<id>/<str:subcategory>/',business_views.d_original_get_subcategoryproducts),
-
+    path('d_original_district_based_product/<str:district>/',business_views.dorigin_district_products_only),
 
 
 # ..............end_user........
@@ -273,19 +274,25 @@ urlpatterns = [
     path('cartupdate/<id>',end_user_views.cartupdate),
     path('create_reviews_for_delivered_products/<id>/<product_id>/',end_user_views.create_reviews_for_delivered_products),
     path('get_all_reviews/',end_user_views.get_all_reviews),
+    path('calculate_average_ratings/<str:category>',end_user_views.calculate_average_ratings),
 
     # whishlist
     path('whishlist_product/<id>/<product_id>/<str:category>/',end_user_views.whishlist_product),
     path('all_wishlist/<id>',end_user_views.all_wishlist),
     path('remove_wish/<id>/<product_id>/',end_user_views.remove_wish),
 
+    # timeline
+    path('user_product_timeline/<id>',end_user_views.user_product_timeline),
+
+
 # usedproducts
     path('used_products/<id>',end_user_views.used_products),
+    path('get_allused_products/',end_user_views.get_allused_products),
     path('get_used_products/<id>',end_user_views.get_used_products),
     path('get_single_used_products/<product_id>',end_user_views.get_single_used_products),
-    path('used_update_product/<id>/<product_id>',end_user_views.used_update_product),
-    path('get_allused_products/',end_user_views.get_allused_products),
     path('get_used_products_category/<str:subcategory>/',end_user_views.get_used_products_category),
+    path('user_single_used_products/<id>/<product_id>',end_user_views.user_single_used_products),
+    path('used_update_product/<id>/<product_id>',end_user_views.used_update_product),
 
 
 # # ..............enduser_web................
@@ -321,6 +328,10 @@ urlpatterns = [
     path('delivery_withdraw_status/<id>',delivery_views.delivery_withdraw_status),
     path('deliverynotify_status_true/<id>',delivery_views.deliverynotify_status_true),
     path('delivery_notify_status_false/<id>',delivery_views.delivery_notify_status_false),
+    path('delivery_floating_cash/<id>',delivery_views.delivery_floating_cash),
+    path('delivery_floating_status/<id>',delivery_views.delivery_floating_status),
+
+
 # notification
     path('delivery_notification/',delivery_views.delivery_notification),
     path('notification_data/<id>/',delivery_views.notification_data),

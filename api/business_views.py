@@ -53,6 +53,8 @@ def send_notification(registration_ids , message_title , message_desc):
  
 # send_notification("resgistration_ids" , 'hii' , 'hello world')
 
+
+
 @api_view(['POST'])
 def business_signup(request):
     try:
@@ -245,22 +247,6 @@ def business_profile_update(request, id):
     profile_update.save()
     return Response(id, status=status.HTTP_200_OK)
 
-    # data = {
-    #     'phone_number': request.POST['phone_number'],
-    #     'profile_picture': full_path
-    # }
-
-    # print(data)
-    # basicdetailsserializer = business_serializers.update_acc_serializer(
-    #     instance=userdata, data=data, partial=True)
-    # if basicdetailsserializer.is_valid():
-    #     basicdetailsserializer.save()
-    #     print("Valid Data")
-    #     return Response(id, status=status.HTTP_200_OK)
-    # else:
-    #     return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
-
-
 
 # shop_dashboard
     
@@ -329,7 +315,7 @@ def update_product_order_status_reject(request,id,product_id,order_id):
 @api_view(["POST"])
 def update_product_order_status_accept(request,id,product_id,order_id):
     try:
-        business = models.Businessmodel.objects.get(uid=id) 
+        business = models.Businessmodel.objects.get(uid=id)
         print(business.uid)
 
         product_orders = models.Product_Ordermodel.objects.filter(business__uid=business.uid, product_id=product_id, order_id=order_id)
@@ -371,7 +357,9 @@ def update_product_order_status_accept(request,id,product_id,order_id):
                 admin_data = comission_Editing.objects.get(id=1)  
                 per_km = (admin_data.per_km)  
                 incentive =(admin_data.incentive)
-
+                admin_commision=business_commision.objects.get(id=1)
+                commission=admin_commision.commission
+                shops.admin_commission_amount=commission
                 total_amount=per_km*distance
                 shops.incentive=incentive
                 shops.order_total=int(total_amount)
@@ -380,7 +368,10 @@ def update_product_order_status_accept(request,id,product_id,order_id):
             elif product_order.delivery_type == "Normal":
                 shops=models.Product_Ordermodel.objects.get(order_id=order_id)
                 print(shops)
-                admin_data = comission_Editing.objects.get(id=1)  
+                admin_data = comission_Editing.objects.get(id=1)
+                admin_commision=business_commision.objects.get(id=1)
+                commission=admin_commision.commission
+                shops.admin_commission_amount=commission
                 incentive =(admin_data.normal_delivery_commision)
                 shops.incentive=incentive
                 shops.order_total=incentive
@@ -830,60 +821,91 @@ def shop_delete_product(request,id,product_id):
     shop_product.delete()
     return Response(id,status=status.HTTP_200_OK)
 
+
+
 @api_view(['POST'])
-def shop_update_product(request,id,product_id):
-
+def shop_update_product(request, id, product_id):
+    print(request.data)
     shop_products = dict(request.POST)
-
     fs = FileSystemStorage()
     try:
         primary_image = str(request.FILES['primary_image']).replace(" ", "_")
-        primary_image_path = fs.save(f"api/shop_products/{id}/primary_image/"+primary_image, request.FILES['primary_image'])
-        primary_image_paths = all_image_url+fs.url(primary_image_path)
+        primary_image_path = fs.save(f"api/shop_products/{id}/primary_image/" + primary_image,
+                                     request.FILES['primary_image'])
+        primary_image_paths = all_image_url + fs.url(primary_image_path)
         print(primary_image_paths)
         shop_products['primary_image'] = primary_image_paths
     except:
-        # shop_pro=collection.find_one({"shop_id": id,"product_id":product_id})
-        # primary_image_paths=shop_pro.get("primary_image")
-        # shop_products['primary_image'] = primary_image_paths
         pass
-        
-    
+
     try:
         other_image = []
         other_imagelist = []
         for sav in request.FILES.getlist('other_images'):
-            ot = fs.save(f"api/shop_products/{id}/other_images/"+sav.name, sav)
-            other_image.append(str(ot).replace(" ","_"))
-                
+            ot = fs.save(f"api/shop_products/{id}/other_images/" + sav.name, sav)
+            other_image.append(str(ot).replace(" ", "_"))
+
             print(other_image)
             for iname in other_image:
                 other_images_path = iname
-                other_imagelist.append(all_image_url+fs.url(other_images_path))
+                other_imagelist.append(all_image_url + fs.url(other_images_path))
         shop_products['other_images'] = other_imagelist
 
     except:
         pass
-    
+
     try:
         shop_product_instance = models.shop_productsmodel.objects.get(shop_id=id, product_id=product_id)
-        
         existing_product_data = shop_product_instance.product
-        
+
         # Updating product field with new data
         new_product_data = dict(request.POST)
-        existing_product_data.update(new_product_data)
-        
+        shop_products = dict(request.POST)
+        cleaned_data_dict = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in
+                             shop_products.items()}
+
+        existing_product_data.update(cleaned_data_dict)
+
         # Saving changes to the SQLite table
         with transaction.atomic():
+            
             # Updating only the product field
             shop_product_instance.product = existing_product_data
             shop_product_instance.save()
-        
+
         return Response(id, status=status.HTTP_200_OK)
     except models.shop_productsmodel.DoesNotExist:
         return Response({"error": "Shop product not found"}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['POST'])
+def shop_imgupdate_product(request, id, product_id,index_value):
+    try:
+        if request.method == "POST":
+            fs = FileSystemStorage()
+            data = models.shop_productsmodel.objects.get(shop_id=id, product_id=product_id)
+            shop_pro=data.product.get("other_images")
+            product_img=data.product
+            print(shop_pro)
+            index_value = int(index_value)
+            if index_value < 0 or index_value >= len(shop_pro):
+                return Response({"error": "Invalid index value"}, status=status.HTTP_400_BAD_REQUEST)
+            if index_value == int(index_value):
+                other_images = str(request.FILES['other_images']).replace(" ", "_")
+                other_images_path = fs.save(f"api/shop_products/{id}/other_images/" + other_images,
+                                            request.FILES['other_images'])
+                other_images_paths = all_image_url + fs.url(other_images_path)
+                print(other_images_paths)
+                shop_pro[index_value] = other_images_paths
+                product_img["other_images"] =shop_pro
+                data.product=product_img  #replacejson
+                data.save()
+
+            return Response({"message": "Image Updated successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Index value mismatch"}, status=status.HTTP_400_BAD_REQUEST)
+            
+    except models.shop_productsmodel.DoesNotExist:
+        return Response({"error": "Shop product not found"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST","GET"])
 def shop_productorder_date(request,id):
@@ -1287,7 +1309,7 @@ def jewel_delete_product(request,id,product_id):
 
 @api_view(['POST'])
 def jewel_update_product(request,id,product_id):
-
+    print(request.data)
     jewel_products = dict(request.POST)
 
     fs = FileSystemStorage()
@@ -1321,16 +1343,21 @@ def jewel_update_product(request,id,product_id):
         pass
 
     try:
+
         jewel_product_instance = models.jewel_productsmodel.objects.get(jewel_id=id, product_id=product_id)
 
         
         existing_product_data = jewel_product_instance.product
         
         new_product_data = dict(request.POST)
-        existing_product_data.update(new_product_data)
+        jewel_products = dict(request.POST)
+        cleaned_data_dict = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in
+                            jewel_products.items()}
+        existing_product_data.update(cleaned_data_dict)
         
         # Saving changes to the SQLite table
         with transaction.atomic():
+            
             # Updating only the product field
             jewel_product_instance.product = existing_product_data
             jewel_product_instance.save()
@@ -1341,7 +1368,7 @@ def jewel_update_product(request,id,product_id):
             jewel_product_instance.save()
         return Response(id, status=status.HTTP_200_OK)
     except models.jewel_productsmodel.DoesNotExist:
-        return Response({"error": "Shop product not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "jewel product not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["POST","GET"])
@@ -1693,9 +1720,21 @@ def food_products(request,id):
         print("Error while saving data:", e)
         return Response({"serializer issue"}, status=status.HTTP_403_FORBIDDEN)
 
+
 @api_view(['POST'])
-def food_product_save(request, id):
-    food_products(request,id)
+def jewel_product_save(request, id):
+    print(type(data["jewel_id"]))
+    print(type(id))
+    print(data["jewel_id"])
+    if data["jewel_id"] == id:
+        print("is working")
+        new_shop_product = models.jewel_productsmodel(**data)
+        new_shop_product.save()
+        return Response({"Data saved successfully"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Data saved unsuccessfully"}, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+def food_product_save(request,id):
     print(type(food_products_data["food_id"]))
     print(type(id))
     print(food_products_data["food_id"])
@@ -1748,7 +1787,7 @@ def food_delete_product(request,id,product_id):
 def food_update_product(request,id,product_id):
 
     food_products = dict(request.POST)
-
+  
     fs = FileSystemStorage()
     try:
         primary_image = str(request.FILES['primary_image']).replace(" ", "_")
@@ -1784,8 +1823,12 @@ def food_update_product(request,id,product_id):
         existing_product_data = food_product_instance.product
         
         # Updating product field with new data
-        new_product_data = dict(request.POST)
-        existing_product_data.update(new_product_data)
+        food_products = dict(request.POST)
+        cleaned_data_dict = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in
+                            food_products.items()}
+
+        existing_product_data.update(cleaned_data_dict)
+     
         
         # Saving changes to the SQLite table
         with transaction.atomic():
@@ -2237,8 +2280,11 @@ def fresh_update_product(request,id,product_id):
         existing_product_data = fresh_product_instance.product
         
         # Updating product field with new data
-        new_product_data = dict(request.POST)
-        existing_product_data.update(new_product_data)
+        fresh_products = dict(request.POST)
+        cleaned_data_dict = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in
+                             fresh_products.items()}
+
+        existing_product_data.update(cleaned_data_dict)
         
         # Saving changes to the SQLite table
         with transaction.atomic():
@@ -2692,8 +2738,11 @@ def dmio_update_product(request,id,product_id):
         existing_product_data = dmio_product_instance.product
         
         # Updating product field with new data
-        new_product_data = dict(request.POST)
-        existing_product_data.update(new_product_data)
+        dmio_products = dict(request.POST)
+        cleaned_data_dict = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in
+                            dmio_products.items()}
+
+        existing_product_data.update(cleaned_data_dict)
         
         # Saving changes to the SQLite table
         with transaction.atomic():
@@ -3140,8 +3189,11 @@ def pharmacy_update_product(request,id,product_id):
         existing_product_data = pharmacy_product_instance.product
         
         # Updating product field with new data
-        new_product_data = dict(request.POST)
-        existing_product_data.update(new_product_data)
+        pharmacy_products = dict(request.POST)
+        cleaned_data_dict = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in
+                            pharmacy_products.items()}
+
+        existing_product_data.update(cleaned_data_dict)
         
         # Saving changes to the SQLite table
         with transaction.atomic():
@@ -3595,9 +3647,12 @@ def d_original_update_product(request,id,product_id):
         existing_product_data = d_original_product_instance.product
         
         # Updating product field with new data
-        new_product_data = dict(request.POST)
-        existing_product_data.update(new_product_data)
-        
+   
+        d_original_products = dict(request.POST)
+        cleaned_data_dict = {key: value[0] if isinstance(value, list) and len(value) == 1 else value for key, value in
+                            d_original_products.items()}
+
+        existing_product_data.update(cleaned_data_dict)
         # Saving changes to the SQLite table
         with transaction.atomic():
             # Updating only the product field
@@ -3637,7 +3692,12 @@ def d_original_productorder_date(request,id):
 
     return JsonResponse({"error": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 
-
+@api_view(['GET'])
+def dorigin_district_products_only(request,district):
+    if request.method == "GET":
+        data = models.d_original_productsmodel.objects.filter(district=district)
+        alldataserializer = business_serializers.d_original_productlistserializer(data, many=True)
+        return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
