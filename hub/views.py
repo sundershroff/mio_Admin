@@ -35,7 +35,6 @@ def send_notification(registration_ids , message_title , message_desc):
     print(result.json())
 
 def hub_dashboard(request,hub):
-    
     hub = hub
     order_products = Product_Ordermodel.objects.filter(delivery_type = "Normal",jewel_id__region = hub,status="accepted",ready_to_pick_up=0) | Product_Ordermodel.objects.filter(delivery_type = "Normal",shop_id__region = hub,status="accepted",ready_to_pick_up=0) | Product_Ordermodel.objects.filter(delivery_type = "Normal",d_id__region = hub,status="accepted",ready_to_pick_up=0)
     delivery_boy = Delivery_model.objects.filter(region = hub)
@@ -219,6 +218,17 @@ def invoice(request,id):
     }
     return render(request,"invoice_hub.html",context)
 
+def return_products(request,hub):
+    order_products = Product_Ordermodel.objects.filter(delivery_type = "Normal",jewel_id__region = hub,status="returned") | Product_Ordermodel.objects.filter(delivery_type = "Normal",shop_id__region = hub,status="returned") | Product_Ordermodel.objects.filter(delivery_type = "Normal",d_id__region = hub,status="returned")
+
+    context = {
+        'hub':hub,
+        'order_products':order_products,
+        
+    }
+    if request.method == "POST":
+        pass
+    return render(request,"returned_product.html",context)
 
 @api_view(['POST'])
 def hub_picked(request,order_id,delivery_person):

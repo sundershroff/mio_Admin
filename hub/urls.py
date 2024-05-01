@@ -13,6 +13,7 @@ urlpatterns = [
     path('hub/delivery/<hub>',views.delivery),
     path('hub/hub_other_region/<hub>',views.hub_other_region),
     path('hub/invoice/<id>',views.invoice),
+    path('hub/return_products/<hub>',views.return_products),
     
     
     path('hub/hub_picked/<order_id>/<delivery_person>',views.hub_picked),

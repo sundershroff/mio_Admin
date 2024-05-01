@@ -25,6 +25,7 @@ from mio_admin import views
 urlpatterns = [
     path('', include('mio_admin.urls')),
     path('', include('web.urls')),
+    path('', include('hub.urls')),
     path('admin/', admin.site.urls),
 
     path('business_signup/',business_views.business_signup),
