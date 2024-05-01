@@ -108,7 +108,7 @@ def index(request,access_priveleges):
     #delivery man 
     region_area = "REGION"
     delivery_online = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True") | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True")
-    # delivery_free = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True") | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True")
+    delivery_without_emerged = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False)
     delivery_offline = deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True") | deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True")
     quick_delivery = Delivery_model.objects.filter(delivery_type = "quick",approve_status = "True") | Delivery_model.objects.filter(delivery_type = "Quick",approve_status = "True")
     if request.method == "POST":
@@ -117,39 +117,58 @@ def index(request,access_priveleges):
             if request.POST['region_select'] == "nagercoil":
                 region_area = request.POST['region_select']
                 quick_delivery = Delivery_model.objects.filter(region = "nagercoil",delivery_type = "quick",approve_status = "True") | Delivery_model.objects.filter(region = "nagercoil",delivery_type = "Quick",approve_status = "True")
+                delivery_without_emerged = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area)
                 delivery_online = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
                 delivery_offline = deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
 
             elif request.POST['region_select'] == "kanniyakumari":
                 region_area = request.POST['region_select']
                 quick_delivery = Delivery_model.objects.filter(region = "kanniyakumari",delivery_type = "quick",approve_status = "True")    
+                delivery_without_emerged = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area)
                 delivery_online = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
                 delivery_offline = deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
 
             elif request.POST['region_select'] == "thuckalay":
                 region_area = request.POST['region_select']
                 quick_delivery = Delivery_model.objects.filter(region = "thuckalay",delivery_type = "quick",approve_status = "True")
+                delivery_without_emerged = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area)
                 delivery_online = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
                 delivery_offline = deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
 
             elif request.POST['region_select'] == "marthandam":
                 region_area = request.POST['region_select']
                 quick_delivery = Delivery_model.objects.filter(region = "marthandam",delivery_type = "quick",approve_status = "True")
+                delivery_without_emerged = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area)
                 delivery_online = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
                 delivery_offline = deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
 
             elif request.POST['region_select'] == "karungal":
                 region_area = request.POST['region_select']
                 quick_delivery = Delivery_model.objects.filter(region = "karungal",delivery_type = "quick",approve_status = "True")
+                delivery_without_emerged = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area)
                 delivery_online = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
                 delivery_offline = deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
 
             elif request.POST['region_select'] == "nithiravilai":
                 region_area = request.POST['region_select']
                 quick_delivery = Delivery_model.objects.filter(region = "nithiravilai",delivery_type = "quick",approve_status = "True")
+                delivery_without_emerged = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__emergency=False,deliveryperson__region = region_area)
                 delivery_online = deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 1,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
                 delivery_offline = deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area ) | deliverylogintable_model.objects.filter(status = 0,today_date = x,deliveryperson__delivery_type = "Quick",deliveryperson__approve_status = "True",deliveryperson__region = region_area )
-
+        elif "work_assign" in request.POST:
+            print(request.POST)
+            order_data = (Product_Ordermodel.objects.filter(deliveryperson__uid = request.POST['emerged_partner'],status="order-confirmed")
+                            | 
+                          Product_Ordermodel.objects.filter(status="order-picked")
+                                                           )
+            print(order_data)
+            for x in order_data:
+                delivery_details = Delivery_model.objects.get(uid = request.POST['work_assign'])
+                update_order_work = Product_Ordermodel.objects.get(order_id = x.order_id)
+                update_order_work.deliveryperson = delivery_details
+                update_order_work.save()
+                print("work assign succesfully")
+            
     context = {
         'region_area':region_area,
         'authenticate':authenticate,
@@ -157,7 +176,7 @@ def index(request,access_priveleges):
         'quick_delivery':quick_delivery,
         'delivery_online':delivery_online,
         'delivery_offline':delivery_offline,
-        # 'delivery_free':delivery_free,
+        'delivery_without_emerged':delivery_without_emerged,
     }
     
     return render(request,'admin_index.html',context)
