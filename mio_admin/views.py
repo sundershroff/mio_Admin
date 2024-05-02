@@ -195,9 +195,10 @@ def dashboard(request,access_priveleges):
     for x in order_data_shopping:
         shopping_delivery_total += float(x.total_amount)
         shopping_delivery_received += float(x.float_cash)
-    shopping_total = decimal(shopping_delivery_total)
+    shopping__total = decimal(shopping_delivery_total)
     shopping_to_be_received = decimal(shopping_delivery_received)
-    received_shopping = float(shopping_total)-float(shopping_to_be_received)
+    received_shopping = float(shopping_delivery_total)-float(shopping_to_be_received)
+    print("receivedddd",received_shopping)
     shopping_received = decimal(received_shopping)
     #seller payment
     shopping_calc_total = 0
@@ -219,10 +220,9 @@ def dashboard(request,access_priveleges):
     for x in order_data_food:
         food_delivery_total += float(x.total_amount)
         food_delivery_received += float(x.float_cash)
-    food_total = decimal(food_delivery_total)
-    print(food_total)
+    food__total = decimal(food_delivery_total)
     food_to_be_received = decimal(food_delivery_received)
-    received_food = float(food_total)-float(food_to_be_received)
+    received_food = float(food__total)-float(food_to_be_received)
     food_received = decimal(received_food)
     print(f"food received",{food_received})
     #seller payment
@@ -245,10 +245,9 @@ def dashboard(request,access_priveleges):
     for x in order_data_fresh:
         fresh_delivery_total += float(x.total_amount)
         fresh_delivery_received += float(x.float_cash)
-    fresh_total = decimal(fresh_delivery_total)
-    print(fresh_total)
+    fresh__total = decimal(fresh_delivery_total)
     fresh_to_be_received = decimal(fresh_delivery_received)
-    received_fresh = float(fresh_total)-float(fresh_to_be_received)
+    received_fresh = float(fresh__total)-float(fresh_to_be_received)
     fresh_received = decimal(received_fresh)
     print(f"fresh received",{fresh_received})
     #seller payment
@@ -271,10 +270,9 @@ def dashboard(request,access_priveleges):
     for x in order_data_dailymio:
         dailymio_delivery_total += float(x.total_amount)
         dailymio_delivery_received += float(x.float_cash)
-    dailymio_total = decimal(dailymio_delivery_total)
-    print(dailymio_total)
+    dailymio__total = decimal(dailymio_delivery_total)
     dailymio_to_be_received = decimal(dailymio_delivery_received)
-    received_dailymio = float(dailymio_total)-float(dailymio_to_be_received)
+    received_dailymio = float(dailymio__total)-float(dailymio_to_be_received)
     dailymio_received = decimal(received_dailymio)
     print(f"dailymio received",{dailymio_received})
     #seller payment
@@ -297,10 +295,9 @@ def dashboard(request,access_priveleges):
     for x in order_data_pharmacy:
         pharmacy_delivery_total += float(x.total_amount)
         pharmacy_delivery_received += float(x.float_cash)
-    pharmacy_total = decimal(pharmacy_delivery_total)
-    print(pharmacy_total)
+    pharmacy__total = decimal(pharmacy_delivery_total)
     pharmacy_to_be_received = decimal(pharmacy_delivery_received)
-    received_pharmacy = float(pharmacy_total)-float(pharmacy_to_be_received)
+    received_pharmacy = float(pharmacy__total)-float(pharmacy_to_be_received)
     pharmacy_received = decimal(received_pharmacy)
     print(f"pharmacy received",{pharmacy_received})
     #seller payment
@@ -323,10 +320,9 @@ def dashboard(request,access_priveleges):
     for x in order_data_doriginal:
         doriginal_delivery_total += float(x.total_amount)
         doriginal_delivery_received += float(x.float_cash)
-    doriginal_total = decimal(doriginal_delivery_total)
-    print(doriginal_total)
+    doriginal__total = decimal(doriginal_delivery_total)
     doriginal_to_be_received = decimal(doriginal_delivery_received)
-    received_doriginal = float(doriginal_total)-float(doriginal_to_be_received)
+    received_doriginal = float(doriginal__total)-float(doriginal_to_be_received)
     doriginal_received = decimal(received_doriginal)
     print(f"doriginal received",{doriginal_received})
     #seller payment
@@ -349,10 +345,9 @@ def dashboard(request,access_priveleges):
     for x in order_data_jewellery:
         jewellery_delivery_total += float(x.total_amount)
         jewellery_delivery_received += float(x.float_cash)
-    jewellery_total = decimal(jewellery_delivery_total)
-    print(jewellery_total)
+    jewellery__total = decimal(jewellery_delivery_total)
     jewellery_to_be_received = decimal(jewellery_delivery_received)
-    received_jewellery = float(jewellery_total)-float(jewellery_to_be_received)
+    received_jewellery = float(jewellery__total)-float(jewellery_to_be_received)
     jewellery_received = decimal(received_jewellery)
     print(f"jewellery received",{jewellery_received})
     #seller payment
@@ -373,49 +368,49 @@ def dashboard(request,access_priveleges):
         'authenticate':authenticate,
         'access_priveleges':authenticate.access_priveleges,
         #shopping
-        'shopping_delivery_total':shopping_total,
+        'shopping_delivery_total':shopping__total,
         'shopping_to_be_received':shopping_to_be_received,
         'shopping_received':shopping_received,
         'shopping_total':shopping_total,
         'shopping_balance':shopping_balance,
         'shopping_paid':shopping_paid,
         #food
-        'food_delivery_total':food_total,
+        'food_delivery_total':food__total,
         'food_to_be_received':food_to_be_received,
         'food_received':food_received,
         'food_total':food_total,
         'food_balance':food_balance,
         'food_paid':food_paid,
         #fresh_cuts
-        'fresh_delivery_total':fresh_total,
+        'fresh_delivery_total':fresh__total,
         'fresh_to_be_received':fresh_to_be_received,
         'fresh_received':fresh_received,
         'fresh_total':fresh_total,
         'fresh_balance':fresh_balance,
         'fresh_paid':fresh_paid,
         #daily_mio
-        'dailymio_delivery_total':dailymio_total,
+        'dailymio_delivery_total':dailymio__total,
         'dailymio_to_be_received':dailymio_to_be_received,
         'dailymio_received':dailymio_received,
         'dailymio_total':dailymio_total,
         'dailymio_balance':dailymio_balance,
         'dailymio_paid':dailymio_paid,
         #pharmacy
-        'pharmacy_delivery_total':pharmacy_total,
+        'pharmacy_delivery_total':pharmacy__total,
         'pharmacy_to_be_received':pharmacy_to_be_received,
         'pharmacy_received':pharmacy_received,
         'pharmacy_total':pharmacy_total,
         'pharmacy_balance':pharmacy_balance,
         'pharmacy_paid':pharmacy_paid,
         #d original
-        'doriginal_delivery_total':doriginal_total,
+        'doriginal_delivery_total':doriginal__total,
         'doriginal_to_be_received':doriginal_to_be_received,
         'doriginal_received':doriginal_received,
         'doriginal_total':doriginal_total,
         'doriginal_balance':doriginal_balance,
         'doriginal_paid':doriginal_paid,
         #jewellery
-        'jewellery_delivery_total':jewellery_total,
+        'jewellery_delivery_total':jewellery__total,
         'jewellery_to_be_received':jewellery_to_be_received,
         'jewellery_received':jewellery_received,
         'jewellery_total':jewellery_total,
@@ -635,7 +630,15 @@ def single_store_details(request,category,id,access_priveleges):
         authenticate = User.objects.get(username = access_priveleges)
     except:
         authenticate = admin_CustomUser.objects.get(username = access_priveleges)
-    payment = admin_to_business_payment.objects.get(seller = id)
+    try:
+        payment = admin_to_business_payment.objects.get(seller = id)
+        print("payment",payment)
+        balance_amount = decimal(payment.balance_amount)
+        paid_amount = decimal(payment.paid_amount)
+    except:
+        balance_amount = 0
+        paid_amount = 0
+        pass
     if category == "shopping":
         data = shoppingmodel.objects.get(shop_id  = id)
     elif category == "food":
@@ -655,8 +658,8 @@ def single_store_details(request,category,id,access_priveleges):
         'data':data,
         'authenticate':authenticate,
         'access_priveleges':authenticate.access_priveleges,
-        'order_data':payment.balance_amount,
-        'paid_data':payment.paid_amount,
+        'order_data':balance_amount,
+        'paid_data':paid_amount,
     }
     
     return render(request,"single_store_details.html",context)
@@ -1729,7 +1732,6 @@ def delivery_boy_single(request,id,access_priveleges):
     delivery_history = Product_Ordermodel.objects.filter(deliveryperson__uid = id)
     paid_amount = 0
     for i in delivery_history:
-        print(i.float_cash)
         paid_amount += float(i.float_cash)
     if type(paid_amount) is float:
         # Convert the decimal number to a string
@@ -1745,9 +1747,8 @@ def delivery_boy_single(request,id,access_priveleges):
     print(decimal_last_two_digits)
     total_amount = 0
     for j in delivery_history:
-        print(j.total_amount)
         total_amount += float(j.total_amount)
-    balance_amount = total_amount - paid_amount
+    balance_amount = float(total_amount) - float(paid_amount)
     if type(balance_amount) is float:
                 # Convert the decimal number to a string
                 decimal_string = str(balance_amount)
@@ -1759,6 +1760,15 @@ def delivery_boy_single(request,id,access_priveleges):
                 decimal_last_two_digits_balance = decimal_string[:decimal_point_index + 3]
     else:
         decimal_last_two_digits_balance = balance_amount
+    print("balance:",decimal_last_two_digits_balance)
+    if request.method == "POST":
+        if "paid" in request.POST:
+            order_table = Product_Ordermodel.objects.get(order_id = request.POST['order_id'])
+            print(order_table)
+            order_table.payment_status = request.POST['paid']
+            order_table.float_cash = 0
+            order_table.save()
+            return redirect(f"/admin/delivery_boy_single/{id}/{access_priveleges}")
     context={
         'data':data,
         'authenticate':authenticate,
@@ -1957,5 +1967,14 @@ def emergency(request,uid):
     except:
         return Response("error",status=status.HTTP_400_BAD_REQUEST) 
 
+@api_view(['GET']) 
+def banner_display(request,category):
+    try:
+        if request.method == "GET":
+            banner_data = banner.objects.filter(category = category).values()
+            print(banner_data)
+            return Response(banner_data,status=status.HTTP_200_OK)
+    except:
+        return Response("error",status=status.HTTP_400_BAD_REQUEST) 
 
 

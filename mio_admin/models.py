@@ -33,7 +33,7 @@ class comission_Editing(models.Model):
 class business_commision(models.Model):
     commission =models.TextField(null=True)
     gst = models.TextField(null=True)
-    
+        
 class banner(models.Model):
     category =models.TextField(null=True)
     banner1 = models.ImageField(upload_to="banner",null=True)

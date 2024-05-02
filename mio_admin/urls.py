@@ -52,6 +52,7 @@ urlpatterns = [
     path('admin/hsn_verification/<hsn_codee>',views.hsn_verification),
     path('delete_other_image/<product_id>/<position>/<access_priveleges>',views.delete_other_image),
     path('admin/emergency/<uid>',views.emergency),
+    path('admin/banner_display/<category>',views.banner_display),
 
 ]
 
