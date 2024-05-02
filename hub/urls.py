@@ -20,5 +20,7 @@ urlpatterns = [
     path('hub/normal_delivery_get_product_order/<id>/<region>',views.normal_delivery_get_product_order),
     path('hub/shipped_delivery_product/<id>',views.shipped_delivery_product),
     path('hub/out_of_delivery/<order_id>',views.out_of_delivery),
+    path('hub/out_of_delivery_return/<order_id>',views.out_of_delivery_return),
+
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

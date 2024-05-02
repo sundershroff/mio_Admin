@@ -18,6 +18,7 @@ from django.db.models import Avg
 
 from django.http import JsonResponse
 from .models import Reviews
+from hub.models import *
 
 client = MongoClient('localhost', 27017)
 all_image_url = "http://127.0.0.1:3000/"
@@ -1991,3 +1992,26 @@ def user_product_timeline(request,id):
         print(data)
         serializers = end_user_serializers.product_orderlistSerializer(data,many =False) 
         return Response(data=serializers.data, status=status.HTTP_200_OK)
+    
+@api_view(["POST"])
+def user_product_order_status_return(request,id,order_id):
+    try:
+        user = models.End_Usermodel.objects.get(uid=id)
+        print(user)
+        product_orders = models.Product_Ordermodel.objects.filter(order_id=order_id)
+        print(product_orders)
+        if product_orders.exists():
+            for product_order in product_orders:
+                # Update the status field with the new value
+                product_order.status = "end_user_return"
+                product_order.save()
+                #returned product for hub
+                data = product_return.objects.create(
+                order = product_orders
+                )
+                data.save()
+            return Response(id,status=status.HTTP_200_OK)
+        else:
+            return Response("Product order not found", status=status.HTTP_404_NOT_FOUND)
+    except:
+        return Response("Product order not found", status=status.HTTP_404_NOT_FOUND)

@@ -126,7 +126,7 @@ def delivery(request,hub):
     ready_to_delivery = (product_arrive.objects.filter(order__region = hub,product_arrived = 1)
     |
     product_arrive.objects.filter(order__region = hub,product_arrived_to_me = 1))
-    delivery_boy = Delivery_model.objects.filter(region = hub)
+    delivery_boy = Delivery_model.objects.filter(region = hub,delivery_type="Normal")
     context = {
         'hub':hub,
         'ready_to_delivery':ready_to_delivery,
@@ -219,15 +219,32 @@ def invoice(request,id):
     return render(request,"invoice_hub.html",context)
 
 def return_products(request,hub):
-    order_products = Product_Ordermodel.objects.filter(delivery_type = "Normal",jewel_id__region = hub,status="returned") | Product_Ordermodel.objects.filter(delivery_type = "Normal",shop_id__region = hub,status="returned") | Product_Ordermodel.objects.filter(delivery_type = "Normal",d_id__region = hub,status="returned")
-
+    order_products = (
+        product_return.objects.filter(order__delivery_type = "Normal",order__jewel_id__region = hub,order__status="end_user_return") 
+        | 
+        product_return.objects.filter(order__delivery_type = "Normal",order__shop_id__region = hub,order__status="end_user_return") 
+        |
+        product_return.objects.filter(order__delivery_type = "Normal",order__d_id__region = hub,order__status="end_user_return")
+    )
+    delivery_boy = Delivery_model.objects.filter(region = hub,delivery_type="Normal")
     context = {
         'hub':hub,
         'order_products':order_products,
-        
+        'delivery_boy':delivery_boy,
     }
-    if request.method == "POST":
-        pass
+    if request.method == "POST":  
+        if "product_arrived" in request.POST:
+            arrive=product_return.objects.get(order__order_id = request.POST['id'])   
+            arrive.product_arrived = request.POST['product_arrived'] 
+            arrive.save()
+            print("product_arrived")
+        elif "assign_work" in request.POST:
+            assign=product_return.objects.get(order__order_id = request.POST['order_id'])  
+            delivery_partner = Delivery_model.objects.get(uid = request.POST['assign_work'])
+            assign.delivery_person =  delivery_partner
+            assign.out_of_delivery =  "0"
+            assign.save()
+            print("Assign work successfully")
     return render(request,"returned_product.html",context)
 
 @api_view(['POST'])
@@ -283,5 +300,22 @@ def out_of_delivery(request,order_id):
             order_data.status = "picked"
             order_data.save()
             return Response("Out of Delivered",status=status.HTTP_200_OK)
+    except:
+        return Response("Invalid Data",status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def out_of_delivery_return(request,order_id):
+    try:
+        if request.method == "POST":
+            if "out_of_delivery" in request.data:
+                product_ret=product_return.objects.get(order__order_id = order_id)   
+                product_ret.out_of_delivery = "1"
+                product_ret.save()
+                return Response("Out of Delivered",status=status.HTTP_200_OK)
+            elif "delivered" in request.data:
+                product_ret=product_return.objects.get(order__order_id = order_id)   
+                product_ret.out_of_delivery = "2"
+                product_ret.save()
+                return Response("Delivered",status=status.HTTP_200_OK)
     except:
         return Response("Invalid Data",status=status.HTTP_400_BAD_REQUEST)

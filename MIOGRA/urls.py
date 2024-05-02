@@ -198,6 +198,8 @@ urlpatterns = [
     path('update_end_user_address/<id>/',end_user_views.update_end_user_address),
     path('single_users_data/<id>',end_user_views.single_users_data),
     path('locationupdate/<id>',end_user_views.locationupdate),
+    path('user_product_order_status_return/<id>/<order_id>/',end_user_views.user_product_order_status_return),
+
 
 
 
