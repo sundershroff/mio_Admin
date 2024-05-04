@@ -45,6 +45,7 @@
         <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
         <!-- Modernizr js -->
         <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
          <link rel="stylesheet" href="">
     </head>
@@ -56,10 +57,35 @@
         <div class="body-wrapper" style="padding: 0px 15px;">
             <!-- Begin Header Area -->
             <!-- Header Area End Here -->
-            {% include "header.html" %}
+            {% include "enduser_header.html" %}
             <!-- Begin Slider With Banner Area -->
+            
             <div class="slider-with-banner">
+                
                 <div class="container-fluid">
+                    <div class="row" >
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8" style="align-items:center;">
+                            <form method="POST" >
+                                {% csrf_token %}
+                                <div>
+                                    <select name="district" class="dist-select" style="min-width: 91%;">
+                                        <option value="">Select District</option>                         
+                                        <option value="kanniyakumari">Kanyakumari</option> 
+                                        <option value="thirunelveli">Thirunelveli</option>
+                                        <option value="thanjavur">Thanjavur</option>
+                                        <option value="madurai">Madurai</option>                    
+                                        <option value="namakkal">Namakkal</option>
+                                        <option value="selam">Selam</option>
+                                        
+                                    </select> 
+                                    <button class="li-btn" type="submit" fdprocessedid="rj8qgm"><i class="fa fa-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    
                     <div class="row">
                         <!-- Begin Slider Area -->
                         <div class="col-lg-12 col-md-12" style="
@@ -146,6 +172,7 @@
                     </div>
                     <div class="tab-content">
                         <div id="li-bestseller-product" class="tab-pane" role="tabpanel">
+                           
                             <div class="row">
                                 <div class="product-active owl-carousel">
                                     {% for i in dorigin %}
@@ -153,7 +180,7 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/freshproducts/fresh_single_product/{{i.d_id}}/{{i.product_id}}">
+                                                <a href="/doriginalproducts/doriginal/{{i.d_id}}/{{i.product_id}}">
                                                     <img src="{{i.product.primary_image}}" alt="Li's Product Image">
                                                 </a>
                                                 <span class="sticker">New</span>
@@ -162,7 +189,7 @@
                                                 <div class="product_desc_info">
                                                     <div class="product-review">
                                                         <h5 class="manufacturer">
-                                                            <a href="used_product_left-sidebar.html">Graphic Corner</a>
+                                                            <a href="/doriginalproducts/doriginal/{{i.d_id}}/{{i.product_id}}">Graphic Corner</a>
                                                         </h5>
                                                         <div class="rating-box">
                                                             
@@ -685,14 +712,17 @@
                                             <li><a data-toggle="tab" href="#home3"><span>XailStation</span></a></li> -->
                                          </ul> 
                                     </div>
+                                 
                                     <div class="row">
                                         <div class="product-active owl-carousel">
+                                            {% for i in dorigin %}
+                                            
                                             <div class="col-lg-12">
                                                 <!-- single-product-wrap start -->
                                                 <div class="single-product-wrap">
                                                     <div class="product-image">
-                                                        <a href="doriginal_single_product.html">
-                                                            <img src="/static/images/doriginal/hALWA.jpg" alt="Li's Product Image">
+                                                        <a href="/doriginalproducts/doriginal/{{i.d_id}}/{{i.product_id}}">
+                                                            <img src="{{i.product.primary_image}}" alt="Li's Product Image">
                                                         </a>
                                                         <span class="sticker">New</span>
                                                     </div>
@@ -700,7 +730,7 @@
                                                         <div class="product_desc_info">
                                                             <div class="product-review">
                                                                 <h5 class="manufacturer">
-                                                                    <a href="shop-left-sidebar.html">Halwa</a>
+                                                                    <a href="/doriginalproducts/doriginal/{{i.d_id}}/{{i.product_id}}">{{i.product.model_name}}</a>
                                                                 </h5>
                                                                 <div class="rating-box">
                                                                     <span>4.2</span>
@@ -713,15 +743,15 @@
                                                                     </ul>
                                                                 </div>
                                                             </div>
-                                                            <h4><a class="product_name" href="doriginal_single_product.html">Halwa</a></h4>
+                                                            <h4><a class="product_name" href="/doriginalproducts/doriginal/{{i.d_id}}/{{i.product_id}}">{{i.product.model_name}}</a></h4>
                                                             <div class="price-box">
-                                                                <span class="new-price">&#8377;100.80</span>
+                                                                <span class="new-price">&#8377;{{i.product.selling_price}}</span>
                                                             </div>
                                                         </div>
                                                         <div class="add-actions">
                                                             <ul class="add-actions-link">
-                                                                <li class="add-cart active"><a href="#">Add to cart</a></li>
-                                                                <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
+                                                                <li class="add-cart active"><a href="/user/shopping_add_to_cart/{{key.uid}}/d_original/products/{{i.d_id}}/{{i.product_id}}/">Add to cart</a></li>
+                                                                <li><a class="links-details" href="/user/shopping_add_to_wishlist/{{key.uid}}/products/d_original/{{i.product_id}}/"><i class="fa fa-heart-o"></i></a></li>
                                                                 <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
                                                             </ul>
                                                         </div>
@@ -729,53 +759,62 @@
                                                 </div>
                                                 <!-- single-product-wrap end -->
                                             </div>
-                                            <div class="col-lg-12">
-                                                <!-- single-product-wrap start -->
-                                                <div class="single-product-wrap">
-                                                    <div class="product-image">
-                                                        <a href="doriginal_single_product.html">
-                                                            <img src="/static/images/doriginal/gigar.png" alt="Li's Product Image">
-                                                        </a>
-                                                        <span class="sticker">New</span>
-                                                    </div>
-                                                    <div class="product_desc">
-                                                        <div class="product_desc_info">
-                                                            <div class="product-review">
-                                                                <h5 class="manufacturer">
-                                                                    <a href="shop-left-sidebar.html">Sweet</a>
-                                                                </h5>
-                                                                <div class="rating-box">
-                                                                    <span>4.2</span>
-                                                                    <ul class="rating">
-                                                                        <li><i class="fa fa-star-o"></i></li>
-                                                                        <li><i class="fa fa-star-o"></i></li>
-                                                                        <li><i class="fa fa-star-o"></i></li>
-                                                                        <li class="no-star"><i class="fa fa-star-o"></i></li>
-                                                                        <li class="no-star"><i class="fa fa-star-o"></i></li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                            <h4><a class="product_name" href="doriginal_single_product.html">Jiharthanda </a></h4>
-                                                            <div class="price-box">
-                                                                <span class="new-price new-price-2">&#8377;71.80</span>
-                                                                <span class="old-price">&#8377;77.22</span>
-                                                                <span class="discount-percentage">-7%</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="add-actions">
-                                                            <ul class="add-actions-link">
-                                                                <li class="add-cart active"><a href="#">Add to cart</a></li>
-                                                                <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
-                                                                <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- single-product-wrap end -->
-                                            </div>
+                                            {% endfor %}
                                       
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="product-active owl-carousel">
+                                            {% for i in dorigin %}
+                                            <div class="col-lg-12">
+                                                <!-- single-product-wrap start -->
+                                                <div class="single-product-wrap">
+                                                    <div class="product-image">
+                                                        <a href="/doriginalproducts/doriginal/{{i.d_id}}/{{i.product_id}}">
+                                                            <img src="{{i.product.primary_image}}" alt="Li's Product Image">
+                                                        </a>
+                                                        <span class="sticker">New</span>
+                                                    </div>
+                                                    <div class="product_desc">
+                                                        <div class="product_desc_info">
+                                                            <div class="product-review">
+                                                                <h5 class="manufacturer">
+                                                                    <a href="/doriginalproducts/doriginal/{{i.d_id}}/{{i.product_id}}">{{i.product.model_name}}</a>
+                                                                </h5>
+                                                                <div class="rating-box">
+                                                                    <span>4.2</span>
+                                                                    <ul class="rating">
+                                                                        <li><i class="fa fa-star-o"></i></li>
+                                                                        <li><i class="fa fa-star-o"></i></li>
+                                                                        <li><i class="fa fa-star-o"></i></li>
+                                                                        <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                                                        <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                            <h4><a class="product_name" href="/doriginalproducts/doriginal/{{i.d_id}}/{{i.product_id}}">{{i.product.model_name}}</a></h4>
+                                                            <div class="price-box">
+                                                                <span class="new-price">&#8377;{{i.product.selling_price}}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="add-actions">
+                                                            <ul class="add-actions-link">
+                                                                <li class="add-cart active"><a href="/user/shopping_add_to_cart/{{key.uid}}/d_original/products/{{i.d_id}}/{{i.product_id}}/">Add to cart</a></li>
+                                                                <li><a class="links-details" href="/user/shopping_add_to_wishlist/{{key.uid}}/products/d_original/{{i.product_id}}/"><i class="fa fa-heart-o"></i></a></li>
+                                                                <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- single-product-wrap end -->
+                                            </div>
+                                            {% endfor %}
+                                           
+                                      
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <!-- Li's Section Area End Here -->
                             </div>

@@ -45,6 +45,7 @@
         <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
         <!-- Modernizr js -->
         <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
     <!--[if lt IE 8]>
@@ -53,7 +54,7 @@
          <!-- Begin Body Wrapper -->
          <div class="body-wrapper">
             <!-- Begin Header Area -->
-            {% include "header.html" %}
+            {% include "enduser_header.html" %}
                 
             <!-- Header Area End Here -->
             <!-- Begin Li's Breadcrumb Area -->
@@ -127,7 +128,7 @@
                         <div class="col-lg-7 col-md-6">
                             <div class="product-details-view-content pt-60">
                                 <div class="product-info">
-                                    <h2>Fresh Chicken</h2>
+                                    <h2>{{fresh_cuts.product.name|join:","}}</h2>
                                     <span class="product-details-ref">1 Kg</span>
                                     <div class="rating-box pt-20">
                                         <ul class="rating rating-with-review-item">
@@ -141,7 +142,7 @@
                                         </ul>
                                     </div>
                                     <div class="price-box pt-20">
-                                        <span class="new-price new-price-2">&#8377 120.98</span>
+                                        <span class="new-price new-price-2">&#8377 {{fresh_cuts.product.actual_price|join:","}}</span>
                                     </div>
                                     <!-- <div class="product-desc">
                                         <p>
@@ -160,20 +161,21 @@
                                         </div>
                                     </div> -->
                                     <div class="single-add-to-cart">
-                                        <form action="#" class="cart-quantity">
+                                        <form method="POST" class="cart-quantity">
+                                            {% csrf_token %}
                                             <div class="quantity">
                                                 <label>Quantity</label>
                                                 <div class="cart-plus-minus">
-                                                    <input class="cart-plus-minus-box" value="1" type="text">
+                                                    <input class="cart-plus-minus-box" value="1" type="text" name="quantity">
                                                     <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
                                                     <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
                                                 </div>
                                             </div>
-                                            <button class="add-to-cart" type="submit">Add to cart</button>
+                                            <button class="add-to-cart" name="add_cart" type="submit" value="{{fresh_cuts.product.product_id}}">Add to cart</button></a>
                                         </form>
                                     </div>
                                     <div class="product-additional-info pt-25">
-                                        <a class="wishlist-btn" href="wishlist.html"><i class="fa fa-heart-o"></i>Add to wishlist</a>
+                                        <a class="wishlist-btn" href="/user/shopping_add_to_wishlist/{{key.uid}}/products/{{fresh_cuts.product.category}}/{{fresh_cuts.product.product_id}}/"><i class="fa fa-heart-o"></i>Add to wishlist</a>
                                         <div class="product-social-sharing pt-25">
                                             <ul>
                                                 <li class="facebook"><a href="#"><i class="fa fa-facebook"></i>Facebook</a></li>

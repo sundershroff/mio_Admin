@@ -1523,6 +1523,46 @@ textarea:focus {
 		width: 100%;
 		padding: 0 60px 0 33px;
 }
+
+.dist-select{
+	    color:rgb(185, 183, 183);
+		border: 1px solid #efe4e4;
+		border-radius: 5px;
+		height: 44px;
+		background-color: white;
+	}
+.dist-select:hover{
+	min-width: 50%;
+	border: 1px solid #efe4e4;
+	border-radius: 5px;
+	height: 44px;
+	background-color: white;
+	color:rgb(185, 183, 183);
+
+}
+.dist-select::after{
+	border: 1px solid #efe4e4;
+	color:rgb(185, 183, 183);
+}
+
+.proceed{
+	background-color:white ;
+	position: sticky;
+	font-weight: 50px;
+	font-size: 30px;
+	bottom: 0px;
+	color: #810081;
+	z-index: 1;
+
+}
+#proceed{
+	background-color:#810081 ;
+	color:white;
+	border:none;
+	/* position: sticky;
+	z-index: 1;
+	top: 0; */
+}
 /*Header Middle Right*/
 /* .header-middle-right {
 		display: flex;
@@ -2308,13 +2348,15 @@ textarea:focus {
 .signup{
 
 	background-color: #810081;
-    color: white;
-    border: 1px solid white;
-    width: auto;
-    border-radius: 7px;
-    font-size: 21px;
-    font-family: 'FontAwesome';
-    letter-spacing: 1px;
+	color: white;
+	border: 1px solid white;
+	width: auto;
+	border-radius: 7px;
+	font-size: 17px;
+	font-family: 'FontAwesome';
+	letter-spacing: 1px;
+	text-decoration: none !important;
+	padding: 7px;
 }
 
 .signup:hover{

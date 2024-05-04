@@ -64,7 +64,7 @@ def end_user_otp(request, id):
         try:
             if end_user_extension.validate_otp(id, int(request.data['user_otp'])):
                 try:
-                    userData = models.End_Usermodel.objects.get(uid=id)
+                    userData = End_Usermodel.objects.get(uid=id)
                     print(userData)
                     serializer_validate = end_user_serializers.OTPSerializer(
                         instance=userData, data=request.POST, partial=True)
@@ -337,7 +337,7 @@ def single_users_data(request,id):
 @api_view(['GET'])
 def all_shopproducts(request): 
     if request.method == "GET":
-        data= models.shop_productsmodel.objects.filter(status=True)
+        data= shop_productsmodel.objects.filter(status=True)
         print(data)
         alldataserializer= business_serializers.shop_productlistserializer(data,many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
@@ -393,7 +393,7 @@ def user_get_single_shopproduct(request,id,user_id,product_id):
 @api_view(['GET'])
 def all_jewelproducts(request):
     if request.method == "GET":
-        data= models.jewel_productsmodel.objects.filter(status=True)
+        data= jewel_productsmodel.objects.filter(status=True)
         alldataserializer= business_serializers.jewel_productlistserializer(data,many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
     
@@ -446,7 +446,7 @@ def user_get_single_jewelproduct(request,id,user_id,product_id):
 @api_view(['GET'])
 def all_foodproducts(request):
     if request.method == "GET":
-        data= models.food_productsmodel.objects.filter(status=True)
+        data= food_productsmodel.objects.filter(status=True)
         alldataserializer= business_serializers.food_productlistserializer(data,many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
     
@@ -501,7 +501,7 @@ def user_get_single_foodproduct(request,id,user_id,product_id):
 @api_view(['GET'])
 def all_freshcutproducts(request):
     if request.method == "GET":
-        data= models.fresh_productsmodel.objects.filter(status=True)
+        data= fresh_productsmodel.objects.filter(status=True)
         alldataserializer= business_serializers.fresh_productlistserializer(data,many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
 
@@ -554,7 +554,7 @@ def user_get_single_freshproduct(request,id,user_id,product_id):
 @api_view(['GET'])
 def all_dmioproducts(request):
     if request.method == "GET":
-        data= models.dmio_productsmodel.objects.filter(status=True)
+        data= dmio_productsmodel.objects.filter(status=True)
         alldataserializer= business_serializers.dmio_productlistserializer(data,many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
     
@@ -609,7 +609,7 @@ def user_get_single_dmioproduct(request,id,user_id,product_id):
 @api_view(['GET'])
 def all_pharmproducts(request):
     if request.method == "GET":
-        data= models.pharmacy_productsmodel.objects.filter(status=True)
+        data= pharmacy_productsmodel.objects.filter(status=True)
         alldataserializer= business_serializers.pharmacy_productlistserializer(data,many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
     
@@ -666,7 +666,7 @@ def user_get_single_pharmproduct(request,id,user_id,product_id):
 def all_d_originalproducts(request):
     if request.method == "GET":
 
-        data= models.d_original_productsmodel.objects.filter(status=True)
+        data= d_original_productsmodel.objects.filter(status=True)
         alldataserializer= business_serializers.d_original_productlistserializer(data,many=True)
         return Response(data=alldataserializer.data, status=status.HTTP_200_OK)
     
@@ -1801,7 +1801,7 @@ def used_products(request,id):
 def get_allused_products(request):
 
     if request.method == "GET":
-        data = models.used_productsmodel.objects.all()
+        data = used_productsmodel.objects.all()
         print(data)
         serializers = end_user_serializers.used_productlistserializer(data,many =True) 
         return Response(data=serializers.data, status=status.HTTP_200_OK)

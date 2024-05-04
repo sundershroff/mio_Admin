@@ -43,6 +43,7 @@
         <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
         <!-- Modernizr js -->
         <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
     <!--[if lt IE 8]>
@@ -51,7 +52,7 @@
         <!-- Begin Body Wrapper -->
         <div class="body-wrapper" style="padding: 0px 15px;">
             <!-- Begin Header Area -->
-            {% include "header.html" %}
+            {% include "enduser_header.html" %}
             <!-- Header Area End Here -->
             <!-- Begin Slider With Banner Area -->
             <div class="slider-with-banner">
@@ -149,7 +150,7 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/jewelleryproducts/jewellery/gold">
+                                                <a href="/products/jewelleryproducts/jewellery/{{key.uid}}/gold">
                                                     <img src="{% static 'images/jwellery/Rings.jpg' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
@@ -169,7 +170,7 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/jewelleryproducts/jewellery/silver">
+                                                <a href="/products/jewelleryproducts/jewellery/{{key.uid}}/silver">
                                                     <img src="{% static 'images/jwellery/silver1.webp' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
@@ -183,21 +184,9 @@
                                             </div>
                                         </div>
                                         <!-- single-product-wrap end -->
-                                    </div>
-                                   
-                                  
-                                  
-                                   
-
-                                   
-
-                                
-
-                                   
-
-
-
-
+                                    </div>                            
+                          
+                                                                    
                                 </div>
                             </div>
                         </div>

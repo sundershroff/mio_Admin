@@ -46,6 +46,7 @@
          <link rel="stylesheet" href="{% static 'css/style1.css' %}">
          <!-- Modernizr js -->
          <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     
     <body>
@@ -55,7 +56,7 @@
         <!-- Begin Body Wrapper -->
         <div class="body-wrapper">
             <!-- Begin Header Area -->
-            {% include "header.html" %}
+            {% include "enduser_header.html" %}
             <!-- Header Area End Here -->
             <!-- Begin Li's Breadcrumb Area -->
             <div class="breadcrumb-area">
@@ -135,8 +136,8 @@
                                                     <!-- single-product-wrap start -->
                                                     <div class="single-product-wrap">
                                                         <div class="product-image">
-                                                            <a href="/dailymioproducts/dmio_singleproduct/{{i.dmio_id}}/{{i.product_id}}">
-                                                                <img src="{{i.product.primary_image}}" alt="Li's Product Image">
+                                                            <a href="/products/dailymioproducts/dmio_singleproduct/{{key.uid}}/{{i.item.dmio_id}}/{{i.item.product_id}}">
+                                                                <img src="{{i.item.product.primary_image}}" alt="Li's Product Image">
                                                             </a>
                                                             <span class="sticker">New</span>
                                                         </div>
@@ -156,9 +157,9 @@
                                                                         </ul>
                                                                     </div> -->
                                                                 </div>
-                                                                <h4><a class="product_name" href="food_single-product.html">{{i.product.name|join:","}}</a></h4>
+                                                                <h4><a class="product_name" href="/products/dailymioproducts/dmio_singleproduct/{{key.uid}}/{{i.item.dmio_id}}/{{i.item.product_id}}">{{i.item.product.name|join:","}}</a></h4>
                                                                 <div class="price-box" style="display: flex;">
-                                                                    <span class="new-price" style="width: 50%;display: flex;align-items: center;">&#8377;{{i.product.actual_proice|join:","}}</span>
+                                                                    <span class="new-price" style="width: 50%;display: flex;align-items: center;">&#8377;{{i.item.product.actual_proice|join:","}}</span>
                                                                     <span style=" display: flex;width: 100%;justify-content: end;">
                                                                     <td class="quantity">
                                                                     
@@ -169,14 +170,15 @@
                                                                         </div>
                                                                     </td></span>
                                                                 </div>
-                                                                
+                                                                <h4>{{i.shop.business_name}}</h4>
+                                                                <h6 style="color: gray;">{{i.shop.area}}</h6>
                                                             </div>
                                                             <div class="add-actions">
                                                                 <ul class="add-actions-link">
                                                                     
-                                                                    <li class="add-cart active"><a href="shopping-cart.html">Add to cart</a></li>
+                                                                    <li class="add-cart active"><a href="/user/shopping_add_to_cart/{{key.uid}}/{{i.item.product.category}}/products/{{i.item.dmio_id}}/{{i.item.product_id}}/">Add to cart</a></li>
                                                                     <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
-                                                                    <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
+                                                                    <li><a class="links-details" href="/user/shopping_add_to_wishlist/{{key.uid}}/products/{{i.item.product.category}}/{{i.item.product_id}}/"><i class="fa fa-heart-o"></i></a></li>
                                                                 </ul>
                                                             </div>
                                                         </div>

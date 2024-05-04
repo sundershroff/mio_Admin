@@ -45,6 +45,7 @@
         <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
         <!-- Modernizr js -->
         <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
     <!--[if lt IE 8]>
@@ -53,7 +54,7 @@
         <!-- Begin Body Wrapper -->
         <div class="body-wrapper" style="padding: 0px 15px;">
             <!-- Begin Header Area -->
-            {% include "header.html" %}
+            {% include "enduser_header.html" %}
             <!-- Header Area End Here -->
             <!-- Begin Slider With Banner Area -->
             <div class="slider-with-banner">
@@ -150,14 +151,14 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/dailymioproducts/daily_mio/category/grocery/">
+                                                <a href="/products/dailymioproducts/daily_mio/{{key.uid}}/grocery/">
                                                     <img src="{% static 'images/daily-mio/grocery.jpg' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
                                             <div class="product_desc">
                                                 <div class="product_desc_info" style="text-align: center;">
                                                    
-                                                    <h1><a class="product_name" href="daily_mio_single_product.html">Grocery</a></h1>
+                                                    <h1><a class="product_name" href="/dailymioproducts/daily_mio/{{key.uid}}/grocery/">Grocery</a></h1>
                                                     
                                                 </div>
                                                 
@@ -169,14 +170,14 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/dailymioproducts/daily_mio/category/meat/">
+                                                <a href="/products/dailymioproducts/daily_mio/{{key.uid}}/meat/">
                                                     <img src="{% static 'images/daily-mio/meat.png' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
                                             <div class="product_desc">
                                                 <div class="product_desc_info" style="text-align: center;">
                                                    
-                                                    <h1><a class="product_name" href="daily_mio_shop-left-sidebar.html">Meat</a></h1>
+                                                    <h1><a class="product_name" href="/dailymioproducts/daily_mio/{{key.uid}}/meat/">Meat</a></h1>
                                                     
                                                 </div>
                                                 
@@ -188,14 +189,14 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/dailymioproducts/daily_mio/category/fish/">
+                                                <a href="/products/dailymioproducts/daily_mio/{{key.uid}}/fish/">
                                                     <img src="{% static 'images/daily-mio/fish.jpg' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
                                             <div class="product_desc">
                                                 <div class="product_desc_info" style="text-align: center;">
                                                    
-                                                    <h1><a class="product_name" href="daily_mio_shop-left-sidebar.html">Fish</a></h1>
+                                                    <h1><a class="product_name" href="/dailymioproducts/daily_mio/{{key.uid}}/fish/">Fish</a></h1>
                                                     
                                                 </div>
                                                 
@@ -207,14 +208,14 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/dailymioproducts/daily_mio/category/egg/">
+                                                <a href="/products/dailymioproducts/daily_mio/{{key.uid}}/egg/">
                                                     <img src="{% static 'images/daily-mio/Eggs.png' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
                                             <div class="product_desc">
                                                 <div class="product_desc_info" style="text-align: center;">
                                                    
-                                                    <h1><a class="product_name" href="daily_mio_shop-left-sidebar.html">Eggs</a></h1>
+                                                    <h1><a class="product_name" href="/dailymioproducts/daily_mio/{{key.uid}}/egg/">Eggs</a></h1>
                                                     
                                                 </div>
                                                 
@@ -226,14 +227,14 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/dailymioproducts/daily_mio/category/fruits/">
+                                                <a href="/products/dailymioproducts/daily_mio/{{key.uid}}/fruits/">
                                                     <img src="{% static 'images/daily-mio/Fruits.jpg' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
                                             <div class="product_desc">
                                                 <div class="product_desc_info" style="text-align: center;">
                                                    
-                                                    <h1><a class="product_name" href="daily_mio_shop-left-sidebar.html">Fruits</a></h1>
+                                                    <h1><a class="product_name" href="/dailymioproducts/daily_mio/{{key.uid}}/fruits/">Fruits</a></h1>
                                                     
                                                 </div>
                                                 
@@ -245,14 +246,14 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/dailymioproducts/daily_mio/category/vegitables/">
+                                                <a href="/products/dailymioproducts/daily_mio/{{key.uid}}/vegitables/">
                                                     <img src="{% static 'images/daily-mio/Vegitables.webp' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
                                             <div class="product_desc">
                                                 <div class="product_desc_info" style="text-align: center;">
                                                    
-                                                    <h1><a class="product_name" href="daily_mio_shop-left-sidebar.html    ">Vegitables</a></h1>
+                                                    <h1><a class="product_name" href="/dailymioproducts/daily_mio/{{key.uid}}/vegitables/">Vegitables</a></h1>
                                                     
                                                 </div>
                                                 
@@ -265,14 +266,14 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="/dailymioproducts/daily_mio/category/dairy/">
+                                                <a href="/products/dailymioproducts/daily_mio/{{key.uid}}/dairy/">
                                                     <img src="{% static 'images/daily-mio/Dairy.jpg' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
                                             <div class="product_desc">
                                                 <div class="product_desc_info" style="text-align: center;">
                                                    
-                                                    <h1><a class="product_name" href="daily_mio_single_product.html">Dairy</a></h1>
+                                                    <h1><a class="product_name" href="/dailymioproducts/daily_mio/{{key.uid}}/dairy/">Dairy</a></h1>
                                                     
                                                 </div>
                                                 
@@ -285,14 +286,14 @@
                                         <!-- single-product-wrap start -->
                                         <div class="single-product-wrap">
                                             <div class="product-image">
-                                                <a href="daily_mio_single_product.html">
+                                                <a href="/dailymioproducts/daily_mio/{{key.uid}}/mylist/>
                                                     <img src="{% static 'images/daily-mio/My list.webp' %}" alt="Li's Product Image">
                                                 </a>
                                             </div>
                                             <div class="product_desc">
                                                 <div class="product_desc_info" style="text-align: center;">
                                                    
-                                                    <h1><a class="product_name" href="daily_mio_single_product.html">My list</a></h1>
+                                                    <h1><a class="product_name" href="/dailymioproducts/daily_mio/{{key.uid}}/mylist/">My list</a></h1>
                                                     
                                                 </div>
                                                 

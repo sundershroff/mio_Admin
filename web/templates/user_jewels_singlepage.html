@@ -43,6 +43,7 @@
          <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
          <!-- Modernizr js -->
          <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
     <!--[if lt IE 8]>
@@ -51,7 +52,7 @@
          <!-- Begin Body Wrapper -->
          <div class="body-wrapper">
             <!-- Begin Header Area -->
-            {% include "header.html" %}
+            {% include "enduser_header.html" %}
             <!-- Header Area End Here -->
             <!-- Begin Li's Breadcrumb Area -->
             <div class="breadcrumb-area">
@@ -108,7 +109,32 @@
                                 <div class="product-info">
                                     <h2>Rings</h2>
                                     <span class="product-details-ref"></span>
+                                    {{jewels.rating}}
                                     <div class="rating-box pt-20">
+                                        {% if jewels.rating == "1.0" %}
+                                        
+                                        <ul class="rating rating-with-review-item">
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                            <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                            <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                            <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                            <li class="review-item"><a href="#">Read Review</a></li>
+                                            <li class="review-item"><a href="#">Write Review</a></li>
+                                        </ul>
+                                        {% elif jewels.rating == "2.0" %}
+                                        
+                                        <ul class="rating rating-with-review-item">
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                            <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                            <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                            <li class="review-item"><a href="#">Read Review</a></li>
+                                            <li class="review-item"><a href="#">Write Review</a></li>
+                                        </ul>
+                                        {% elif jewels.rating == "3.0" %}
+                                        
                                         <ul class="rating rating-with-review-item">
                                             <li><i class="fa fa-star-o"></i></li>
                                             <li><i class="fa fa-star-o"></i></li>
@@ -118,6 +144,29 @@
                                             <li class="review-item"><a href="#">Read Review</a></li>
                                             <li class="review-item"><a href="#">Write Review</a></li>
                                         </ul>
+                                        {% elif jewels.rating == "4" %}
+                                        
+                                        <ul class="rating rating-with-review-item">
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                            <li class="review-item"><a href="#">Read Review</a></li>
+                                            <li class="review-item"><a href="#">Write Review</a></li>
+                                        </ul>
+                                        {% else %}
+                                        
+                                        <ul class="rating rating-with-review-item">
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li><i class="fa fa-star-o"></i></li>
+                                            <li class="review-item"><a href="#">Read Review</a></li>
+                                            <li class="review-item"><a href="#">Write Review</a></li>
+                                        </ul>
+                                        {% endif %}
                                     </div>
                                     <div class="price-box pt-20">
                                         <span class="new-price new-price-2">&#8377 7,000</span>
@@ -139,20 +188,21 @@
                                         </div>
                                     </div> -->
                                     <div class="single-add-to-cart">
-                                        <form action="#" class="cart-quantity">
+                                        <form method="POST" class="cart-quantity">
+                                            {% csrf_token %}
                                             <div class="quantity">
                                                 <label>Quantity</label>
                                                 <div class="cart-plus-minus">
-                                                    <input class="cart-plus-minus-box" value="1" type="text">
+                                                    <input class="cart-plus-minus-box" value="1" name="quantity" type="text">
                                                     <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
                                                     <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
                                                 </div>
                                             </div>
-                                            <button class="add-to-cart" type="submit">Add to cart</button>
+                                          <button class="add-to-cart" type="submit" name="add_cart" value="{{jewels.product.product_id}}" >Add to cart</button>
                                         </form>
                                     </div>
                                     <div class="product-additional-info pt-25">
-                                        <a class="wishlist-btn" href="wishlist.html"><i class="fa fa-heart-o"></i>Add to wishlist</a>
+                                        <a class="wishlist-btn" href="w/user/shopping_add_to_wishlist/{{key.uid}}/products/{{jewels.product.category}}/{{jewels.product.product_id}}/"><i class="fa fa-heart-o"></i>Add to wishlist</a>
                                         <div class="product-social-sharing pt-25">
                                             <ul>
                                                 <li class="facebook"><a href="#"><i class="fa fa-facebook"></i>Facebook</a></li>

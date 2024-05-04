@@ -753,13 +753,13 @@ def bannerr(request,access_priveleges):
         authenticate = User.objects.get(username = access_priveleges)
     except:
         authenticate = admin_CustomUser.objects.get(username = access_priveleges)
-    shopping = banner.objects.get(id = 1)
-    food = banner.objects.get(id = 2)
-    fresh_cuts = banner.objects.get(id = 3)
-    daily_mio = banner.objects.get(id = 4)
-    pharmacy = banner.objects.get(id = 5)
-    d_original = banner.objects.get(id = 6)
-    jewellery = banner.objects.get(id = 7)
+    shopping = banner.objects.get(category = "shopping")
+    food = banner.objects.get(category = "food")
+    fresh_cuts = banner.objects.get(category = "fresh_cuts")
+    daily_mio = banner.objects.get(category = "daily_mio")
+    pharmacy = banner.objects.get(category = "pharmacy")
+    d_original = banner.objects.get(category = "d_original")
+    jewellery = banner.objects.get(category = "jewellery")
     context = {
         'shopping':shopping,
         'food':food,
@@ -799,6 +799,9 @@ def customer_service(request,access_priveleges):
     seller = ""
     product = ""
     business = ""
+    order_data=""
+    error = ""
+    success = ""
     if request.method == "POST":
         if "seller" in request.POST:
             if shoppingmodel.objects.filter(shop_id = request.POST['seller_id']).exists() == True:
@@ -842,13 +845,65 @@ def customer_service(request,access_priveleges):
             except:
                 business = "User Not Available"
             print(business)
+        elif "track" in request.POST:
+            try:
+                order_data = Product_Ordermodel.objects.get(track_id = request.POST['track']).status
+            except:
+                order_data = "Track id Not Available"
+        elif "cancel_order" in request.POST:
+            order_Data_2 = Product_Ordermodel.objects.get(track_id = request.POST['cancel_order'])
+            print(order_Data_2.end_user.phone_number)
+            global cancel_order
+            cancel_order = request.POST['cancel_order']
+            global pin
+            pin = random.randint(1000,9999)
+            print(pin)
+            url = "https://www.fast2sms.com/dev/bulkV2"
 
+            payload = f"variables_values={pin}&route=otp&numbers={order_Data_2.end_user.phone_number}"
+            headers = {
+                'authorization': "ngpY1A5PqHfF0IE7SzsceVhBM6OmtjQxbRr9KCiwL2aGJoD8vkALKMNP8Sfp6Tk3Csouw427rDFga0Ox",
+                'Content-Type': "application/x-www-form-urlencoded",
+                'Cache-Control': "no-cache",
+                }
+
+            response = requests.request("POST", url, data=payload, headers=headers)
+
+            print(response.text)
+            # Service Route Success Response:
+            {
+                "return": True,
+                "request_id": "lwdtp7cjyqxvfe9",
+                "message": [
+                    "Message sent successfully"
+                ]
+            }
+        elif "otp" in request.POST:
+            print(pin)
+            print(request.POST.getlist("otp"))
+            user_pin = ""
+            for x in request.POST.getlist("otp"):
+                user_pin += x
+            print(user_pin)
+            if pin ==  int(user_pin):
+                print("pin match")
+                order_Data_3 = Product_Ordermodel.objects.get(track_id = cancel_order)
+                order_Data_3.status = "order_cancelled"
+                order_Data_3.save()
+                success = "Order Cancelled Successfully"
+            else:
+                error = "Invalid OTP"
+                # return redirect(f"/admin/delivery_boy_add/{generate_uid}/{authenticate.username}")
+        
     context = {
         'authenticate':authenticate,
         'access_priveleges':authenticate.access_priveleges,
         'seller':seller,
         'product':product,
         'business':business,
+        'order_data':order_data,
+        'error':error,
+        'success':success,
     }
     return render(request,'admin_customer_service.html',context)
 
