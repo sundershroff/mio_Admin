@@ -1294,6 +1294,7 @@ def edit_product(request,product_id,category,access_priveleges):
         "custom_description":custom_description,
         'authenticate':authenticate,
         'access_priveleges':authenticate.access_priveleges,
+        'user':access_priveleges,
     }
     
     if request.method == "POST":
@@ -1310,6 +1311,10 @@ def edit_product(request,product_id,category,access_priveleges):
             pass
         try:
             for_product.pop("value")
+        except:
+            pass
+        try:
+            for_product.pop("user")
         except:
             pass
         #add custome discription
@@ -1360,8 +1365,7 @@ def edit_product(request,product_id,category,access_priveleges):
             #         other_images_path = iname
             #         other_imagelist.append(all_image_url+fs.url(other_images_path))
         else:
-            other_imagelist = product.product['other_images']
-        print(other_imagelist)
+            old_image = product.product['other_images']
         cleaned_data_dict ={key:value[0] if isinstance(value,list) and len(value)==1 else value for key,value in for_product.items()}
         # cleaned_data_dict.pop("other_images")
         cleaned_data_dict['primary_image'] = primary_image_paths
@@ -1994,6 +1998,72 @@ def hsn(request,access_priveleges):
         return redirect(f"/admin/hsn/{authenticate.username}")
     return render(request,'hsn.html',context)
 
+def other_images(request,index_id,category,product_id):
+    print("other images")
+    if request.method == "POST":
+            print("hii")
+            print(request.FILES)
+            if "shopping" == category:
+                product = shop_productsmodel.objects.get(product_id = product_id)
+                for_custom_description = shop_productsmodel.objects.get(product_id = product_id)
+                shop_id = product.shop_id
+                product_category = "shop_products"
+                old_image = product.product['other_images']
+                print(type(product.product['other_images']))
+                print(product.product['other_images'])
+            elif "food" == category:
+                product = food_productsmodel.objects.get(product_id = product_id)
+                for_custom_description = food_productsmodel.objects.get(product_id = product_id)
+                shop_id = product.food_id
+                product_category = "food_products"
+                old_image = product.product['other_images']
+            elif "fresh_cuts" == category:
+                product = fresh_productsmodel.objects.get(product_id = product_id)
+                for_custom_description = fresh_productsmodel.objects.get(product_id = product_id)
+                shop_id = product.fresh_id
+                product_category = "fresh_products"
+                old_image = product.product['other_images']
+            elif "daily_mio" == category:
+                product = dmio_productsmodel.objects.get(product_id = product_id)
+                for_custom_description = dmio_productsmodel.objects.get(product_id = product_id)
+                shop_id = product.dmio_id
+                product_category = "dmio_products"
+                old_image = product.product['other_images']
+
+            elif "pharmacy" == category:
+                product = pharmacy_productsmodel.objects.get(product_id = product_id)
+                for_custom_description = pharmacy_productsmodel.objects.get(product_id = product_id)
+                shop_id = product.dmio_id
+                product_category = "pharmacy_products"
+                old_image = product.product['other_images']
+
+            elif "d_original" == category:
+                product = d_original_productsmodel.objects.get(product_id = product_id)
+                for_custom_description = d_original_productsmodel.objects.get(product_id = product_id)
+                shop_id = product.d_id
+                product_category = "d_original_products"
+                old_image = product.product['other_images']
+            elif "jewellery" == category:
+                product = jewel_productsmodel.objects.get(product_id = product_id)
+                for_custom_description = jewel_productsmodel.objects.get(product_id = product_id)
+                shop_id = product.jewel_id
+                product_category = "jewel_products"
+                old_image = product.product['other_images']
+            print(index_id)
+            print(old_image[int(index_id)])
+            fs = FileSystemStorage()
+            other_image = str(request.FILES['other_images']).replace(" ", "_")
+            other_image_path = fs.save(f"api/{product_category}/{shop_id}/other_images/"+other_image, request.FILES['other_images'])
+            other_image_paths = all_image_url+fs.url(other_image_path)
+            print(other_image_paths)
+            old_image[int(index_id)] = other_image_paths
+            print(old_image)
+            product.product['other_images'] = old_image
+            product.save()
+            return redirect(f"/admin/edit_product/{request.POST['product_id']}/{request.POST['category']}/{request.POST['user']}")
+
+        
+
 @api_view(['GET'])
 def get_shutdown(request):
     data = shutdown.objects.filter(id = 1).values()
@@ -2031,5 +2101,15 @@ def banner_display(request,category):
             return Response(banner_data,status=status.HTTP_200_OK)
     except:
         return Response("error",status=status.HTTP_400_BAD_REQUEST) 
+
+@api_view(['GET']) 
+def normal_delivery_commision(request):
+    try:
+        if request.method == "GET":
+            commision_data = comission_Editing.objects.all().values()[0]["normal_delivery_commision"]
+            return Response(commision_data,status=status.HTTP_200_OK)
+    except:
+        return Response("error",status=status.HTTP_400_BAD_REQUEST) 
+
 
 

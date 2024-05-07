@@ -53,6 +53,9 @@ urlpatterns = [
     path('delete_other_image/<product_id>/<position>/<access_priveleges>',views.delete_other_image),
     path('admin/emergency/<uid>',views.emergency),
     path('admin/banner_display/<category>',views.banner_display),
+    path('admin/normal_delivery_commision',views.normal_delivery_commision),
+    path('admin/other_images/<index_id>/<category>/<product_id>',views.other_images),
+
 
 ]
 
